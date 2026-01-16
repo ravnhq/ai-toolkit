@@ -1,0 +1,6 @@
+{
+  "name": "ui-design",
+  "version": "1.0.0",
+  "description": "UI/UX design principles for dashboards, admin interfaces, and web applications",
+  "skills": "./skills/"
+}

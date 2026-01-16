@@ -1,0 +1,32 @@
+{
+  "name": "ravn-plugins",
+  "owner": {
+    "name": "Ravn"
+  },
+  "plugins": [
+    {
+      "name": "core",
+      "source": "./core",
+      "description": "Essential skills for all teams - universal design patterns",
+      "version": "1.0.0"
+    },
+    {
+      "name": "apple-dev",
+      "source": "./apple-dev",
+      "description": "Swift concurrency, Liquid Glass, and app icon generation",
+      "version": "1.0.0"
+    },
+    {
+      "name": "ui-design",
+      "source": "./ui-design",
+      "description": "UI/UX design principles for dashboards and interfaces",
+      "version": "1.0.0"
+    },
+    {
+      "name": "project-management",
+      "source": "./project-management",
+      "description": "Project management workflows - Linear integration",
+      "version": "1.0.0"
+    }
+  ]
+}

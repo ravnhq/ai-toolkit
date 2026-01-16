@@ -1,0 +1,6 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "description": "Essential skills for all teams - universal design patterns",
+  "skills": "./skills/"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "apple-dev",
+  "version": "1.0.0",
+  "description": "Swift concurrency, Liquid Glass, and app icon generation for iOS/macOS development",
+  "skills": "./skills/"
+}
