@@ -285,7 +285,7 @@
     {
       "name": "agent-skill-creator",
       "source": "./skills/agent-skill-creator",
-      "description": "Guide for creating effective skills with scripts, references, and assets.",
+      "description": "Guide for creating effective, portable skills that extend Claude's capabilities with specialized knowledge, workflows, and tool integrations.",
       "category": "agent",
       "tags": [
         "agent",
@@ -294,7 +294,7 @@
         "templates"
       ],
       "status": "ready",
-      "version": 2
+      "version": 3
     }
   ],
   "drafts": [

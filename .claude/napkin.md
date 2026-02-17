@@ -21,6 +21,7 @@
 - Generate reusable, skill-specific examples/troubleshooting blocks with a script to close repo-wide quality gaps quickly.
 - Add a short 3-step workflow section when skills lack explicit execution steps.
 - Keep harness section extraction regex anchored with lookaheads to avoid empty captures.
+- When bumping `version` in SKILL.md frontmatter, always update `marketplace.json` in the same commit. The CI auditor (`scripts/skills_audit.rb`) checks for mismatches.
 
 ## Patterns That Do Not Work
 -
@@ -28,3 +29,4 @@
 
 ## Domain Notes
 -
+- agent-skill-creator v3: SKILL.md rewritten to 222 lines (was ~500). Content split into 5 reference files. Scripts kept as optional accelerators, not hard dependencies. Frontmatter follows Anthropic guide (name+description required, repo fields in metadata).

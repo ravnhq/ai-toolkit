@@ -74,6 +74,7 @@ Every rule MUST have:
 - NEVER create duplicate rules across skills
 - ALWAYS check if a rule belongs in generic (platform) or specific (tech) skill
 - ALWAYS reference source material from `reference/standards/` when extracting rules
+- ALWAYS update the matching entry in `marketplace.json` when bumping `version` in any SKILL.md frontmatter (same commit)
 
 ## More Information
 
