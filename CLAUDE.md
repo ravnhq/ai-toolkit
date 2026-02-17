@@ -10,7 +10,6 @@ A marketplace of modular AI skills for LLM-assisted development. Provides layere
 
 - Skill System: Vercel agent-skills pattern
 - Documentation: Markdown with YAML frontmatter
-- Standards: Reference material in `reference/standards/`
 - Structure: Each skill in `skills/[name]/` with `SKILL.md` manifest
 - Catalog: `marketplace.json` - machine-readable registry of all skills
 
@@ -18,6 +17,16 @@ A marketplace of modular AI skills for LLM-assisted development. Provides layere
 
 - MUST use `fd` and `rg` for faster file operations (over `find` and `grep`)
 - Use git for version control
+
+## Commands
+
+```bash
+ruby scripts/skills_audit.rb                    # Validate all skills (frontmatter, structure, marketplace sync)
+ruby scripts/skills_harness.rb                   # Run skill test harness
+ruby scripts/skill_version.rb <SKILL.md> [build] # Bump skill build number
+```
+
+Releases happen automatically via CI on merge to main. For manual releases outside the PR flow: `bash scripts/release.sh <skill-name>`
 
 ## Skill Architecture
 
@@ -38,7 +47,9 @@ skills/[name]/
 ├── rules/                # Rule files (optional)
 │   ├── _sections.md      # Section definitions + impact levels
 │   └── [prefix]-*.md     # Individual rules (kebab-case)
-└── references/           # Reference docs (optional)
+├── references/           # Reference docs loaded on demand (optional)
+├── scripts/              # Executable helpers (optional)
+└── assets/               # Templates, images, fonts for output (optional)
 ```
 
 ### SKILL.md Frontmatter
@@ -46,11 +57,13 @@ skills/[name]/
 Every SKILL.md MUST have:
 - `name` - kebab-case skill identifier
 - `description` - what it does + trigger phrases for auto-invocation
+
+Required inside `metadata`:
 - `category` - one of: universal, platform, framework, design, agent
 - `tags` - array of keywords for discoverability
 - `status` - ready or scaffold
 
-Optional: `extends` (parent skill name)
+Optional: `license`, `metadata.version`
 
 ### Rule File Format
 
@@ -73,11 +86,12 @@ Every rule MUST have:
 - MUST provide both correct and incorrect examples
 - NEVER create duplicate rules across skills
 - ALWAYS check if a rule belongs in generic (platform) or specific (tech) skill
-- ALWAYS reference source material from `reference/standards/` when extracting rules
+- ALWAYS reference existing skills as examples when extracting new rules
 - ALWAYS update the matching entry in `marketplace.json` when bumping `version` in any SKILL.md frontmatter (same commit)
+- MUST use exact `- Error:` / `- Cause:` / `- Solution:` / `Expected behavior:` format in SKILL.md Troubleshooting and Examples sections (required by skills harness)
 
 ## More Information
 
 - Architecture: See README.md for full skill hierarchy and stack recipes
-- Reference Standards: `reference/standards/README.md` - source material for rule extraction
 - Skill Catalog: `marketplace.json` - registry of all skills with categories and tags
+- Skill Design Guide: `docs/building-skills-claude-complete-guide-findings.md` - best practices from Anthropic's official guide

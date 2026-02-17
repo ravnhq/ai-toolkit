@@ -22,6 +22,7 @@
 - Add a short 3-step workflow section when skills lack explicit execution steps.
 - Keep harness section extraction regex anchored with lookaheads to avoid empty captures.
 - When bumping `version` in SKILL.md frontmatter, always update `marketplace.json` in the same commit. The CI auditor (`scripts/skills_audit.rb`) checks for mismatches.
+- The skills harness (`scripts/skills_harness.rb`) requires literal `- Error:` / `- Cause:` / `- Solution:` and `Expected behavior:` strings — bold markdown variants like `- **Error**:` will fail.
 
 ## Patterns That Do Not Work
 -

@@ -205,18 +205,18 @@ Expected behavior: Do not use this skill. Choose a more relevant skill or procee
 
 ### Created Skill Does Not Trigger
 
-- **Error**: The skill is not selected when expected.
-- **Cause**: Description lacks specific trigger phrases or is too vague.
-- **Solution**: Rewrite description following `references/description-authoring.md`.
+- Error: The skill is not selected when expected.
+- Cause: Description lacks specific trigger phrases or is too vague.
+- Solution: Rewrite description following `references/description-authoring.md`.
 
 ### Created Skill Is Too Verbose
 
-- **Error**: SKILL.md exceeds 5,000 words or fills excessive context.
-- **Cause**: Detailed content belongs in references, not the body.
-- **Solution**: Move detailed content to `references/` files. Keep SKILL.md as a lean workflow guide.
+- Error: SKILL.md exceeds 5,000 words or fills excessive context.
+- Cause: Detailed content belongs in references, not the body.
+- Solution: Move detailed content to `references/` files. Keep SKILL.md as a lean workflow guide.
 
 ### Output Is Inconsistent Across Sessions
 
-- **Error**: Skill produces different quality results each time.
-- **Cause**: Instructions are ambiguous or lack explicit validation steps.
-- **Solution**: Add concrete examples, exact commands, and verification steps. See `references/troubleshooting.md`.
+- Error: Skill produces different quality results each time.
+- Cause: Instructions are ambiguous or lack explicit validation steps.
+- Solution: Add concrete examples, exact commands, and verification steps. See `references/troubleshooting.md`.
