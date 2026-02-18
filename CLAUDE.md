@@ -10,7 +10,7 @@ A marketplace of modular AI skills for LLM-assisted development. Provides layere
 
 - Skill System: Vercel agent-skills pattern
 - Documentation: Markdown with YAML frontmatter
-- Structure: Each skill in `skills/[name]/` with `SKILL.md` manifest
+- Structure: Each skill in `skills/[category]/[name]/` with `SKILL.md` manifest
 - Catalog: `marketplace.json` - machine-readable registry of all skills
 
 ## Tooling
@@ -30,19 +30,29 @@ Releases happen automatically via CI on merge to main. For manual releases outsi
 
 ## Skill Architecture
 
-Skills follow a **layered hierarchy**:
-1. **Universal** (`core-coding-standards`, `lang-typescript`) - apply to all code
-2. **Platform Generic** (`platform-frontend`, `platform-backend`, `platform-database`, `platform-testing`, `platform-cli`) - generic patterns
-3. **Framework-Specific** (`tech-react`, `tech-trpc`, `tech-drizzle`, `tech-vitest`, `swift-concurrency`) - extend platform skills with framework APIs
-4. **Design** (`design-frontend`, `design-accessibility`, `liquid-glass-ios`) - visual and UX patterns
-5. **Agent** (`agent-add-rule`, `agent-init-deep`, `agent-skill-creator`) - agent workflow tools
+Skills are organized into **category subdirectories** matching their tier:
 
-Scaffold skills (in development) live in `skills/_drafts/`.
+```
+skills/
+├── universal/     # core-coding-standards, lang-typescript
+├── platform/      # platform-frontend, platform-backend, platform-database, platform-testing, platform-cli
+├── framework/     # tech-react, tech-trpc, tech-drizzle, tech-vitest, swift-concurrency
+├── design/        # design-frontend, design-accessibility, liquid-glass-ios
+├── agent/         # agent-add-rule, agent-init-deep, agent-skill-creator, promptify
+└── _drafts/       # scaffold skills (in development), also categorized
+```
+
+**Hierarchy**:
+1. **Universal** - apply to all code
+2. **Platform** - generic patterns (frontend, backend, database, testing, cli)
+3. **Framework** - extend platform skills with specific framework APIs
+4. **Design** - visual and UX patterns
+5. **Agent** - agent workflow tools
 
 ### Skill Structure
 
 ```
-skills/[name]/
+skills/[category]/[name]/
 ├── SKILL.md              # Manifest with YAML frontmatter (name, description, category, tags, status)
 ├── rules/                # Rule files (optional)
 │   ├── _sections.md      # Section definitions + impact levels

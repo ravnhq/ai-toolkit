@@ -7,7 +7,7 @@
   "skills": [
     {
       "name": "core-coding-standards",
-      "source": "./skills/core-coding-standards",
+      "source": "./skills/universal/core-coding-standards",
       "description": "Universal code quality rules — KISS, DRY, clean code, code review. Base skill every project should include.",
       "category": "universal",
       "tags": [
@@ -21,7 +21,7 @@
     },
     {
       "name": "lang-typescript",
-      "source": "./skills/lang-typescript",
+      "source": "./skills/universal/lang-typescript",
       "description": "TypeScript language patterns and type safety rules — strict mode, no any, discriminated unions.",
       "category": "universal",
       "tags": [
@@ -36,7 +36,7 @@
     },
     {
       "name": "platform-frontend",
-      "source": "./skills/platform-frontend",
+      "source": "./skills/platform/platform-frontend",
       "description": "Framework-agnostic frontend architecture — state management, components, data fetching.",
       "category": "platform",
       "tags": [
@@ -52,7 +52,7 @@
     },
     {
       "name": "platform-backend",
-      "source": "./skills/platform-backend",
+      "source": "./skills/platform/platform-backend",
       "description": "Server-side architecture and security — API design, error handling, validation, logging. Use when building APIs, server logic, or reviewing backend security.",
       "category": "platform",
       "tags": [
@@ -68,7 +68,7 @@
     },
     {
       "name": "platform-database",
-      "source": "./skills/platform-database",
+      "source": "./skills/platform/platform-database",
       "description": "SQL database design, query optimization, and migration safety.",
       "category": "platform",
       "tags": [
@@ -85,7 +85,7 @@
     },
     {
       "name": "platform-testing",
-      "source": "./skills/platform-testing",
+      "source": "./skills/platform/platform-testing",
       "description": "Framework-agnostic testing principles — test philosophy, structure, mocking boundaries.",
       "category": "platform",
       "tags": [
@@ -100,7 +100,7 @@
     },
     {
       "name": "platform-cli",
-      "source": "./skills/platform-cli",
+      "source": "./skills/platform/platform-cli",
       "description": "Design and implementation patterns for building command-line tools with modern UX.",
       "category": "platform",
       "tags": [
@@ -115,7 +115,7 @@
     },
     {
       "name": "tech-react",
-      "source": "./skills/tech-react",
+      "source": "./skills/framework/tech-react",
       "description": "React-specific component, hook, and rendering patterns.",
       "category": "framework",
       "tags": [
@@ -132,7 +132,7 @@
     },
     {
       "name": "tech-trpc",
-      "source": "./skills/tech-trpc",
+      "source": "./skills/framework/tech-trpc",
       "description": "tRPC router architecture, procedure design, and Vertical Slice Architecture patterns.",
       "category": "framework",
       "tags": [
@@ -148,7 +148,7 @@
     },
     {
       "name": "tech-drizzle",
-      "source": "./skills/tech-drizzle",
+      "source": "./skills/framework/tech-drizzle",
       "description": "Drizzle ORM schema design, relational queries, and migration patterns.",
       "category": "framework",
       "tags": [
@@ -164,7 +164,7 @@
     },
     {
       "name": "tech-vitest",
-      "source": "./skills/tech-vitest",
+      "source": "./skills/framework/tech-vitest",
       "description": "Vitest-specific testing utilities — vi.mock, vi.fn, fake timers, MSW.",
       "category": "framework",
       "tags": [
@@ -180,7 +180,7 @@
     },
     {
       "name": "design-frontend",
-      "source": "./skills/design-frontend",
+      "source": "./skills/design/design-frontend",
       "description": "Visual design system patterns for web UIs — layout, responsive, Tailwind tokens.",
       "category": "design",
       "tags": [
@@ -196,7 +196,7 @@
     },
     {
       "name": "design-accessibility",
-      "source": "./skills/design-accessibility",
+      "source": "./skills/design/design-accessibility",
       "description": "WCAG AA and ARIA best practices — screen readers, keyboard navigation, focus management.",
       "category": "design",
       "tags": [
@@ -211,7 +211,7 @@
     },
     {
       "name": "liquid-glass-ios",
-      "source": "./skills/liquid-glass-ios",
+      "source": "./skills/design/liquid-glass-ios",
       "description": "Apple's Liquid Glass design system for iOS 26+ and iPadOS 26+.",
       "category": "design",
       "tags": [
@@ -226,7 +226,7 @@
     },
     {
       "name": "swift-concurrency",
-      "source": "./skills/swift-concurrency",
+      "source": "./skills/framework/swift-concurrency",
       "description": "Swift Concurrency patterns — async/await, actors, tasks, Sendable conformance.",
       "category": "framework",
       "tags": [
@@ -241,7 +241,7 @@
     },
     {
       "name": "promptify",
-      "source": "./skills/promptify",
+      "source": "./skills/agent/promptify",
       "description": "Transform user requests into detailed, precise prompts for AI models.",
       "category": "agent",
       "tags": [
@@ -256,7 +256,7 @@
     },
     {
       "name": "agent-add-rule",
-      "source": "./skills/agent-add-rule",
+      "source": "./skills/agent/agent-add-rule",
       "description": "Add rules, conventions, or instructions to the project's agent configuration.",
       "category": "agent",
       "tags": [
@@ -270,7 +270,7 @@
     },
     {
       "name": "agent-init-deep",
-      "source": "./skills/agent-init-deep",
+      "source": "./skills/agent/agent-init-deep",
       "description": "Initialize or migrate to nested CLAUDE.md structure for progressive disclosure.",
       "category": "agent",
       "tags": [
@@ -284,7 +284,7 @@
     },
     {
       "name": "agent-skill-creator",
-      "source": "./skills/agent-skill-creator",
+      "source": "./skills/agent/agent-skill-creator",
       "description": "Guide for creating effective, portable skills that extend Claude's capabilities with specialized knowledge, workflows, and tool integrations.",
       "category": "agent",
       "tags": [
@@ -300,7 +300,7 @@
   "drafts": [
     {
       "name": "platform-mobile",
-      "source": "./skills/_drafts/platform-mobile",
+      "source": "./skills/_drafts/platform/platform-mobile",
       "description": "Cross-platform mobile development patterns — navigation, gestures, offline, performance.",
       "category": "platform",
       "tags": [
@@ -314,7 +314,7 @@
     },
     {
       "name": "tech-ios",
-      "source": "./skills/_drafts/tech-ios",
+      "source": "./skills/_drafts/framework/tech-ios",
       "description": "iOS and Swift development patterns.",
       "category": "framework",
       "tags": [
@@ -328,7 +328,7 @@
     },
     {
       "name": "tech-android",
-      "source": "./skills/_drafts/tech-android",
+      "source": "./skills/_drafts/framework/tech-android",
       "description": "Android and Kotlin development patterns — Compose, architecture, Play Store.",
       "category": "framework",
       "tags": [
@@ -341,7 +341,7 @@
     },
     {
       "name": "tech-react-native",
-      "source": "./skills/_drafts/tech-react-native",
+      "source": "./skills/_drafts/framework/tech-react-native",
       "description": "React Native development patterns — Expo, navigation, native modules.",
       "category": "framework",
       "tags": [
@@ -354,7 +354,7 @@
     },
     {
       "name": "tech-prisma",
-      "source": "./skills/_drafts/tech-prisma",
+      "source": "./skills/_drafts/framework/tech-prisma",
       "description": "Prisma ORM schema design, queries, relations, and migrations.",
       "category": "framework",
       "tags": [
@@ -367,7 +367,7 @@
     },
     {
       "name": "tech-tanstack-router",
-      "source": "./skills/_drafts/tech-tanstack-router",
+      "source": "./skills/_drafts/framework/tech-tanstack-router",
       "description": "TanStack Router patterns for type-safe file-based routing, loaders, and navigation.",
       "category": "framework",
       "tags": [
@@ -380,7 +380,7 @@
     },
     {
       "name": "tech-tanstack-form",
-      "source": "./skills/_drafts/tech-tanstack-form",
+      "source": "./skills/_drafts/framework/tech-tanstack-form",
       "description": "TanStack Form patterns for type-safe form state, validation, and field arrays.",
       "category": "framework",
       "tags": [
@@ -393,7 +393,7 @@
     },
     {
       "name": "design",
-      "source": "./skills/_drafts/design",
+      "source": "./skills/_drafts/design/design",
       "description": "General design principles — hierarchy, spacing, color, typography.",
       "category": "design",
       "tags": [
@@ -404,7 +404,7 @@
     },
     {
       "name": "design-mobile",
-      "source": "./skills/_drafts/design-mobile",
+      "source": "./skills/_drafts/design/design-mobile",
       "description": "Mobile-specific visual design — touch targets, gestures, platform conventions.",
       "category": "design",
       "tags": [

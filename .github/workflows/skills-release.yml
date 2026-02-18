@@ -28,9 +28,9 @@ jobs:
       - name: Detect changed skills
         id: detect
         run: |
-          CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'skills/*/SKILL.md' 'skills/*/rules/' 'skills/*/references/' \
+          CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'skills/*/*/SKILL.md' 'skills/*/*/rules/' 'skills/*/*/references/' \
             | grep -v '_drafts' \
-            | sed -n 's|^skills/\([^/]*\)/.*|\1|p' \
+            | sed -n 's|^skills/[^/]*/\([^/]*\)/.*|\1|p' \
             | sort -u \
             | tr '\n' ' ')
           echo "skills=${CHANGED}" >> "$GITHUB_OUTPUT"
@@ -52,7 +52,7 @@ jobs:
           index = skills.each_with_object({}) { |s, h| h[s['name']] = s }
 
           # Add missing entries for active skills
-          Dir.glob('skills/*/SKILL.md').reject { |f| f.include?('_drafts') }.each do |path|
+          Dir.glob('skills/*/*/SKILL.md').reject { |f| f.include?('_drafts') }.each do |path|
             content = File.read(path)
             next unless content =~ /\\A---\\n(.*?)\\n---\\n/m
             data = YAML.safe_load(\$1, permitted_classes: [Symbol]) || {}
@@ -61,11 +61,12 @@ jobs:
 
             unless index[name]
               meta = data['metadata'] || {}
+              category = meta['category'] || 'universal'
               entry = {
                 'name' => name,
-                'source' => \"./skills/#{name}\",
+                'source' => \"./skills/#{category}/#{name}\",
                 'description' => data['description'].to_s,
-                'category' => meta['category'] || 'universal',
+                'category' => category,
                 'tags' => meta['tags'] || [],
                 'status' => meta['status'] || 'ready',
                 'version' => meta['version'] || 1
@@ -76,7 +77,7 @@ jobs:
           end
 
           # Remove entries for deleted skills
-          active = Dir.glob('skills/*/SKILL.md').reject { |f| f.include?('_drafts') }.map { |f| File.basename(File.dirname(f)) }
+          active = Dir.glob('skills/*/*/SKILL.md').reject { |f| f.include?('_drafts') }.map { |f| File.basename(File.dirname(f)) }
           removed = skills.reject { |s| active.include?(s['name']) }
           removed.each { |s| puts \"Removed #{s['name']} from marketplace.json\" }
           skills.reject! { |s| !active.include?(s['name']) }
@@ -93,9 +94,9 @@ jobs:
           NAMES=""
 
           for SKILL in $SKILLS; do
-            SKILL_PATH="skills/${SKILL}/SKILL.md"
-            if [ ! -f "$SKILL_PATH" ]; then
-              echo "::warning::Skill file not found: $SKILL_PATH"
+            SKILL_PATH=$(find skills -path "*/${SKILL}/SKILL.md" -not -path "*/_drafts/*" | head -1)
+            if [ -z "$SKILL_PATH" ] || [ ! -f "$SKILL_PATH" ]; then
+              echo "::warning::Skill file not found: ${SKILL}"
               continue
             fi
 
@@ -123,7 +124,7 @@ jobs:
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add skills/*/SKILL.md marketplace.json
+          git add skills/*/*/SKILL.md marketplace.json
           git commit -m "chore: release ${TRIMMED}"
 
           for TAG in $TAGS; do

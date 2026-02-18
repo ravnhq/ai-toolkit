@@ -36,9 +36,9 @@ if [[ -z "$SKILL_NAME" ]]; then
   error "Usage: $0 <skill-name> [build]\nExample: $0 core-coding-standards"
 fi
 
-SKILL_PATH="skills/${SKILL_NAME}/SKILL.md"
-if [[ ! -f "$SKILL_PATH" ]]; then
-  error "Skill not found: ${SKILL_NAME} (expected ${SKILL_PATH})"
+SKILL_PATH=$(find skills -path "*/${SKILL_NAME}/SKILL.md" -not -path "*/_drafts/*" | head -1)
+if [[ -z "$SKILL_PATH" || ! -f "$SKILL_PATH" ]]; then
+  error "Skill not found: ${SKILL_NAME}"
 fi
 
 if [[ -n "$SET_BUILD" && ! "$SET_BUILD" =~ ^[1-9][0-9]*$ ]]; then

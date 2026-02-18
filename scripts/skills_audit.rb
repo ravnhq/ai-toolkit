@@ -8,7 +8,7 @@ require "json"
 
 ROOT = Pathname.new(__dir__).join("..").expand_path
 SKILL_FILES = Dir.glob(ROOT.join("skills/**/SKILL.md").to_s).sort
-ACTIVE_SKILL_FILES = Dir.glob(ROOT.join("skills/*/SKILL.md").to_s).sort
+ACTIVE_SKILL_FILES = Dir.glob(ROOT.join("skills/*/*/SKILL.md").to_s).sort
 
 ALLOWED_FRONTMATTER_KEYS = Set.new(%w[name description license allowed-tools compatibility metadata]).freeze
 NAME_PATTERN = /\A[a-z0-9]+(?:-[a-z0-9]+)*\z/

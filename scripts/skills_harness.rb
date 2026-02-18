@@ -5,7 +5,7 @@ require "yaml"
 require "pathname"
 
 ROOT = Pathname.new(__dir__).join("..").expand_path
-ACTIVE_SKILL_FILES = Dir.glob(ROOT.join("skills/*/SKILL.md").to_s).sort
+ACTIVE_SKILL_FILES = Dir.glob(ROOT.join("skills/*/*/SKILL.md").to_s).sort
 
 STOPWORDS = %w[
   the and for with from this that these those use when users say your about into over under
