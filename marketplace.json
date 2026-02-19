@@ -311,6 +311,21 @@
       ],
       "status": "ready",
       "version": 1
+    },
+    {
+      "name": "rewrite-commit-history",
+      "source": "./skills/assistant/rewrite-commit-history",
+      "description": "Rewrite a feature branch's commit history into clean conventional commits.",
+      "category": "assistant",
+      "tags": [
+        "git",
+        "commits",
+        "history",
+        "conventional-commits",
+        "rewrite"
+      ],
+      "status": "ready",
+      "version": 1
     }
   ],
   "drafts": [
