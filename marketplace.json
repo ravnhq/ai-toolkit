@@ -241,9 +241,9 @@
     },
     {
       "name": "promptify",
-      "source": "./skills/agent/promptify",
+      "source": "./skills/assistant/promptify",
       "description": "Transform user requests into detailed, precise prompts for AI models.",
-      "category": "agent",
+      "category": "assistant",
       "tags": [
         "agent",
         "prompt-engineering",
@@ -256,9 +256,9 @@
     },
     {
       "name": "agent-add-rule",
-      "source": "./skills/agent/agent-add-rule",
+      "source": "./skills/assistant/agent-add-rule",
       "description": "Add rules, conventions, or instructions to the project's agent configuration.",
-      "category": "agent",
+      "category": "assistant",
       "tags": [
         "agent",
         "rules",
@@ -270,9 +270,9 @@
     },
     {
       "name": "agent-init-deep",
-      "source": "./skills/agent/agent-init-deep",
+      "source": "./skills/assistant/agent-init-deep",
       "description": "Initialize or migrate to nested CLAUDE.md structure for progressive disclosure.",
-      "category": "agent",
+      "category": "assistant",
       "tags": [
         "agent",
         "claude-md",
@@ -284,9 +284,9 @@
     },
     {
       "name": "agent-skill-creator",
-      "source": "./skills/agent/agent-skill-creator",
+      "source": "./skills/assistant/agent-skill-creator",
       "description": "Guide for creating effective, portable skills that extend Claude's capabilities with specialized knowledge, workflows, and tool integrations.",
-      "category": "agent",
+      "category": "assistant",
       "tags": [
         "agent",
         "skills",

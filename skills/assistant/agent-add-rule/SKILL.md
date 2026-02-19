@@ -8,7 +8,7 @@ description: 'Add a new rule, convention, or instruction to the project''s agent
 
   '
 metadata:
-  category: agent
+  category: assistant
   tags:
   - agent
   - rules

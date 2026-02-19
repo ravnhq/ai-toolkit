@@ -4,7 +4,7 @@ description: Transform user requests into detailed, precise prompts for AI model
   Use when users say 'promptify', 'promptify this', or explicitly request prompt engineering
   or improvement of their request for better AI responses.
 metadata:
-  category: agent
+  category: assistant
   tags:
   - agent
   - prompt-engineering

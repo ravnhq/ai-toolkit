@@ -38,7 +38,7 @@ skills/
 ├── platform/      # platform-frontend, platform-backend, platform-database, platform-testing, platform-cli
 ├── framework/     # tech-react, tech-trpc, tech-drizzle, tech-vitest, swift-concurrency
 ├── design/        # design-frontend, design-accessibility, liquid-glass-ios
-├── agent/         # agent-add-rule, agent-init-deep, agent-skill-creator, promptify
+├── assistant/     # agent-add-rule, agent-init-deep, agent-skill-creator, promptify
 └── _drafts/       # scaffold skills (in development), also categorized
 ```
 
@@ -47,7 +47,7 @@ skills/
 2. **Platform** - generic patterns (frontend, backend, database, testing, cli)
 3. **Framework** - extend platform skills with specific framework APIs
 4. **Design** - visual and UX patterns
-5. **Agent** - agent workflow tools
+5. **Assistant** - agent workflow tools
 
 ### Skill Structure
 
@@ -69,7 +69,7 @@ Every SKILL.md MUST have:
 - `description` - what it does + trigger phrases for auto-invocation
 
 Required inside `metadata`:
-- `category` - one of: universal, platform, framework, design, agent
+- `category` - one of: universal, platform, framework, design, assistant
 - `tags` - array of keywords for discoverability
 - `status` - ready or scaffold
 

@@ -9,7 +9,7 @@ description: 'Guide for creating effective, portable skills that extend Claude''
   "skill structure", "skill triggers".'
 license: Complete terms in LICENSE.txt
 metadata:
-  category: agent
+  category: assistant
   tags:
   - agent
   - skills

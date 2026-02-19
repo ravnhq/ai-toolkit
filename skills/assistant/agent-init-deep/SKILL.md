@@ -9,7 +9,7 @@ description: 'Initialize or migrate to nested CLAUDE.md structure for progressiv
 
   '
 metadata:
-  category: agent
+  category: assistant
   tags:
   - agent
   - claude-md
