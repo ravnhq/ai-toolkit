@@ -211,7 +211,7 @@
     },
     {
       "name": "figma-to-react-components",
-      "source": "./skills/figma-to-react-components",
+      "source": "./skills/design/figma-to-react-components",
       "description": "Convert Figma component designs into production-ready React implementations with design token integration, accessibility via React Aria, and comprehensive documentation. Use when building React components from Figma designs, generating component implementation specs, or bridging design-to-development workflows.",
       "category": "design",
       "tags": [
