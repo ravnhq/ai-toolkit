@@ -31,6 +31,28 @@ git status --porcelain
 
 If output is non-empty: stop. Tell the user to stash or commit pending changes first.
 
+Then detect the parent branch. The entire rewrite depends on using the correct base — a wrong base means wrong diffs and wrong commits.
+
+```bash
+git log --oneline --decorate --graph --all | head -20
+```
+
+Check if the branch has commits relative to `main`:
+
+```bash
+git log --oneline main..HEAD 2>/dev/null | wc -l
+```
+
+If the count is 0 or the command fails, the branch was likely forked from something other than `main`. Ask the user to confirm the target branch before proceeding. Do not assume `main`.
+
+Common alternatives: `master`, `develop`, `staging`, `origin/main`.
+
+Once confirmed, set the base branch for all subsequent steps:
+
+```bash
+BASE=<confirmed-branch>  # e.g. BASE=main or BASE=develop
+```
+
 ### Step 2 — Backup
 
 Create a timestamped backup branch at the current HEAD before touching anything.
@@ -48,8 +70,13 @@ Confirm backup was created. This is the restore point if anything goes wrong.
 Read the full diff and log between the base branch and HEAD.
 
 ```bash
-BASE=${BASE:-main}
 git log --oneline ${BASE}..HEAD
+git diff --stat ${BASE}...HEAD
+```
+
+For large branches (many files), start with `--stat` to see the scope before reading the full diff. Then read individual files as needed to understand the changes in depth.
+
+```bash
 git diff ${BASE}...HEAD
 ```
 
@@ -83,6 +110,8 @@ Example plan format:
    Files: .env.example
 ```
 
+Before confirming, verify every file that appears in `git diff --stat ${BASE}...HEAD` is assigned to at least one commit in the plan. Unassigned files will cause the tree parity check to fail in Step 6.
+
 ### Step 5 — Confirm
 
 Wait for user approval before executing. Accept:
@@ -99,7 +128,6 @@ Do not proceed until the user confirms the plan.
 Soft-reset to the merge base, then create each commit one at a time with selective staging.
 
 ```bash
-BASE=${BASE:-main}
 git reset --soft $(git merge-base ${BASE} HEAD)
 ```
 
@@ -115,7 +143,8 @@ After all commits, verify tree parity against the backup:
 
 ```bash
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
-# Find the backup branch (most recent for this branch)
+# Find the backup branch (most recent for this branch).
+# sort works correctly here because the epoch timestamp is always 10 digits (valid until 2286).
 BACKUP=$(git branch --list "backup/${BRANCH}-*" | sort | tail -1 | tr -d ' ')
 git diff HEAD ${BACKUP}
 ```
