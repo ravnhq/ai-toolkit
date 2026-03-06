@@ -331,6 +331,22 @@
       "version": 1
     },
     {
+      "name": "localize-ios",
+      "source": "./skills/framework/localize-ios",
+      "description": "Localizes UIKit Views and ViewControllers and SwiftUI Views. Extracts hardcoded text, generates camelCase keys, replaces literals with String(localized:) or LocalizedStringKey, and creates or updates Localizable.xcstrings.",
+      "category": "framework",
+      "tags": [
+        "ios",
+        "swift",
+        "localization",
+        "xcstrings",
+        "swiftui",
+        "uikit"
+      ],
+      "status": "ready",
+      "version": 1
+    },
+    {
       "name": "tech-android",
       "source": "./skills/framework/tech-android",
       "description": "Android and Kotlin development patterns — Compose, architecture, coroutines, Room, navigation, Hilt.",
