@@ -394,6 +394,22 @@
       ],
       "status": "ready",
       "version": 2
+    },
+    {
+      "name": "agent-skills-manager",
+      "source": "./skills/assistant/agent-skills-manager",
+      "description": "Manage AI skills from the Ravn AI Toolkit via ravencito CLI — install, update, remove, search, and configure skills for any project. Use when installing AI skills, updating skills, browsing available skills, configuring skill sets, or troubleshooting ravencito setup.",
+      "category": "assistant",
+      "tags": [
+        "agent",
+        "skills",
+        "cli",
+        "ravencito",
+        "installation",
+        "configuration"
+      ],
+      "status": "ready",
+      "version": 1
     }
   ],
   "drafts": [

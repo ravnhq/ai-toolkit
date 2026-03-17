@@ -2,12 +2,41 @@
 
 [![Skills Quality](https://github.com/ravnhq/ai-toolkit/actions/workflows/skills-quality.yml/badge.svg)](https://github.com/ravnhq/ai-toolkit/actions/workflows/skills-quality.yml)
 
-Modular "skills" — portable rule packs that teach AI coding agents (Claude Code, Cursor, etc.) best practices for specific technologies — so every project gets consistent, expert-level guidance without copy-pasting prompts. **22 ready skills** across five layers.
+Modular "skills" — portable rule packs that teach AI coding agents (Claude Code, Cursor, etc.) best practices for specific technologies — so every project gets consistent, expert-level guidance without copy-pasting prompts. **26 ready skills** across five layers.
 
 ## Quick Start
 
+### Using ravencito (recommended)
+
+Install the `ravencito` CLI for interactive skill management, auto-updates, and team sync:
+
 ```bash
-# Install a skill into your project (grabs the latest version by default)
+# Install ravencito
+curl -fsSL https://raw.githubusercontent.com/ravnhq/ai-toolkit/main/cli/install.sh | bash
+
+# Browse all skills interactively
+ravencito install
+
+# Install skills directly
+ravencito install tech-react tech-drizzle
+
+# Install a full stack recipe in one command
+ravencito install --recipe fullstack-ts
+
+# Set global defaults (apply to all projects)
+ravencito install --global core-coding-standards lang-typescript
+
+# Search, preview, and manage
+ravencito search testing
+ravencito info tech-vitest
+ravencito status
+ravencito update
+```
+
+### Using npx
+
+```bash
+# Install a skill into your project
 npx skills add ravnhq/ai-toolkit -s core-coding-standards
 
 # See every skill available in the toolkit
@@ -45,6 +74,17 @@ liquid-glass-ios               ← standalone
 
 ### Stack Recipes
 
+With ravencito, install entire stacks in one command. Dependencies are resolved automatically.
+
+| Recipe | Skills | Command |
+|--------|--------|---------|
+| **Full-stack TypeScript** | lang-typescript, tech-react, tech-trpc, tech-drizzle, tech-vitest, design-frontend | `ravencito install --recipe fullstack-ts` |
+| **iOS / Swift** | swift-concurrency, liquid-glass-ios | `ravencito install --recipe ios-swift` |
+| **Backend API** | lang-typescript, tech-trpc, tech-drizzle, platform-testing | `ravencito install --recipe backend-api` |
+
+<details>
+<summary>Using npx instead</summary>
+
 **Full-stack TypeScript (React + tRPC + Drizzle)**
 ```bash
 npx skills add ravnhq/ai-toolkit -s lang-typescript
@@ -68,6 +108,7 @@ npx skills add ravnhq/ai-toolkit -s tech-trpc
 npx skills add ravnhq/ai-toolkit -s tech-drizzle
 npx skills add ravnhq/ai-toolkit -s platform-testing
 ```
+</details>
 
 ## Available Skills
 
@@ -97,6 +138,8 @@ npx skills add ravnhq/ai-toolkit -s platform-testing
 | `tech-drizzle` | Drizzle ORM schema design, relational queries, and migration patterns. | `platform-database` |
 | `tech-vitest` | Vitest-specific testing utilities — vi.mock, vi.fn, fake timers, MSW. | `platform-testing` |
 | `swift-concurrency` | Swift Concurrency patterns — async/await, actors, tasks, Sendable conformance. | — |
+| `localize-ios` | Localizes UIKit and SwiftUI views — extracts text, generates keys, creates Localizable.xcstrings. | — |
+| `tech-android` | Android and Kotlin development patterns — Compose, architecture, coroutines, Room, Hilt. | `platform-mobile` |
 
 ### Design
 
@@ -116,7 +159,24 @@ npx skills add ravnhq/ai-toolkit -s platform-testing
 | `agent-init-deep` | Initialize or migrate to nested CLAUDE.md structure for progressive disclosure. | — |
 | `agent-skill-creator` | Guide for creating effective, portable skills that extend Claude's capabilities. | — |
 | `agent-pr-creator` | Analyzes git diffs and commit history to create pull requests via gh CLI. | — |
+| `pr-comments-address` | Reads open PR review comments, triages them, applies fixes, and drafts replies. | — |
 | `rewrite-commit-history` | Rewrite a feature branch's commit history into clean conventional commits. | — |
+| `agent-skills-manager` | Manage AI skills via ravencito CLI — install, update, search, and configure. | — |
+
+## Team Sync
+
+When using ravencito, skill choices are tracked in a `.ravencitorc` file you can commit to git:
+
+```bash
+# One dev installs skills
+ravencito install tech-react tech-drizzle
+git add .ravencitorc && git commit -m "add AI skills config"
+
+# Teammates clone and sync
+ravencito sync
+```
+
+Run `ravencito doctor` to check for orphaned skills, missing deps, or version mismatches.
 
 ## Versioning
 

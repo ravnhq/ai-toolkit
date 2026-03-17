@@ -1,0 +1,7 @@
+# Full-stack TypeScript (React + tRPC + Drizzle)
+lang-typescript
+tech-react
+tech-trpc
+tech-drizzle
+tech-vitest
+design-frontend
