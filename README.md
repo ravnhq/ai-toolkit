@@ -1,5 +1,9 @@
 # Ravn AI Toolkit
 
+<p align="center">
+  <img src="docs/assets/images/ravencito.png" alt="Ravencito" width="200" />
+</p>
+
 [![Skills Quality](https://github.com/ravnhq/ai-toolkit/actions/workflows/skills-quality.yml/badge.svg)](https://github.com/ravnhq/ai-toolkit/actions/workflows/skills-quality.yml)
 
 Modular "skills" — portable rule packs that teach AI coding agents (Claude Code, Cursor, etc.) best practices for specific technologies — so every project gets consistent, expert-level guidance without copy-pasting prompts. **26 ready skills** across five layers, with two CLI options (bash and TypeScript).
