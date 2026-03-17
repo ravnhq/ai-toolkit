@@ -177,17 +177,11 @@ Both layers merge at runtime. Project versions take priority on conflicts.
 
 ## Examples
 
-### Install a Full-Stack TypeScript Setup
+### Positive Trigger
 
-User: "Set up AI skills for my React + tRPC + Drizzle project"
+User: "Install AI skills for my React + tRPC + Drizzle project"
 
 Expected behavior: Run `ravencito install --recipe fullstack-ts` in the project directory. This installs all 6 skills with their dependencies resolved automatically.
-
-### Update All Skills After Toolkit Release
-
-User: "Update my AI skills to the latest version"
-
-Expected behavior: Run `ravencito update` to pull the latest toolkit and refresh all installed project and global skills.
 
 ### Non-Trigger
 
