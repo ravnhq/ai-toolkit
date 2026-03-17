@@ -3,9 +3,7 @@ import {
   search,
   select,
   confirm as inquirerConfirm,
-  input,
 } from "@inquirer/prompts";
-import { basename } from "node:path";
 import chalk from "chalk";
 import type { Skill } from "../core/registry.js";
 import { registryResolveDeps } from "../core/registry.js";
@@ -142,34 +140,33 @@ export async function pickCategory(
   });
 }
 
+export type InstallTarget = "project-claude" | "project-cursor" | "global-claude" | "global-cursor";
+
 /**
- * Pick install directory for the project.
+ * Pick install target: project or global, Claude or Cursor.
  */
-export async function pickInstallDir(): Promise<string> {
-  const cwd = process.cwd();
-  const choice = await select({
+export async function pickInstallTarget(): Promise<InstallTarget> {
+  return select<InstallTarget>({
     message: "Where should skills be installed?",
     choices: [
       {
-        name: `. (current directory: ${basename(cwd)})`,
-        value: ".",
+        name: ".claude/rules  (Claude Code — this project)",
+        value: "project-claude",
       },
       {
-        name: ".cursor/rules  (works with Cursor + Claude Code)",
-        value: ".cursor/rules",
+        name: ".cursor/rules  (Cursor — this project)",
+        value: "project-cursor",
       },
       {
-        name: ".claude/rules  (Claude Code only)",
-        value: ".claude/rules",
+        name: "~/.claude/rules  (Claude Code — global)",
+        value: "global-claude",
       },
-      { name: "Custom path", value: "__custom__" },
+      {
+        name: "~/.cursor/rules  (Cursor — global)",
+        value: "global-cursor",
+      },
     ],
   });
-
-  if (choice === "__custom__") {
-    return input({ message: "Enter path:" });
-  }
-  return choice;
 }
 
 /**

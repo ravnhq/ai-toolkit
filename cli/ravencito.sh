@@ -31,6 +31,7 @@ show_help() {
     printf "  ravencito remove <skill>           Uninstall a skill\n"
     printf "  ravencito sync                     Sync team skills from .ravencitorc\n"
     printf "  ravencito doctor                   Health check\n"
+    printf "  ravencito shower-thought           Random shower thought from Dave\n"
     printf "  ravencito help                     Show this banner + help\n"
     printf "\n"
     printf "${WHITE}Options:${NC}\n"
@@ -118,6 +119,10 @@ main() {
         doctor)
             source "${SCRIPT_DIR}/lib/commands/doctor.sh"
             cmd_doctor "$@"
+            ;;
+        shower-thought|shower-thoughts)
+            source "${SCRIPT_DIR}/lib/commands/shower-thought.sh"
+            cmd_shower_thought "$@"
             ;;
         *)
             error "Unknown command: $cmd"

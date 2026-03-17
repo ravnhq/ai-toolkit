@@ -215,6 +215,10 @@ install_project() {
     project_config_set "skills" "$current_list"
     echo ""
     success "Skills installed! ravencito is ready to help."
+
+    # Easter egg: show a random Dave shower thought after install
+    source "${SCRIPT_DIR}/lib/commands/shower-thought.sh"
+    cmd_shower_thought
 }
 
 # Install from a recipe file

@@ -13,6 +13,8 @@ _ravencito() {
         'remove:Uninstall a skill'
         'sync:Sync team skills from .ravencitorc'
         'doctor:Health check'
+        'shower-thought:Random shower thought from Dave'
+        'shower-thoughts:Random shower thought from Dave'
     )
 
     local -a global_opts

@@ -14,6 +14,21 @@ import { cmdUpdate } from "./commands/update.js";
 import { cmdRemove } from "./commands/remove.js";
 import { cmdSync } from "./commands/sync.js";
 import { cmdDoctor } from "./commands/doctor.js";
+import { cmdShowerThought } from "./commands/shower-thought.js";
+
+// Handle --logo before parsing
+if (process.argv.includes("--logo")) {
+  showLogo();
+  process.exit(0);
+}
+
+// No args → interactive TUI
+if (process.argv.length <= 2) {
+  ensureConfigDir();
+  await autoUpdateCheck();
+  await cmdInstall([]);
+  process.exit(0);
+}
 
 const program = new Command();
 
@@ -21,21 +36,9 @@ program
   .name("ravencito")
   .description("AI Skills Manager")
   .version(RAVENCITO_VERSION, "-v, --version")
-  .option("--logo", "Show full-size ravencito art")
   .hook("preAction", () => {
     ensureConfigDir();
   });
-
-// No-args → interactive TUI
-program.action(async (opts) => {
-  if (opts.logo) {
-    showLogo();
-    return;
-  }
-  // Default: interactive install
-  await autoUpdateCheck();
-  await cmdInstall([]);
-});
 
 program
   .command("help")
@@ -47,14 +50,22 @@ program
 
 program
   .command("install [skills...]")
-  .description("Install skills to current project")
-  .option("-g, --global", "Install as global defaults")
+  .description("Install skills to a target location")
+  .option("-g, --global", "Install to global (Claude Code by default)")
+  .option("--claude", "Target Claude Code (.claude/rules)")
+  .option("--cursor", "Target Cursor (.cursor/rules)")
+  .option("--global-claude", "Install to ~/.claude/rules")
+  .option("--global-cursor", "Install to ~/.cursor/rules")
   .option("-r, --recipe <name>", "Install a predefined stack recipe")
   .option("--no-deps", "Skip automatic dependency resolution")
   .action(async (skills: string[], opts) => {
     await autoUpdateCheck();
     const args: string[] = [];
     if (opts.global) args.push("--global");
+    if (opts.claude) args.push("--claude");
+    if (opts.cursor) args.push("--cursor");
+    if (opts.globalClaude) args.push("--global-claude");
+    if (opts.globalCursor) args.push("--global-cursor");
     if (opts.recipe) args.push("--recipe", opts.recipe);
     if (opts.deps === false) args.push("--no-deps");
     args.push(...skills);
@@ -120,6 +131,14 @@ program
   .description("Health check")
   .action(() => {
     cmdDoctor();
+  });
+
+program
+  .command("shower-thought")
+  .alias("shower-thoughts")
+  .description("Random shower thought from Dave")
+  .action(() => {
+    cmdShowerThought();
   });
 
 program.parseAsync().catch((err: unknown) => {

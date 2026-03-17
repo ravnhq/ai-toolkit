@@ -7,7 +7,7 @@ _ravencito() {
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    commands="help install update list search info status remove sync doctor"
+    commands="help install update list search info status remove sync doctor shower-thought shower-thoughts"
 
     # First argument: command
     if [[ ${COMP_CWORD} -eq 1 ]]; then
