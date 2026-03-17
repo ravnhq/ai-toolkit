@@ -7,7 +7,7 @@ set -euo pipefail
 # Resolve script location
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export RAVENCITO_DIR="${HOME}/.ravencito"
-export RAVENCITO_VERSION="1.0.0"
+export RAVENCITO_VERSION="0.1.0"
 
 # Source core libraries
 source "${SCRIPT_DIR}/lib/core/utils.sh"
