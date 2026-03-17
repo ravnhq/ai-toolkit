@@ -2,11 +2,11 @@
 
 [![Skills Quality](https://github.com/ravnhq/ai-toolkit/actions/workflows/skills-quality.yml/badge.svg)](https://github.com/ravnhq/ai-toolkit/actions/workflows/skills-quality.yml)
 
-Modular "skills" — portable rule packs that teach AI coding agents (Claude Code, Cursor, etc.) best practices for specific technologies — so every project gets consistent, expert-level guidance without copy-pasting prompts. **26 ready skills** across five layers.
+Modular "skills" — portable rule packs that teach AI coding agents (Claude Code, Cursor, etc.) best practices for specific technologies — so every project gets consistent, expert-level guidance without copy-pasting prompts. **26 ready skills** across five layers, with two CLI options (bash and TypeScript).
 
 ## Quick Start
 
-### Using ravencito (recommended)
+### Using ravencito — bash CLI (recommended)
 
 Install the `ravencito` CLI for interactive skill management, auto-updates, and team sync:
 
@@ -14,7 +14,7 @@ Install the `ravencito` CLI for interactive skill management, auto-updates, and 
 # Install ravencito
 curl -fsSL https://raw.githubusercontent.com/ravnhq/ai-toolkit/main/cli/install.sh | bash
 
-# Browse all skills interactively
+# Browse all skills interactively (TUI — uses fzf if available)
 ravencito install
 
 # Install skills directly
@@ -28,9 +28,36 @@ ravencito install --global core-coding-standards lang-typescript
 
 # Search, preview, and manage
 ravencito search testing
+ravencito list                    # browse available skills by category
 ravencito info tech-vitest
 ravencito status
 ravencito update
+ravencito remove tech-vitest
+ravencito doctor                  # health check for orphaned skills, missing deps
+ravencito shower-thought          # random shower thought from Dave
+```
+
+On first install, ravencito prompts you to choose an install target:
+
+1. `.cursor/rules` — works with Cursor + Claude Code
+2. `.claude/rules` — Claude Code only
+3. Custom path
+
+### Using ravencito — TypeScript CLI
+
+A TypeScript rewrite lives in `cli-ts/` with the same commands plus explicit install target flags:
+
+```bash
+cd cli-ts && npm install && npm run build
+
+# Install with explicit target flags
+ravencito install --claude tech-react         # project-level → .claude/rules
+ravencito install --cursor tech-react         # project-level → .cursor/rules
+ravencito install --global-claude lang-typescript  # global, Claude Code
+ravencito install --global-cursor lang-typescript  # global, Cursor
+
+# Run tests
+npm test
 ```
 
 ### Using npx
@@ -65,7 +92,11 @@ core-coding-standards          ← universal baseline
 │   └── tech-vitest
 └── platform-cli
 
+platform-mobile (draft)        ← framework-agnostic mobile patterns
+└── tech-android
+
 swift-concurrency              ← standalone (no parent)
+localize-ios                   ← standalone
 design-frontend                ← standalone
 design-accessibility           ← standalone
 figma-to-react-components      ← standalone
@@ -76,11 +107,11 @@ liquid-glass-ios               ← standalone
 
 With ravencito, install entire stacks in one command. Dependencies are resolved automatically.
 
-| Recipe | Skills | Command |
-|--------|--------|---------|
+| Recipe                    | Skills                                                                             | Command                                   |
+|---------------------------|------------------------------------------------------------------------------------|-------------------------------------------|
 | **Full-stack TypeScript** | lang-typescript, tech-react, tech-trpc, tech-drizzle, tech-vitest, design-frontend | `ravencito install --recipe fullstack-ts` |
-| **iOS / Swift** | swift-concurrency, liquid-glass-ios | `ravencito install --recipe ios-swift` |
-| **Backend API** | lang-typescript, tech-trpc, tech-drizzle, platform-testing | `ravencito install --recipe backend-api` |
+| **iOS / Swift**           | swift-concurrency, liquid-glass-ios                                                | `ravencito install --recipe ios-swift`    |
+| **Backend API**           | lang-typescript, tech-trpc, tech-drizzle, platform-testing                         | `ravencito install --recipe backend-api`  |
 
 <details>
 <summary>Using npx instead</summary>
@@ -114,54 +145,54 @@ npx skills add ravnhq/ai-toolkit -s platform-testing
 
 ### Universal
 
-| Skill | Description | Extends |
-|-------|-------------|---------|
-| `core-coding-standards` | Universal code quality rules — KISS, DRY, clean code, code review. Base skill every project should include. | — |
-| `lang-typescript` | TypeScript language patterns and type safety rules — strict mode, no any, discriminated unions. | `core-coding-standards` |
+| Skill                   | Description                                                                                                 | Extends                 |
+|-------------------------|-------------------------------------------------------------------------------------------------------------|-------------------------|
+| `core-coding-standards` | Universal code quality rules — KISS, DRY, clean code, code review. Base skill every project should include. | —                       |
+| `lang-typescript`       | TypeScript language patterns and type safety rules — strict mode, no any, discriminated unions.             | `core-coding-standards` |
 
 ### Platform
 
-| Skill | Description | Extends |
-|-------|-------------|---------|
-| `platform-frontend` | Framework-agnostic frontend architecture — state management, components, data fetching. | `core-coding-standards` |
-| `platform-backend` | Server-side architecture and security — API design, error handling, validation, logging. | `core-coding-standards` |
-| `platform-database` | SQL database design, query optimization, and migration safety. | `core-coding-standards` |
-| `platform-testing` | Framework-agnostic testing principles — test philosophy, structure, mocking boundaries. | `core-coding-standards` |
-| `platform-cli` | Design and implementation patterns for building command-line tools with modern UX. | `core-coding-standards` |
+| Skill               | Description                                                                              | Extends                 |
+|---------------------|------------------------------------------------------------------------------------------|-------------------------|
+| `platform-frontend` | Framework-agnostic frontend architecture — state management, components, data fetching.  | `core-coding-standards` |
+| `platform-backend`  | Server-side architecture and security — API design, error handling, validation, logging. | `core-coding-standards` |
+| `platform-database` | SQL database design, query optimization, and migration safety.                           | `core-coding-standards` |
+| `platform-testing`  | Framework-agnostic testing principles — test philosophy, structure, mocking boundaries.  | `core-coding-standards` |
+| `platform-cli`      | Design and implementation patterns for building command-line tools with modern UX.       | `core-coding-standards` |
 
 ### Framework
 
-| Skill | Description | Extends |
-|-------|-------------|---------|
-| `tech-react` | React-specific component, hook, and rendering patterns. | `platform-frontend` |
-| `tech-trpc` | tRPC router architecture, procedure design, and Vertical Slice Architecture patterns. | `platform-backend` |
-| `tech-drizzle` | Drizzle ORM schema design, relational queries, and migration patterns. | `platform-database` |
-| `tech-vitest` | Vitest-specific testing utilities — vi.mock, vi.fn, fake timers, MSW. | `platform-testing` |
-| `swift-concurrency` | Swift Concurrency patterns — async/await, actors, tasks, Sendable conformance. | — |
-| `localize-ios` | Localizes UIKit and SwiftUI views — extracts text, generates keys, creates Localizable.xcstrings. | — |
-| `tech-android` | Android and Kotlin development patterns — Compose, architecture, coroutines, Room, Hilt. | `platform-mobile` |
+| Skill               | Description                                                                                       | Extends             |
+|---------------------|---------------------------------------------------------------------------------------------------|---------------------|
+| `tech-react`        | React-specific component, hook, and rendering patterns.                                           | `platform-frontend` |
+| `tech-trpc`         | tRPC router architecture, procedure design, and Vertical Slice Architecture patterns.             | `platform-backend`  |
+| `tech-drizzle`      | Drizzle ORM schema design, relational queries, and migration patterns.                            | `platform-database` |
+| `tech-vitest`       | Vitest-specific testing utilities — vi.mock, vi.fn, fake timers, MSW.                             | `platform-testing`  |
+| `swift-concurrency` | Swift Concurrency patterns — async/await, actors, tasks, Sendable conformance.                    | —                   |
+| `localize-ios`      | Localizes UIKit and SwiftUI views — extracts text, generates keys, creates Localizable.xcstrings. | —                   |
+| `tech-android`      | Android and Kotlin development patterns — Compose, architecture, coroutines, Room, Hilt.          | `platform-mobile`   |
 
 ### Design
 
-| Skill | Description | Extends |
-|-------|-------------|---------|
-| `design-frontend` | Visual design system patterns for web UIs — layout, responsive, Tailwind tokens. | — |
-| `design-accessibility` | WCAG AA and ARIA best practices — screen readers, keyboard navigation, focus management. | — |
-| `figma-to-react-components` | Convert Figma component designs into production-ready React implementations with design token integration and accessibility. | — |
-| `liquid-glass-ios` | Apple's Liquid Glass design system for iOS 26+ and iPadOS 26+. | — |
+| Skill                       | Description                                                                                                                  | Extends |
+|-----------------------------|------------------------------------------------------------------------------------------------------------------------------|---------|
+| `design-frontend`           | Visual design system patterns for web UIs — layout, responsive, Tailwind tokens.                                             | —       |
+| `design-accessibility`      | WCAG AA and ARIA best practices — screen readers, keyboard navigation, focus management.                                     | —       |
+| `figma-to-react-components` | Convert Figma component designs into production-ready React implementations with design token integration and accessibility. | —       |
+| `liquid-glass-ios`          | Apple's Liquid Glass design system for iOS 26+ and iPadOS 26+.                                                               | —       |
 
 ### Assistant
 
-| Skill | Description | Extends |
-|-------|-------------|---------|
-| `promptify` | Transform user requests into detailed, precise prompts for AI models. | — |
-| `agent-add-rule` | Add rules, conventions, or instructions to the project's agent configuration. | — |
-| `agent-init-deep` | Initialize or migrate to nested CLAUDE.md structure for progressive disclosure. | — |
-| `agent-skill-creator` | Guide for creating effective, portable skills that extend Claude's capabilities. | — |
-| `agent-pr-creator` | Analyzes git diffs and commit history to create pull requests via gh CLI. | — |
-| `pr-comments-address` | Reads open PR review comments, triages them, applies fixes, and drafts replies. | — |
-| `rewrite-commit-history` | Rewrite a feature branch's commit history into clean conventional commits. | — |
-| `agent-skills-manager` | Manage AI skills via ravencito CLI — install, update, search, and configure. | — |
+| Skill                    | Description                                                                      | Extends |
+|--------------------------|----------------------------------------------------------------------------------|---------|
+| `promptify`              | Transform user requests into detailed, precise prompts for AI models.            | —       |
+| `agent-add-rule`         | Add rules, conventions, or instructions to the project's agent configuration.    | —       |
+| `agent-init-deep`        | Initialize or migrate to nested CLAUDE.md structure for progressive disclosure.  | —       |
+| `agent-skill-creator`    | Guide for creating effective, portable skills that extend Claude's capabilities. | —       |
+| `agent-pr-creator`       | Analyzes git diffs and commit history to create pull requests via gh CLI.        | —       |
+| `pr-comments-address`    | Reads open PR review comments, triages them, applies fixes, and drafts replies.  | —       |
+| `rewrite-commit-history` | Rewrite a feature branch's commit history into clean conventional commits.       | —       |
+| `agent-skills-manager`   | Manage AI skills via ravencito CLI — install, update, search, and configure.     | —       |
 
 ## Team Sync
 
@@ -242,4 +273,4 @@ Tips, guides, and deep dives on AI-assisted development — visit the [Ravn AI T
 
 ## In Development
 
-Nine draft skills are under active development in `skills/_drafts/`: `platform-mobile`, `tech-ios`, `tech-android`, `tech-react-native`, `tech-prisma`, `tech-tanstack-router`, `tech-tanstack-form`, `design`, and `design-mobile`. These are scaffolds and not yet production-ready.
+Eight draft skills are under active development in `skills/_drafts/`: `platform-mobile`, `tech-ios`, `tech-react-native`, `tech-prisma`, `tech-tanstack-router`, `tech-tanstack-form`, `design`, and `design-mobile`. These are scaffolds and not yet production-ready.

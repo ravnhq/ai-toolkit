@@ -1,5 +1,6 @@
 import {
   checkbox,
+  input,
   search,
   select,
   confirm as inquirerConfirm,
@@ -140,13 +141,14 @@ export async function pickCategory(
   });
 }
 
-export type InstallTarget = "project-claude" | "project-cursor" | "global-claude" | "global-cursor";
+export type InstallTarget = "project-claude" | "project-cursor" | "global-claude" | "global-cursor" | "custom";
 
 /**
- * Pick install target: project or global, Claude or Cursor.
+ * Pick install target: project or global, Claude or Cursor, or a custom path.
+ * When "custom" is selected, prompts for the path and returns it via the second element.
  */
-export async function pickInstallTarget(): Promise<InstallTarget> {
-  return select<InstallTarget>({
+export async function pickInstallTarget(): Promise<{ target: InstallTarget; customPath?: string }> {
+  const target = await select<InstallTarget>({
     message: "Where should skills be installed?",
     choices: [
       {
@@ -165,8 +167,22 @@ export async function pickInstallTarget(): Promise<InstallTarget> {
         name: "~/.cursor/rules  (Cursor — global)",
         value: "global-cursor",
       },
+      {
+        name: "Custom location…",
+        value: "custom",
+      },
     ],
   });
+
+  if (target === "custom") {
+    const customPath = await input({
+      message: "Enter the target directory path:",
+      validate: (val) => val.trim().length > 0 || "Path cannot be empty",
+    });
+    return { target, customPath: customPath.trim() };
+  }
+
+  return { target };
 }
 
 /**

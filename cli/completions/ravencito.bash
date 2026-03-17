@@ -7,7 +7,7 @@ _ravencito() {
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    commands="help install update list search info status remove sync doctor shower-thought shower-thoughts"
+    commands="help install update list search info status remove sync doctor shower-thought shower-thoughts completions"
 
     # First argument: command
     if [[ ${COMP_CWORD} -eq 1 ]]; then
@@ -20,7 +20,7 @@ _ravencito() {
     case "$cmd" in
         install)
             if [[ "$cur" == -* ]]; then
-                COMPREPLY=($(compgen -W "--global -g --recipe -r --no-deps" -- "$cur"))
+                COMPREPLY=($(compgen -W "--global -g --claude --cursor --global-claude --global-cursor --recipe -r --no-deps" -- "$cur"))
             elif [[ "$prev" == "--recipe" || "$prev" == "-r" ]]; then
                 local recipe_dir="${HOME}/.ravencito/repo/cli/recipes"
                 if [[ -d "$recipe_dir" ]]; then
@@ -44,6 +44,13 @@ _ravencito() {
             ;;
         list)
             COMPREPLY=($(compgen -W "universal platform framework design assistant" -- "$cur"))
+            ;;
+        completions)
+            if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "--shell -s" -- "$cur"))
+            else
+                COMPREPLY=($(compgen -W "zsh bash" -- "$cur"))
+            fi
             ;;
     esac
 }

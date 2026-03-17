@@ -26,7 +26,7 @@ import { copySkill } from "../utils/fs.js";
 import { pickSkills, pickInstallTarget } from "../tui/prompts.js";
 import type { InstallTarget } from "../tui/prompts.js";
 
-export function resolveTargetDir(target: InstallTarget): string {
+export function resolveTargetDir(target: InstallTarget, customPath?: string): string {
   const home = homedir();
   switch (target) {
     case "project-claude":
@@ -37,6 +37,8 @@ export function resolveTargetDir(target: InstallTarget): string {
       return join(home, ".claude", "rules");
     case "global-cursor":
       return join(home, ".cursor", "rules");
+    case "custom":
+      return customPath!;
   }
 }
 
@@ -44,7 +46,7 @@ export function isGlobalTarget(target: InstallTarget): boolean {
   return target === "global-claude" || target === "global-cursor";
 }
 
-export function targetLabel(target: InstallTarget): string {
+export function targetLabel(target: InstallTarget, customPath?: string): string {
   switch (target) {
     case "project-claude":
       return ".claude/rules";
@@ -54,6 +56,8 @@ export function targetLabel(target: InstallTarget): string {
       return "~/.claude/rules";
     case "global-cursor":
       return "~/.cursor/rules";
+    case "custom":
+      return customPath!;
   }
 }
 
@@ -61,6 +65,7 @@ export async function cmdInstall(args: string[]): Promise<void> {
   ensureRegistry();
 
   let target: InstallTarget | null = null;
+  let customPath: string | undefined;
   let recipe = "";
   let autoDeps = globalConfigGet("auto_deps", "true") === "true";
   const skills: string[] = [];
@@ -108,24 +113,25 @@ export async function cmdInstall(args: string[]): Promise<void> {
 
   // Recipe mode
   if (recipe) {
-    await installRecipe(recipe, target);
+    await installRecipe(recipe, target, customPath);
     return;
   }
 
   // Interactive mode (no skills specified)
   if (skills.length === 0) {
-    await installInteractive(target);
+    await installInteractive(target, customPath);
     return;
   }
 
   // Direct install
-  await installSkills(skills, target, autoDeps);
+  await installSkills(skills, target, autoDeps, customPath);
 }
 
 async function installSkills(
   skills: string[],
   target: InstallTarget | null,
   autoDeps: boolean,
+  customPath?: string,
 ): Promise<void> {
   // Validate all skills exist
   for (const skill of skills) {
@@ -156,12 +162,14 @@ async function installSkills(
 
   // Prompt for target if not specified
   if (!target) {
-    target = await pickInstallTarget();
+    const result = await pickInstallTarget();
+    target = result.target;
+    customPath = result.customPath;
   }
 
   // Show what will be installed
   console.log();
-  console.log(`${bold("Skills to install:")} ${dim(`→ ${targetLabel(target)}`)}`);
+  console.log(`${bold("Skills to install:")} ${dim(`→ ${targetLabel(target, customPath)}`)}`);
   for (const skill of allSkills) {
     const version = registrySkillVersion(skill);
     const isDep = skills.includes(skill) ? "" : dim(" (dependency)");
@@ -169,11 +177,11 @@ async function installSkills(
   }
   console.log();
 
-  installToTarget(allSkills, target);
+  installToTarget(allSkills, target, customPath);
 }
 
-function installToTarget(skills: string[], target: InstallTarget): void {
-  const targetDir = resolveTargetDir(target);
+function installToTarget(skills: string[], target: InstallTarget, customPath?: string): void {
+  const targetDir = resolveTargetDir(target, customPath);
   mkdirSync(targetDir, { recursive: true });
 
   const isGlobal = isGlobalTarget(target);
@@ -193,7 +201,7 @@ function installToTarget(skills: string[], target: InstallTarget): void {
 
     currentList = skillListUpsert(currentList, skill, version);
     success(
-      `${skillName(skill)} v${version} installed to ${targetLabel(target)}/${skill}/`,
+      `${skillName(skill)} v${version} installed to ${targetLabel(target, customPath)}/${skill}/`,
     );
   }
 
@@ -202,6 +210,11 @@ function installToTarget(skills: string[], target: InstallTarget): void {
     globalConfigSet("global_skills", currentList);
     console.log();
     success("Global skills updated! These skills apply to all your projects.");
+  } else if (target === "custom") {
+    projectConfigSet("skills", currentList);
+    projectConfigSet("install_dir", customPath!);
+    console.log();
+    success(`Skills installed to ${customPath}!`);
   } else {
     projectConfigSet("skills", currentList);
     projectConfigSet("install_dir", target === "project-cursor" ? ".cursor/rules" : ".claude/rules");
@@ -213,6 +226,7 @@ function installToTarget(skills: string[], target: InstallTarget): void {
 async function installRecipe(
   recipeName: string,
   target: InstallTarget | null,
+  customPath?: string,
 ): Promise<void> {
   const recipeFile = join(REPO_DIR, "cli/recipes", `${recipeName}.txt`);
 
@@ -234,10 +248,10 @@ async function installRecipe(
   console.log(`${dim("Skills in recipe:")} ${skills.join(" ")}`);
   console.log();
 
-  await installSkills(skills, target, true);
+  await installSkills(skills, target, true, customPath);
 }
 
-async function installInteractive(target: InstallTarget | null): Promise<void> {
+async function installInteractive(target: InstallTarget | null, customPath?: string): Promise<void> {
   const allSkills = registryAllSkills();
   const selected = await pickSkills(allSkills);
 
@@ -246,5 +260,5 @@ async function installInteractive(target: InstallTarget | null): Promise<void> {
     return;
   }
 
-  await installSkills(selected, target, true);
+  await installSkills(selected, target, true, customPath);
 }

@@ -15,6 +15,7 @@ _ravencito() {
         'doctor:Health check'
         'shower-thought:Random shower thought from Dave'
         'shower-thoughts:Random shower thought from Dave'
+        'completions:Print shell completion setup instructions'
     )
 
     local -a global_opts
@@ -41,6 +42,10 @@ _ravencito() {
                     _arguments \
                         '--global[Install as global defaults]' \
                         '-g[Install as global defaults]' \
+                        '--claude[Target Claude Code (.claude/rules)]' \
+                        '--cursor[Target Cursor (.cursor/rules)]' \
+                        '--global-claude[Install to ~/.claude/rules]' \
+                        '--global-cursor[Install to ~/.cursor/rules]' \
                         '--recipe[Install a predefined recipe]:recipe:_ravencito_recipes' \
                         '-r[Install a predefined recipe]:recipe:_ravencito_recipes' \
                         '--no-deps[Skip dependency resolution]' \
@@ -59,6 +64,11 @@ _ravencito() {
                     local -a categories
                     categories=(universal platform framework design assistant)
                     _describe 'category' categories
+                    ;;
+                completions)
+                    _arguments \
+                        '--shell[Shell type (zsh or bash)]:shell:(zsh bash)' \
+                        '-s[Shell type (zsh or bash)]:shell:(zsh bash)'
                     ;;
             esac
             ;;

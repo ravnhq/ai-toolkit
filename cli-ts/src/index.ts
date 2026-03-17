@@ -15,6 +15,7 @@ import { cmdRemove } from "./commands/remove.js";
 import { cmdSync } from "./commands/sync.js";
 import { cmdDoctor } from "./commands/doctor.js";
 import { cmdShowerThought } from "./commands/shower-thought.js";
+import { cmdCompletions } from "./commands/completions.js";
 
 // Handle --logo before parsing
 if (process.argv.includes("--logo")) {
@@ -26,7 +27,20 @@ if (process.argv.includes("--logo")) {
 if (process.argv.length <= 2) {
   ensureConfigDir();
   await autoUpdateCheck();
-  await cmdInstall([]);
+  cmdShowerThought();
+  try {
+    await cmdInstall([]);
+  } catch (err: unknown) {
+    if (
+      err != null &&
+      typeof err === "object" &&
+      "name" in err &&
+      (err as { name: string }).name === "ExitPromptError"
+    ) {
+      process.exit(0);
+    }
+    throw err;
+  }
   process.exit(0);
 }
 
@@ -36,6 +50,7 @@ program
   .name("ravencito")
   .description("AI Skills Manager")
   .version(RAVENCITO_VERSION, "-v, --version")
+  .showHelpAfterError('Run "ravencito help" for usage information.')
   .hook("preAction", () => {
     ensureConfigDir();
   });
@@ -131,6 +146,14 @@ program
   .description("Health check")
   .action(() => {
     cmdDoctor();
+  });
+
+program
+  .command("completions")
+  .description("Print shell completion setup instructions")
+  .option("-s, --shell <shell>", "Shell type (zsh or bash)")
+  .action((opts) => {
+    cmdCompletions(opts.shell);
   });
 
 program
