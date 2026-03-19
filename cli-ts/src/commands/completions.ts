@@ -26,7 +26,7 @@ function detectShell(): string {
 }
 
 function printZshInstructions(): void {
-  const src = resolve(REPO_DIR, "cli/completions/_ravencito.zsh");
+  const src = resolve(REPO_DIR, "cli-ts/completions/_ravencito.zsh");
   const ohmyzsh = "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/completions";
 
   console.log(`# Zsh completions for ravencito
@@ -38,13 +38,13 @@ cp "${src}" "${ohmyzsh}/_ravencito"
 
 # Option 2 — manual fpath:
 # Add this to your ~/.zshrc BEFORE compinit:
-#   fpath=("${resolve(REPO_DIR, "cli/completions")}" $fpath)
+#   fpath=("${resolve(REPO_DIR, "cli-ts/completions")}" $fpath)
 #   autoload -Uz compinit && compinit
 `);
 }
 
 function printBashInstructions(): void {
-  const src = resolve(REPO_DIR, "cli/completions/ravencito.bash");
+  const src = resolve(REPO_DIR, "cli-ts/completions/ravencito.bash");
 
   console.log(`# Bash completions for ravencito
 #
@@ -54,7 +54,7 @@ source "${src}"
 }
 
 function printFishInstructions(): void {
-  const src = resolve(REPO_DIR, "cli/completions/ravencito.fish");
+  const src = resolve(REPO_DIR, "cli-ts/completions/ravencito.fish");
   const fishDir = "~/.config/fish/completions";
 
   console.log(`# Fish completions for ravencito

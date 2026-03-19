@@ -248,7 +248,7 @@ async function installRecipe(
   target: InstallTarget | null,
   customPath?: string,
 ): Promise<void> {
-  const recipeFile = join(REPO_DIR, "cli/recipes", `${recipeName}.txt`);
+  const recipeFile = join(REPO_DIR, "cli-ts/recipes", `${recipeName}.txt`);
 
   if (!existsSync(recipeFile)) {
     die(`Recipe not found: ${recipeName}.`);
