@@ -33,17 +33,21 @@ export function resolveTargetDir(target: InstallTarget, customPath?: string): st
       return join(findProjectRoot(), ".claude", "rules");
     case "project-cursor":
       return join(findProjectRoot(), ".cursor", "rules");
+    case "project-codex":
+      return join(findProjectRoot(), ".codex", "rules");
     case "global-claude":
       return join(home, ".claude", "rules");
     case "global-cursor":
       return join(home, ".cursor", "rules");
+    case "global-codex":
+      return join(home, ".codex", "rules");
     case "custom":
       return customPath!;
   }
 }
 
 export function isGlobalTarget(target: InstallTarget): boolean {
-  return target === "global-claude" || target === "global-cursor";
+  return target === "global-claude" || target === "global-cursor" || target === "global-codex";
 }
 
 export function targetLabel(target: InstallTarget, customPath?: string): string {
@@ -52,10 +56,14 @@ export function targetLabel(target: InstallTarget, customPath?: string): string 
       return ".claude/rules";
     case "project-cursor":
       return ".cursor/rules";
+    case "project-codex":
+      return ".codex/rules";
     case "global-claude":
       return "~/.claude/rules";
     case "global-cursor":
       return "~/.cursor/rules";
+    case "global-codex":
+      return "~/.codex/rules";
     case "custom":
       return customPath!;
   }
@@ -80,20 +88,28 @@ export async function cmdInstall(args: string[]): Promise<void> {
         if (!target) target = "global-claude";
         else if (target === "project-claude") target = "global-claude";
         else if (target === "project-cursor") target = "global-cursor";
+        else if (target === "project-codex") target = "global-codex";
         break;
       case "--claude":
-        if (target === "global-claude" || target === "global-cursor") target = "global-claude";
+        if (target === "global-claude" || target === "global-cursor" || target === "global-codex") target = "global-claude";
         else target = "project-claude";
         break;
       case "--cursor":
-        if (target === "global-claude" || target === "global-cursor") target = "global-cursor";
+        if (target === "global-claude" || target === "global-cursor" || target === "global-codex") target = "global-cursor";
         else target = "project-cursor";
+        break;
+      case "--codex":
+        if (target === "global-claude" || target === "global-cursor" || target === "global-codex") target = "global-codex";
+        else target = "project-codex";
         break;
       case "--global-claude":
         target = "global-claude";
         break;
       case "--global-cursor":
         target = "global-cursor";
+        break;
+      case "--global-codex":
+        target = "global-codex";
         break;
       case "--recipe":
       case "-r":
@@ -217,7 +233,11 @@ function installToTarget(skills: string[], target: InstallTarget, customPath?: s
     success(`Skills installed to ${customPath}!`);
   } else {
     projectConfigSet("skills", currentList);
-    projectConfigSet("install_dir", target === "project-cursor" ? ".cursor/rules" : ".claude/rules");
+    const dirMap: Record<string, string> = {
+      "project-cursor": ".cursor/rules",
+      "project-codex": ".codex/rules",
+    };
+    projectConfigSet("install_dir", dirMap[target] ?? ".claude/rules");
     console.log();
     success("Skills installed! ravencito is ready to help.");
   }

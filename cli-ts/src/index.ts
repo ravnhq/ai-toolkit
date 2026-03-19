@@ -69,8 +69,10 @@ program
   .option("-g, --global", "Install to global (Claude Code by default)")
   .option("--claude", "Target Claude Code (.claude/rules)")
   .option("--cursor", "Target Cursor (.cursor/rules)")
+  .option("--codex", "Target Codex (.codex/rules)")
   .option("--global-claude", "Install to ~/.claude/rules")
   .option("--global-cursor", "Install to ~/.cursor/rules")
+  .option("--global-codex", "Install to ~/.codex/rules")
   .option("-r, --recipe <name>", "Install a predefined stack recipe")
   .option("--no-deps", "Skip automatic dependency resolution")
   .action(async (skills: string[], opts) => {
@@ -79,8 +81,10 @@ program
     if (opts.global) args.push("--global");
     if (opts.claude) args.push("--claude");
     if (opts.cursor) args.push("--cursor");
+    if (opts.codex) args.push("--codex");
     if (opts.globalClaude) args.push("--global-claude");
     if (opts.globalCursor) args.push("--global-cursor");
+    if (opts.globalCodex) args.push("--global-codex");
     if (opts.recipe) args.push("--recipe", opts.recipe);
     if (opts.deps === false) args.push("--no-deps");
     args.push(...skills);
@@ -151,7 +155,7 @@ program
 program
   .command("completions")
   .description("Print shell completion setup instructions")
-  .option("-s, --shell <shell>", "Shell type (zsh or bash)")
+  .option("-s, --shell <shell>", "Shell type (zsh, bash, or fish)")
   .action((opts) => {
     cmdCompletions(opts.shell);
   });

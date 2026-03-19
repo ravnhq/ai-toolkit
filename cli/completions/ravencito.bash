@@ -20,7 +20,7 @@ _ravencito() {
     case "$cmd" in
         install)
             if [[ "$cur" == -* ]]; then
-                COMPREPLY=($(compgen -W "--global -g --claude --cursor --global-claude --global-cursor --recipe -r --no-deps" -- "$cur"))
+                COMPREPLY=($(compgen -W "--global -g --claude --cursor --codex --global-claude --global-cursor --global-codex --recipe -r --no-deps" -- "$cur"))
             elif [[ "$prev" == "--recipe" || "$prev" == "-r" ]]; then
                 local recipe_dir="${HOME}/.ravencito/repo/cli/recipes"
                 if [[ -d "$recipe_dir" ]]; then
@@ -49,7 +49,7 @@ _ravencito() {
             if [[ "$cur" == -* ]]; then
                 COMPREPLY=($(compgen -W "--shell -s" -- "$cur"))
             else
-                COMPREPLY=($(compgen -W "zsh bash" -- "$cur"))
+                COMPREPLY=($(compgen -W "zsh bash fish" -- "$cur"))
             fi
             ;;
     esac

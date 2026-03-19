@@ -44,8 +44,10 @@ _ravencito() {
                         '-g[Install as global defaults]' \
                         '--claude[Target Claude Code (.claude/rules)]' \
                         '--cursor[Target Cursor (.cursor/rules)]' \
+                        '--codex[Target Codex (.codex/rules)]' \
                         '--global-claude[Install to ~/.claude/rules]' \
                         '--global-cursor[Install to ~/.cursor/rules]' \
+                        '--global-codex[Install to ~/.codex/rules]' \
                         '--recipe[Install a predefined recipe]:recipe:_ravencito_recipes' \
                         '-r[Install a predefined recipe]:recipe:_ravencito_recipes' \
                         '--no-deps[Skip dependency resolution]' \
@@ -67,8 +69,8 @@ _ravencito() {
                     ;;
                 completions)
                     _arguments \
-                        '--shell[Shell type (zsh or bash)]:shell:(zsh bash)' \
-                        '-s[Shell type (zsh or bash)]:shell:(zsh bash)'
+                        '--shell[Shell type (zsh, bash, or fish)]:shell:(zsh bash fish)' \
+                        '-s[Shell type (zsh, bash, or fish)]:shell:(zsh bash fish)'
                     ;;
             esac
             ;;

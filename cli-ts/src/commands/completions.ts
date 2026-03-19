@@ -8,9 +8,11 @@ export function cmdCompletions(shell: string | undefined): void {
     printZshInstructions();
   } else if (detected === "bash") {
     printBashInstructions();
+  } else if (detected === "fish") {
+    printFishInstructions();
   } else {
     console.error(`Unsupported shell: ${detected}`);
-    console.error('Supported shells: zsh, bash');
+    console.error('Supported shells: zsh, bash, fish');
     process.exit(1);
   }
 }
@@ -19,6 +21,7 @@ function detectShell(): string {
   const shellEnv = process.env.SHELL ?? "";
   if (shellEnv.endsWith("/zsh")) return "zsh";
   if (shellEnv.endsWith("/bash")) return "bash";
+  if (shellEnv.endsWith("/fish")) return "fish";
   return "zsh"; // default
 }
 
@@ -47,5 +50,18 @@ function printBashInstructions(): void {
 #
 # Add this to your ~/.bashrc or ~/.bash_profile:
 source "${src}"
+`);
+}
+
+function printFishInstructions(): void {
+  const src = resolve(REPO_DIR, "cli/completions/ravencito.fish");
+  const fishDir = "~/.config/fish/completions";
+
+  console.log(`# Fish completions for ravencito
+#
+# Copy the completions file to your fish completions directory:
+mkdir -p ${fishDir}
+cp "${src}" ${fishDir}/ravencito.fish
+# Completions load automatically — no reload needed.
 `);
 }

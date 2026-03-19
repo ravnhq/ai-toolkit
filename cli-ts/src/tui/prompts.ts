@@ -141,10 +141,10 @@ export async function pickCategory(
   });
 }
 
-export type InstallTarget = "project-claude" | "project-cursor" | "global-claude" | "global-cursor" | "custom";
+export type InstallTarget = "project-claude" | "project-cursor" | "project-codex" | "global-claude" | "global-cursor" | "global-codex" | "custom";
 
 /**
- * Pick install target: project or global, Claude or Cursor, or a custom path.
+ * Pick install target: project or global, Claude / Cursor / Codex, or a custom path.
  * When "custom" is selected, prompts for the path and returns it via the second element.
  */
 export async function pickInstallTarget(): Promise<{ target: InstallTarget; customPath?: string }> {
@@ -160,12 +160,20 @@ export async function pickInstallTarget(): Promise<{ target: InstallTarget; cust
         value: "project-cursor",
       },
       {
+        name: ".codex/rules  (Codex — this project)",
+        value: "project-codex",
+      },
+      {
         name: "~/.claude/rules  (Claude Code — global)",
         value: "global-claude",
       },
       {
         name: "~/.cursor/rules  (Cursor — global)",
         value: "global-cursor",
+      },
+      {
+        name: "~/.codex/rules  (Codex — global)",
+        value: "global-codex",
       },
       {
         name: "Custom location…",

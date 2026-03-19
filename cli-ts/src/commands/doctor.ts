@@ -18,10 +18,12 @@ import { registrySkillExists, ensureRegistry } from "../core/registry.js";
 import { success, warn } from "../utils/logger.js";
 import { hasCmd } from "../utils/platform.js";
 
+const nl = () => console.log(); // blank line for terminal spacing
+
 export function cmdDoctor(): void {
-  console.log();
+  nl();
   console.log(chalk.white.bold("ravencito doctor"));
-  console.log();
+  nl();
 
   let issues = 0;
 
@@ -35,14 +37,14 @@ export function cmdDoctor(): void {
   issues += check("marketplace.json", existsSync(MARKETPLACE_PATH));
 
   // Dependencies
-  console.log();
+  nl();
   console.log(chalk.white.bold("Dependencies"));
   checkCmd("git");
   checkCmd("node");
   checkCmdOptional("bun", "Bun runtime (for compiled binaries)");
 
   // Project context
-  console.log();
+  nl();
   console.log(chalk.white.bold("Project"));
 
   const projectRoot = findProjectRoot();
@@ -105,7 +107,7 @@ export function cmdDoctor(): void {
   }
 
   // Summary
-  console.log();
+  nl();
   if (issues === 0) {
     success("All checks passed! ravencito is healthy.");
   } else {
@@ -113,7 +115,7 @@ export function cmdDoctor(): void {
       `${issues} issue(s) found. Run 'ravencito update' to fix most issues.`,
     );
   }
-  console.log();
+  nl();
 }
 
 function check(label: string, condition: boolean): number {
