@@ -4,7 +4,7 @@ import { Command } from "commander";
 import { RAVENCITO_VERSION } from "./core/paths.js";
 import { ensureConfigDir } from "./core/config.js";
 import { autoUpdateCheck } from "./core/updater.js";
-import { showBanner, showHelp, showLogo } from "./tui/display.js";
+import { showBanner, showLogo } from "./tui/display.js";
 import { cmdInstall } from "./commands/install.js";
 import { cmdList } from "./commands/list.js";
 import { cmdSearch } from "./commands/search.js";
@@ -50,17 +50,10 @@ program
   .name("ravencito")
   .description("AI Skills Manager")
   .version(RAVENCITO_VERSION, "-v, --version")
-  .showHelpAfterError('Run "ravencito help" for usage information.')
+  .showHelpAfterError('Run "ravencito --help" for usage information.')
+  .addHelpText("before", () => { showBanner(); return ""; })
   .hook("preAction", () => {
     ensureConfigDir();
-  });
-
-program
-  .command("help")
-  .description("Show banner + help")
-  .action(() => {
-    showBanner();
-    showHelp();
   });
 
 program

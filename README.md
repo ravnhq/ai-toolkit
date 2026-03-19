@@ -6,19 +6,27 @@
 
 [![Skills Quality](https://github.com/ravnhq/ai-toolkit/actions/workflows/skills-quality.yml/badge.svg)](https://github.com/ravnhq/ai-toolkit/actions/workflows/skills-quality.yml)
 
-Modular "skills" — portable rule packs that teach AI coding agents (Claude Code, Cursor, etc.) best practices for specific technologies — so every project gets consistent, expert-level guidance without copy-pasting prompts. **26 ready skills** across five layers, with two CLI options (bash and TypeScript).
+Modular "skills" — portable rule packs that teach AI coding agents (Claude Code, Cursor, etc.) best practices for specific technologies — so every project gets consistent, expert-level guidance without copy-pasting prompts. **26 ready skills** across five layers.
 
 ## Quick Start
 
-### Using ravencito — bash CLI (recommended)
+### Using ravencito CLI
 
 Install the `ravencito` CLI for interactive skill management, auto-updates, and team sync:
 
 ```bash
-# Install ravencito
-curl -fsSL https://raw.githubusercontent.com/ravnhq/ai-toolkit/main/cli/install.sh | bash
+# Install globally (run once)
+cd cli-ts && npm install && npm run build && npm install -g .
 
-# Browse all skills interactively (TUI — uses fzf if available)
+# Verify it's working
+ravencito --version
+
+# Uninstall
+npm uninstall -g ravencito
+```
+
+```bash
+# Browse all skills interactively (TUI)
 ravencito install
 
 # Install skills directly
@@ -27,8 +35,13 @@ ravencito install tech-react tech-drizzle
 # Install a full stack recipe in one command
 ravencito install --recipe fullstack-ts
 
-# Set global defaults (apply to all projects)
-ravencito install --global core-coding-standards lang-typescript
+# Install with explicit target flags
+ravencito install --claude tech-react              # project-level → .claude/rules
+ravencito install --cursor tech-react              # project-level → .cursor/rules
+ravencito install --codex tech-react               # project-level → .codex/rules
+ravencito install --global-claude lang-typescript  # global → ~/.claude/rules
+ravencito install --global-cursor lang-typescript  # global → ~/.cursor/rules
+ravencito install --global-codex lang-typescript   # global → ~/.codex/rules
 
 # Search, preview, and manage
 ravencito search testing
@@ -39,32 +52,6 @@ ravencito update
 ravencito remove tech-vitest
 ravencito doctor                  # health check for orphaned skills, missing deps
 ravencito shower-thought          # random shower thought from Dave
-```
-
-On first install, ravencito prompts you to choose an install target:
-
-1. `.claude/rules` — Claude Code (this project)
-2. `.cursor/rules` — Cursor (this project)
-3. `.codex/rules` — Codex (this project)
-4. `~/.claude/rules` — Claude Code (global)
-5. `~/.cursor/rules` — Cursor (global)
-6. `~/.codex/rules` — Codex (global)
-7. Custom path
-
-### Using ravencito — TypeScript CLI
-
-A TypeScript rewrite lives in `cli-ts/` with the same commands plus explicit install target flags:
-
-```bash
-cd cli-ts && npm install && npm run build
-
-# Install with explicit target flags
-ravencito install --claude tech-react              # project-level → .claude/rules
-ravencito install --cursor tech-react              # project-level → .cursor/rules
-ravencito install --codex tech-react               # project-level → .codex/rules
-ravencito install --global-claude lang-typescript  # global → ~/.claude/rules
-ravencito install --global-cursor lang-typescript  # global → ~/.cursor/rules
-ravencito install --global-codex lang-typescript   # global → ~/.codex/rules
 
 # Shell completions (zsh, bash, and fish supported)
 ravencito completions --shell fish
