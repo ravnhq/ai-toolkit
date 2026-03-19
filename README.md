@@ -15,15 +15,23 @@ Modular "skills" — portable rule packs that teach AI coding agents (Claude Cod
 Install the `ravencito` CLI for interactive skill management, auto-updates, and team sync:
 
 ```bash
-# Install globally (run once)
-cd cli-ts && npm install && npm run build && npm install -g .
+# Install with curl (macOS/Linux)
+curl -fsSL https://raw.githubusercontent.com/ravnhq/ai-toolkit/main/install.sh | bash
 
 # Verify it's working
 ravencito --version
 
 # Uninstall
-npm uninstall -g ravencito
+sudo rm /usr/local/bin/ravencito
 ```
+
+<details>
+<summary>Install from source (alternative)</summary>
+
+```bash
+cd cli-ts && npm install && npm run build && npm install -g .
+```
+</details>
 
 ```bash
 # Browse all skills interactively (TUI)
@@ -255,7 +263,7 @@ PRs trigger skill quality checks automatically. On merge to `main`:
 2. Build numbers are bumped for changed skills
 3. Release tags are created and GitHub Releases published
 
-Changes to `cli-ts/**` also trigger a separate binary build workflow that compiles ravencito for all platforms (darwin-arm64, darwin-x64, linux-x64, linux-arm64) using Bun and uploads the binaries as workflow artifacts.
+Changes to `cli-ts/**` also trigger a separate binary build workflow that compiles ravencito for all platforms (darwin-arm64, darwin-x64, linux-x64, linux-arm64) using Bun and publishes them to the `cli-latest` GitHub Release.
 
 ### Workflow
 
