@@ -43,9 +43,13 @@ ravencito shower-thought          # random shower thought from Dave
 
 On first install, ravencito prompts you to choose an install target:
 
-1. `.cursor/rules` — works with Cursor + Claude Code
-2. `.claude/rules` — Claude Code only
-3. Custom path
+1. `.claude/rules` — Claude Code (this project)
+2. `.cursor/rules` — Cursor (this project)
+3. `.codex/rules` — Codex (this project)
+4. `~/.claude/rules` — Claude Code (global)
+5. `~/.cursor/rules` — Cursor (global)
+6. `~/.codex/rules` — Codex (global)
+7. Custom path
 
 ### Using ravencito — TypeScript CLI
 
@@ -55,10 +59,15 @@ A TypeScript rewrite lives in `cli-ts/` with the same commands plus explicit ins
 cd cli-ts && npm install && npm run build
 
 # Install with explicit target flags
-ravencito install --claude tech-react         # project-level → .claude/rules
-ravencito install --cursor tech-react         # project-level → .cursor/rules
-ravencito install --global-claude lang-typescript  # global, Claude Code
-ravencito install --global-cursor lang-typescript  # global, Cursor
+ravencito install --claude tech-react              # project-level → .claude/rules
+ravencito install --cursor tech-react              # project-level → .cursor/rules
+ravencito install --codex tech-react               # project-level → .codex/rules
+ravencito install --global-claude lang-typescript  # global → ~/.claude/rules
+ravencito install --global-cursor lang-typescript  # global → ~/.cursor/rules
+ravencito install --global-codex lang-typescript   # global → ~/.codex/rules
+
+# Shell completions (zsh, bash, and fish supported)
+ravencito completions --shell fish
 
 # Run tests
 npm test
@@ -258,6 +267,8 @@ PRs trigger skill quality checks automatically. On merge to `main`:
 1. CI validates all skills and syncs `marketplace.json`
 2. Build numbers are bumped for changed skills
 3. Release tags are created and GitHub Releases published
+
+Changes to `cli-ts/**` also trigger a separate binary build workflow that compiles ravencito for all platforms (darwin-arm64, darwin-x64, linux-x64, linux-arm64) using Bun and uploads the binaries as workflow artifacts.
 
 ### Workflow
 
