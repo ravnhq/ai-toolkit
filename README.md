@@ -33,6 +33,18 @@ cd cli-ts && npm install && npm run build && npm install -g .
 ```
 </details>
 
+<details>
+<summary>How the binary is built</summary>
+
+`bun build --compile` bundles the entire app — TypeScript source, all npm dependencies, and the Bun runtime — into a single self-contained executable. No Node.js, no npm, no `node_modules` needed on the target machine.
+
+**Why not `npm install -g`?** That approach requires Node.js ≥18 to be installed, downloads dependencies at install time, and can break if Node.js is upgraded or `node_modules` are corrupted. The compiled binary has zero runtime dependencies.
+
+**Same model as Claude Code.** Anthropic's official CLI (`@anthropic-ai/claude-code`) is also distributed as a pre-built native binary — `npm install -g` downloads it rather than compiling from source. ravencito follows the same pattern: `install.sh` downloads a pre-built binary from the `cli-latest` GitHub Release.
+
+To build binaries locally: `cd cli-ts && npm run build:bin`
+</details>
+
 ```bash
 # Browse all skills interactively (TUI)
 ravencito install

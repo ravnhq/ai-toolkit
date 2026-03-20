@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "build:bin": "bash scripts/build.sh",
     "dev": "tsx src/index.ts",
     "start": "node dist/index.js",
     "test": "vitest run"
