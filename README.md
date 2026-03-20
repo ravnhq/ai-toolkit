@@ -12,13 +12,30 @@ Modular "skills" — portable rule packs that teach AI coding agents (Claude Cod
 
 ### Using ravencito CLI
 
-Install the `ravencito` CLI for interactive skill management, auto-updates, and team sync:
+#### Option 1 — curl installer (recommended, macOS/Linux)
+
+No git, no Node.js required. Just run this in your terminal:
 
 ```bash
-# Install with curl (macOS/Linux)
 curl -fsSL https://raw.githubusercontent.com/ravnhq/ai-toolkit/main/install.sh | bash
+```
 
-# Verify it's working
+#### Option 2 — Install from source
+
+Requirements: [git](https://git-scm.com/), [Node.js ≥18](https://nodejs.org/), and npm.
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/ravnhq/ai-toolkit.git
+
+# 2. Go into the CLI folder, install deps, build, and link globally
+cd ai-toolkit/cli-ts && npm install && npm run build && npm install -g .
+```
+
+#### Verify and uninstall
+
+```bash
+# Confirm it's working
 ravencito --version
 
 # Uninstall
@@ -26,15 +43,7 @@ sudo rm /usr/local/bin/ravencito
 ```
 
 <details>
-<summary>Install from source (alternative)</summary>
-
-```bash
-cd cli-ts && npm install && npm run build && npm install -g .
-```
-</details>
-
-<details>
-<summary>How the binary is built</summary>
+<summary>How the binary is built (click to read more)</summary>
 
 `bun build --compile` bundles the entire app — TypeScript source, all npm dependencies, and the Bun runtime — into a single self-contained executable. No Node.js, no npm, no `node_modules` needed on the target machine.
 
@@ -44,6 +53,8 @@ cd cli-ts && npm install && npm run build && npm install -g .
 
 To build binaries locally: `cd cli-ts && npm run build:bin`
 </details>
+
+#### Available commands
 
 ```bash
 # Browse all skills interactively (TUI)
@@ -75,9 +86,6 @@ ravencito shower-thought          # random shower thought from Dave
 
 # Shell completions (zsh, bash, and fish supported)
 ravencito completions --shell fish
-
-# Run tests
-npm test
 ```
 
 ### Using npx
