@@ -133,13 +133,6 @@ export function skillListRemove(list: string, name: string): string {
     .join(",");
 }
 
-// ─── Install dir ─────────────────────────────────────────────────────────────
-
-export function getInstallDir(): string | null {
-  const dir = projectConfigGet("install_dir", "");
-  return dir || null;
-}
-
 export function getGlobalSkills(): string {
   return globalConfigGet("global_skills", "");
 }

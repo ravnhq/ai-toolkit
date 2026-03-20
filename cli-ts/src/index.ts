@@ -17,6 +17,15 @@ import { cmdDoctor } from "./commands/doctor.js";
 import { cmdShowerThought } from "./commands/shower-thought.js";
 import { cmdCompletions } from "./commands/completions.js";
 
+function isExitPromptError(err: unknown): boolean {
+  return (
+    err != null &&
+    typeof err === "object" &&
+    "name" in err &&
+    (err as { name: string }).name === "ExitPromptError"
+  );
+}
+
 // Handle --logo before parsing
 if (process.argv.includes("--logo")) {
   showLogo();
@@ -31,12 +40,7 @@ if (process.argv.length <= 2) {
   try {
     await cmdInstall([]);
   } catch (err: unknown) {
-    if (
-      err != null &&
-      typeof err === "object" &&
-      "name" in err &&
-      (err as { name: string }).name === "ExitPromptError"
-    ) {
+    if (isExitPromptError(err)) {
       process.exit(0);
     }
     throw err;
@@ -163,12 +167,7 @@ program
 
 program.parseAsync().catch((err: unknown) => {
   // Gracefully handle Ctrl+C / ESC during interactive prompts
-  if (
-    err != null &&
-    typeof err === "object" &&
-    "name" in err &&
-    (err as { name: string }).name === "ExitPromptError"
-  ) {
+  if (isExitPromptError(err)) {
     process.exit(0);
   }
   throw err;

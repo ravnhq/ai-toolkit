@@ -1,6 +1,6 @@
 {
   "name": "ravencito",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "AI Skills Manager — install, update, and manage modular AI skills for LLM-assisted development.",
   "type": "module",
   "main": "./dist/index.js",

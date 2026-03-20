@@ -31,17 +31,6 @@ export function gitRevParse(repoDir: string, ref: string): string {
   return execSafe(`git -C "${repoDir}" rev-parse ${ref}`) ?? "";
 }
 
-export function gitRevListCount(
-  repoDir: string,
-  from: string,
-  to: string,
-): number {
-  const result = execSafe(
-    `git -C "${repoDir}" rev-list ${from}..${to} --count`,
-  );
-  return result ? parseInt(result, 10) : 0;
-}
-
 export function gitClone(url: string, targetDir: string): boolean {
   return execSafe(`git clone --depth 1 "${url}" "${targetDir}" --quiet`) !== null;
 }

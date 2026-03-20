@@ -21,14 +21,14 @@ describe("CLI integration", () => {
     const result = await run("x");
     expect(result.code).toBe(1);
     expect(result.stderr).toContain("unknown command 'x'");
-    expect(result.stderr).toContain('Run "ravencito help" for usage information.');
+    expect(result.stderr).toContain('Run "ravencito --help" for usage information.');
   });
 
   it("rejects typos like 'drs' with exit 1 and shows help hint", async () => {
     const result = await run("drs");
     expect(result.code).toBe(1);
     expect(result.stderr).toContain("unknown command 'drs'");
-    expect(result.stderr).toContain('Run "ravencito help" for usage information.');
+    expect(result.stderr).toContain('Run "ravencito --help" for usage information.');
   });
 
   it("--version prints version and exits 0", async () => {

@@ -1,12 +1,11 @@
 ---
 name: agent-skills-manager
-description: "Manage AI skills from the Ravn AI Toolkit via ravencito CLI — install,\
-  \ update, remove, search, and configure skills for any project. Use when: (1) Installing\
-  \ AI skills into a project, (2) Updating installed skills to latest versions, (3)\
-  \ Browsing or searching available skills, (4) Configuring global or per-project\
-  \ skill sets, (5) Troubleshooting ravencito setup. Triggers on: \"install skills\"\
-  , \"add skills\", \"update skills\", \"ravencito\", \"skill manager\", \"browse\
-  \ skills\", \"set up AI rules\"."
+description: 'Manage AI skills from the Ravn AI Toolkit via ravencito CLI — install,
+  update, remove, search, and configure skills for any project. Use when: (1) Installing
+  AI skills into a project, (2) Updating installed skills to latest versions, (3)
+  Browsing or searching available skills, (4) Configuring global or per-project skill
+  sets, (5) Troubleshooting ravencito setup. Triggers on: "install skills", "add skills",
+  "update skills", "ravencito", "skill manager", "browse skills", "set up AI rules".'
 license: Complete terms in LICENSE.txt
 metadata:
   category: assistant
@@ -18,7 +17,7 @@ metadata:
   - installation
   - configuration
   status: ready
-  version: 1
+  version: 2
 ---
 
 # AI Skills Manager (ravencito)
@@ -36,7 +35,7 @@ ravencito --version
 If not installed, run the bootstrap installer:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ravnhq/ai-toolkit/main/cli/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ravnhq/ai-toolkit/main/install.sh | bash
 ```
 
 After installation, restart the shell or `source ~/.zshrc`.
@@ -77,10 +76,21 @@ ravencito
 ravencito install <skill-name> [<skill-name> ...]
 ```
 
-**Global install** — skills available in every project:
+**Target flags** — install to a specific tool's rules directory:
+
+| Flag | Target |
+|------|--------|
+| `--claude` | `.claude/rules` (project) |
+| `--cursor` | `.cursor/rules` (project) |
+| `--codex` | `.codex/rules` (project) |
+| `--global-claude` | `~/.claude/rules` (global) |
+| `--global-cursor` | `~/.cursor/rules` (global) |
+| `--global-codex` | `~/.codex/rules` (global) |
 
 ```bash
-ravencito install --global <skill-name>
+ravencito install --claude tech-react
+ravencito install --codex lang-typescript
+ravencito install --global-claude core-coding-standards
 ```
 
 **Recipe install** — predefined skill sets for common stacks:
@@ -134,6 +144,19 @@ Run diagnostics to verify installation, dependencies, and configuration:
 ravencito doctor
 ```
 
+### 7. Shell Completions
+
+Print setup instructions for your shell:
+
+```bash
+ravencito completions          # auto-detect shell
+ravencito completions --shell zsh
+ravencito completions --shell bash
+ravencito completions --shell fish
+```
+
+Follow the printed instructions to add completions to your shell config. For fish, the output will guide you to create a completions file at `~/.config/fish/completions/ravencito.fish`.
+
 ## Configuration
 
 ### Global Config (`~/.ravencito/config`)
@@ -175,6 +198,29 @@ Both layers merge at runtime. Project versions take priority on conflicts.
 | `ios-swift` | swift-concurrency, liquid-glass-ios |
 | `backend-api` | lang-typescript, tech-trpc, tech-drizzle, platform-testing |
 
+## Maintaining ravencito
+
+Use this section when making changes to the ravencito CLI itself (TypeScript source in `cli-ts/`).
+
+### Version Locations
+
+Both must be kept in sync on every release:
+
+| File | Field |
+|------|-------|
+| `cli-ts/src/core/paths.ts` | `RAVENCITO_VERSION` constant |
+| `cli-ts/package.json` | `"version"` field |
+
+### Workflow for Every ravencito Change
+
+1. Make the code changes in `cli-ts/src/`.
+2. Run tests: `cd cli-ts && npm test`
+3. Read the current version from `cli-ts/src/core/paths.ts`, propose the next version to the user (increment build number), and wait for approval:
+   > "Current version is `0.1.0`. Proposed next version: `0.1.1`. Approve?"
+4. Update `RAVENCITO_VERSION` in `paths.ts` and `"version"` in `package.json` atomically.
+5. Bump the skill version: `ruby scripts/skill_version.rb skills/assistant/agent-skills-manager/SKILL.md build`
+6. Commit, push to fork, update PR.
+
 ## Examples
 
 ### Positive Trigger
@@ -208,9 +254,3 @@ Expected behavior: Do not use this skill. Choose a more relevant skill like lang
 - Error: `ravencito status` shows skills behind latest but `update` reports all up to date.
 - Cause: The `.ravencitorc` version numbers may be stale.
 - Solution: Run `ravencito remove <skill>` then `ravencito install <skill>` to force a fresh install.
-
-### Doctor Reports Missing Dependencies
-
-- Error: `ravencito doctor` warns about missing `jq` or `python3`.
-- Cause: JSON parsing requires at least one of these tools.
-- Solution: Install jq (`brew install jq` on macOS) or ensure python3 is available.
