@@ -23,8 +23,13 @@ chmod +x "$TMP"
 
 if [ -w "$INSTALL_DIR" ]; then
   mv "$TMP" "${INSTALL_DIR}/ravencito"
-else
+elif command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
   sudo mv "$TMP" "${INSTALL_DIR}/ravencito"
+else
+  INSTALL_DIR="$HOME/.local/bin"
+  mkdir -p "$INSTALL_DIR"
+  mv "$TMP" "${INSTALL_DIR}/ravencito"
+  echo "  Note: add ~/.local/bin to your PATH if not already present"
 fi
 
 echo "✓ Installed to ${INSTALL_DIR}/ravencito"
