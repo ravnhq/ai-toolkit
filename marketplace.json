@@ -20,6 +20,20 @@
       "version": 3
     },
     {
+      "name": "grill-me",
+      "source": "./skills/universal/grill-me",
+      "description": "Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree.",
+      "category": "universal",
+      "tags": [
+        "design",
+        "planning",
+        "questioning",
+        "decision-making"
+      ],
+      "status": "ready",
+      "version": 1
+    },
+    {
       "name": "lang-typescript",
       "source": "./skills/universal/lang-typescript",
       "description": "TypeScript language patterns and type safety rules — strict mode, no any, discriminated unions.",
