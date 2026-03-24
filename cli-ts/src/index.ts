@@ -16,6 +16,7 @@ import { cmdSync } from "./commands/sync.js";
 import { cmdDoctor } from "./commands/doctor.js";
 import { cmdShowerThought } from "./commands/shower-thought.js";
 import { cmdCompletions } from "./commands/completions.js";
+import { cmdGitignore } from "./commands/gitignore.js";
 
 function isExitPromptError(err: unknown): boolean {
   return (
@@ -155,6 +156,13 @@ program
   .option("-s, --shell <shell>", "Shell type (zsh, bash, or fish)")
   .action((opts) => {
     cmdCompletions(opts.shell);
+  });
+
+program
+  .command("gitignore")
+  .description("Add .ravencitorc and installed skills to .gitignore")
+  .action(() => {
+    cmdGitignore();
   });
 
 program

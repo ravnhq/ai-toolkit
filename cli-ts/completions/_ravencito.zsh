@@ -103,7 +103,7 @@ _ravencito_installed_skills() {
 
 _ravencito_recipes() {
     local -a recipes
-    local recipe_dir="${HOME}/.ravencito/repo/cli/recipes"
+    local recipe_dir="${HOME}/.ravencito/repo/cli-ts/recipes"
     if [[ -d "$recipe_dir" ]]; then
         recipes=(${recipe_dir}/*.txt(:t:r))
     fi

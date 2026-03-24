@@ -55,6 +55,8 @@ function removeGlobal(name: string): void {
   success(`Removed ${skillName(name)} from global skills.`);
 }
 
+const KNOWN_PROJECT_DIRS = [".claude/rules", ".cursor/rules", ".codex/rules"];
+
 function removeProject(name: string): void {
   const currentList = getProjectSkills();
 
@@ -63,10 +65,17 @@ function removeProject(name: string): void {
     return;
   }
 
-  // Remove files
+  // Remove files from all known directories
+  const projectRoot = findProjectRoot();
+  for (const dir of KNOWN_PROJECT_DIRS) {
+    const skillDir = join(projectRoot, dir, name);
+    if (existsSync(skillDir)) {
+      rmSync(skillDir, { recursive: true, force: true });
+    }
+  }
+  // Also check install_dir in case it's a custom path not in the known list
   const installDir = projectConfigGet("install_dir", "");
-  if (installDir) {
-    const projectRoot = findProjectRoot();
+  if (installDir && !KNOWN_PROJECT_DIRS.includes(installDir)) {
     const skillDir = join(projectRoot, installDir, name);
     if (existsSync(skillDir)) {
       rmSync(skillDir, { recursive: true, force: true });
