@@ -141,7 +141,7 @@ export async function pickCategory(
   });
 }
 
-export type InstallTarget = "project-claude" | "project-cursor" | "project-codex" | "global-claude" | "global-cursor" | "global-codex" | "custom";
+export type InstallTarget = "project-claude" | "project-cursor" | "project-opencode" | "project-codex" | "global-claude" | "global-cursor" | "global-opencode" | "global-codex" | "custom";
 
 /**
  * Pick install target: project or global, Claude / Cursor / Codex, or a custom path.
@@ -160,6 +160,10 @@ export async function pickInstallTarget(): Promise<{ target: InstallTarget; cust
         value: "project-cursor",
       },
       {
+        name: ".opencode/rules  (OpenCode — this project)",
+        value: "project-opencode",
+      },
+      {
         name: ".codex/rules  (Codex — this project)",
         value: "project-codex",
       },
@@ -170,6 +174,10 @@ export async function pickInstallTarget(): Promise<{ target: InstallTarget; cust
       {
         name: "~/.cursor/rules  (Cursor — global)",
         value: "global-cursor",
+      },
+      {
+        name: "~/.config/opencode/rules  (OpenCode — global)",
+        value: "global-opencode",
       },
       {
         name: "~/.codex/rules  (Codex — global)",

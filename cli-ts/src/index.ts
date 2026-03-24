@@ -67,9 +67,11 @@ program
   .option("-g, --global", "Install to global (Claude Code by default)")
   .option("--claude", "Target Claude Code (.claude/rules)")
   .option("--cursor", "Target Cursor (.cursor/rules)")
+  .option("--opencode", "Target OpenCode (.opencode/rules)")
   .option("--codex", "Target Codex (.codex/rules)")
   .option("--global-claude", "Install to ~/.claude/rules")
   .option("--global-cursor", "Install to ~/.cursor/rules")
+  .option("--global-opencode", "Install to ~/.config/opencode/rules")
   .option("--global-codex", "Install to ~/.codex/rules")
   .option("-r, --recipe <name>", "Install a predefined stack recipe")
   .option("--no-deps", "Skip automatic dependency resolution")
@@ -79,9 +81,11 @@ program
     if (opts.global) args.push("--global");
     if (opts.claude) args.push("--claude");
     if (opts.cursor) args.push("--cursor");
+    if (opts.opencode) args.push("--opencode");
     if (opts.codex) args.push("--codex");
     if (opts.globalClaude) args.push("--global-claude");
     if (opts.globalCursor) args.push("--global-cursor");
+    if (opts.globalOpencode) args.push("--global-opencode");
     if (opts.globalCodex) args.push("--global-codex");
     if (opts.recipe) args.push("--recipe", opts.recipe);
     if (opts.deps === false) args.push("--no-deps");

@@ -33,12 +33,16 @@ export function resolveTargetDir(target: InstallTarget, customPath?: string): st
       return join(findProjectRoot(), ".claude", "rules");
     case "project-cursor":
       return join(findProjectRoot(), ".cursor", "rules");
+    case "project-opencode":
+      return join(findProjectRoot(), ".opencode", "rules");
     case "project-codex":
       return join(findProjectRoot(), ".codex", "rules");
     case "global-claude":
       return join(home, ".claude", "rules");
     case "global-cursor":
       return join(home, ".cursor", "rules");
+    case "global-opencode":
+      return join(home, ".config", "opencode", "rules");
     case "global-codex":
       return join(home, ".codex", "rules");
     case "custom":
@@ -47,7 +51,7 @@ export function resolveTargetDir(target: InstallTarget, customPath?: string): st
 }
 
 export function isGlobalTarget(target: InstallTarget): boolean {
-  return target === "global-claude" || target === "global-cursor" || target === "global-codex";
+  return target === "global-claude" || target === "global-cursor" || target === "global-opencode" || target === "global-codex";
 }
 
 export function targetLabel(target: InstallTarget, customPath?: string): string {
@@ -56,12 +60,16 @@ export function targetLabel(target: InstallTarget, customPath?: string): string 
       return ".claude/rules";
     case "project-cursor":
       return ".cursor/rules";
+    case "project-opencode":
+      return ".opencode/rules";
     case "project-codex":
       return ".codex/rules";
     case "global-claude":
       return "~/.claude/rules";
     case "global-cursor":
       return "~/.cursor/rules";
+    case "global-opencode":
+      return "~/.config/opencode/rules";
     case "global-codex":
       return "~/.codex/rules";
     case "custom":
@@ -88,6 +96,7 @@ export async function cmdInstall(args: string[]): Promise<void> {
         if (!target) target = "global-claude";
         else if (target === "project-claude") target = "global-claude";
         else if (target === "project-cursor") target = "global-cursor";
+        else if (target === "project-opencode") target = "global-opencode";
         else if (target === "project-codex") target = "global-codex";
         break;
       case "--claude":
@@ -98,9 +107,16 @@ export async function cmdInstall(args: string[]): Promise<void> {
         if (target === "global-claude" || target === "global-cursor" || target === "global-codex") target = "global-cursor";
         else target = "project-cursor";
         break;
+      case "--opencode":
+        if (target === "global-claude" || target === "global-cursor" || target === "global-opencode" || target === "global-codex") target = "global-opencode";
+        else target = "project-opencode";
+        break;
       case "--codex":
-        if (target === "global-claude" || target === "global-cursor" || target === "global-codex") target = "global-codex";
+        if (target === "global-claude" || target === "global-cursor" || target === "global-opencode" || target === "global-codex") target = "global-codex";
         else target = "project-codex";
+        break;
+      case "--global-opencode":
+        target = "global-opencode";
         break;
       case "--global-claude":
         target = "global-claude";
@@ -235,6 +251,7 @@ function installToTarget(skills: string[], target: InstallTarget, customPath?: s
     projectConfigSet("skills", currentList);
     const dirMap: Record<string, string> = {
       "project-cursor": ".cursor/rules",
+      "project-opencode": ".opencode/rules",
       "project-codex": ".codex/rules",
     };
     projectConfigSet("install_dir", dirMap[target] ?? ".claude/rules");

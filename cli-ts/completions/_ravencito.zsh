@@ -16,6 +16,7 @@ _ravencito() {
         'shower-thought:Random shower thought from Dave'
         'shower-thoughts:Random shower thought from Dave'
         'completions:Print shell completion setup instructions'
+        'gitignore:Add .ravencitorc and installed skills to .gitignore'
     )
 
     local -a global_opts
@@ -44,9 +45,11 @@ _ravencito() {
                         '-g[Install as global defaults]' \
                         '--claude[Target Claude Code (.claude/rules)]' \
                         '--cursor[Target Cursor (.cursor/rules)]' \
+                        '--opencode[Target OpenCode (.opencode/rules)]' \
                         '--codex[Target Codex (.codex/rules)]' \
                         '--global-claude[Install to ~/.claude/rules]' \
                         '--global-cursor[Install to ~/.cursor/rules]' \
+                        '--global-opencode[Install to ~/.config/opencode/rules]' \
                         '--global-codex[Install to ~/.codex/rules]' \
                         '--recipe[Install a predefined recipe]:recipe:_ravencito_recipes' \
                         '-r[Install a predefined recipe]:recipe:_ravencito_recipes' \
