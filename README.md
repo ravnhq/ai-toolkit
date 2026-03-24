@@ -66,12 +66,14 @@ ravencito install tech-react tech-drizzle
 # Install a full stack recipe in one command
 ravencito install --recipe fullstack-ts
 
-# Install with explicit target flags
+# Install with explicit target flags (ordered by user base)
 ravencito install --claude tech-react              # project-level → .claude/rules
 ravencito install --cursor tech-react              # project-level → .cursor/rules
+ravencito install --opencode tech-react            # project-level → .opencode/rules
 ravencito install --codex tech-react               # project-level → .codex/rules
 ravencito install --global-claude lang-typescript  # global → ~/.claude/rules
 ravencito install --global-cursor lang-typescript  # global → ~/.cursor/rules
+ravencito install --global-opencode lang-typescript # global → ~/.config/opencode/rules
 ravencito install --global-codex lang-typescript   # global → ~/.codex/rules
 
 # Search, preview, and manage
@@ -81,6 +83,7 @@ ravencito info tech-vitest
 ravencito status
 ravencito update
 ravencito remove tech-vitest
+ravencito gitignore               # add .ravencitorc and skill paths to .gitignore
 ravencito doctor                  # health check for orphaned skills, missing deps
 ravencito shower-thought          # random shower thought from Dave
 
@@ -229,11 +232,18 @@ When using ravencito, skill choices are tracked in a `.ravencitorc` file you can
 ```bash
 # One dev installs skills
 ravencito install tech-react tech-drizzle
+
+# Keep .ravencitorc and skill folders out of git
+ravencito gitignore
+
+# Or commit .ravencitorc so teammates can sync your exact setup
 git add .ravencitorc && git commit -m "add AI skills config"
 
 # Teammates clone and sync
 ravencito sync
 ```
+
+**Project vs global:** `.ravencitorc` is only created for project-level installs. Global installs (`--global`, `--global-claude`, etc.) are tracked in `~/.ravencito/config` and apply to every project on your machine without touching your repo.
 
 Run `ravencito doctor` to check for orphaned skills, missing deps, or version mismatches.
 
