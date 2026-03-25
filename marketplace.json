@@ -410,6 +410,50 @@
       ],
       "status": "ready",
       "version": 2
+    },
+    {
+      "name": "type-system-audit",
+      "source": "./skills/assistant/type-system-audit",
+      "description": "Audit type-system weaknesses using bug-fix commits as evidence",
+      "category": "assistant",
+      "tags": [
+        "types",
+        "audit",
+        "static-analysis",
+        "code-quality"
+      ],
+      "status": "ready",
+      "version": 3
+    },
+    {
+      "name": "transcript-notes",
+      "source": "./skills/assistant/transcript-notes",
+      "description": "Process meeting transcripts into structured notes with metadata, TL;DR, key topics, action items, and quotes",
+      "category": "assistant",
+      "tags": [
+        "transcript",
+        "notes",
+        "meeting",
+        "documentation"
+      ],
+      "status": "ready",
+      "version": 1
+    },
+    {
+      "name": "eval-agent-md",
+      "source": "./skills/experimental/eval-agent-md",
+      "description": "Behavioral compliance testing for any CLAUDE.md or agent definition file. Auto-generates test scenarios from your rules, runs them via LLM-as-judge scoring, and reports a compliance score with per-rule pass/fail breakdown. Optionally improves failing rules via automated mutation loop.",
+      "category": "assistant",
+      "tags": [
+        "testing",
+        "compliance",
+        "agent-md",
+        "behavioral",
+        "meta",
+        "quality"
+      ],
+      "status": "experimental",
+      "version": 4
     }
   ],
   "drafts": [
@@ -516,6 +560,24 @@
         "gestures"
       ],
       "extends": "design"
+    }
+  ],
+  "experimental": [
+    {
+      "name": "eval-agent-md",
+      "source": "./skills/experimental/eval-agent-md",
+      "description": "Behavioral compliance testing for any CLAUDE.md or agent definition file. Auto-generates test scenarios from your rules, runs them via LLM-as-judge scoring, and reports a compliance score with per-rule pass/fail breakdown. Optionally improves failing rules via automated mutation loop.",
+      "category": "assistant",
+      "tags": [
+        "testing",
+        "compliance",
+        "agent-md",
+        "behavioral",
+        "meta",
+        "quality"
+      ],
+      "status": "experimental",
+      "version": 3
     }
   ]
 }

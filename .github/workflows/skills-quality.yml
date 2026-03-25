@@ -31,6 +31,12 @@ jobs:
         with:
           ruby-version: "3.2"
 
+      - name: Install markdownlint
+        run: gem install mdl
+
+      - name: Run markdownlint
+        run: ruby scripts/markdown_lint.rb
+
       - name: Run skills audit
         run: ruby scripts/skills_audit.rb
 

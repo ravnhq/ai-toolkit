@@ -25,6 +25,9 @@ jobs:
         with:
           ruby-version: "3.2"
 
+      - name: Install markdownlint
+        run: gem install mdl
+
       - name: Detect changed skills
         id: detect
         run: |
@@ -113,7 +116,9 @@ jobs:
 
       - name: Validate
         if: steps.detect.outputs.skills != ''
-        run: ruby scripts/skills_audit.rb
+        run: |
+          ruby scripts/markdown_lint.rb
+          ruby scripts/skills_audit.rb
 
       - name: Update changelog
         if: steps.detect.outputs.skills != ''

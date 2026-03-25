@@ -89,14 +89,18 @@ Every rule MUST have:
 - Use kebab-case for all filenames
 - Each section has impact level and ordering
 
+## Output Rules
+
+- When asked to write a file (SKILL.md, rule file, etc.): produce the COMPLETE file content directly — do not describe what you would write or output a plan instead of the artifact
+
 ## Guardrails
 
 - MUST follow skill structure conventions (Vercel pattern)
 - MUST include impact levels in rule frontmatter
 - MUST provide both correct and incorrect examples
-- NEVER create duplicate rules across skills
+- NEVER create duplicate rules across skills — when creating a new rule, FIRST search `skills/` for existing rules that cover the same topic (check platform skills, not just the target skill), THEN proceed only if no duplicate exists
 - ALWAYS check if a rule belongs in generic (platform) or specific (tech) skill
-- ALWAYS reference existing skills as examples when extracting new rules
+- ALWAYS reference existing skills as examples when extracting new rules — when creating a new skill, FIRST name 2-3 existing skills (e.g., `tech-react`, `platform-testing`) as structural models to follow, THEN build the new skill matching their pattern
 - ALWAYS update the matching entry in `marketplace.json` when bumping `version` in any SKILL.md frontmatter (same commit)
 - MUST use exact `- Error:` / `- Cause:` / `- Solution:` / `Expected behavior:` format in SKILL.md Troubleshooting and Examples sections (required by skills harness)
 
