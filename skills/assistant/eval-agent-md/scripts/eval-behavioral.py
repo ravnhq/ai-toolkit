@@ -141,7 +141,14 @@ def run_structural_checks(response: str, checks: list[dict]) -> list[dict]:
 
 def judge(scenario: dict, response: str, timeout: int = 300, use_cache: bool = True) -> dict:
     # Compute cache key from system prompt, scenario rule/prompt, and response
-    cache_key = stable_cache_key("judge", JUDGE_SYSTEM, scenario["rule"], scenario["prompt"], response)
+    cache_key = stable_cache_key(
+        "judge",
+        JUDGE_SYSTEM,
+        scenario["rule"],
+        scenario["prompt"],
+        scenario.get("structural_check_summary"),
+        response,
+    )
     cache_file = JUDGE_CACHE_DIR / f"{cache_key}.json"
 
     # Check cache first if enabled
@@ -155,6 +162,13 @@ def judge(scenario: dict, response: str, timeout: int = 300, use_cache: bool = T
             pass  # Fall through to fresh judgment if cache read fails
 
     # Cache miss or disabled; compute fresh verdict
+    structural_summary = ""
+    if scenario.get("structural_check_summary"):
+        structural_summary = (
+            "\n## Structural Check Summary\n"
+            f"{yaml.dump(scenario['structural_check_summary'], default_flow_style=False)}"
+        )
+
     judge_prompt = f"""## Rule Being Tested
 {scenario['rule']}
 
@@ -163,6 +177,7 @@ def judge(scenario: dict, response: str, timeout: int = 300, use_cache: bool = T
 
 ## Assistant Response
 {response}
+{structural_summary}
 
 ## Pass Criteria
 {yaml.dump(scenario['pass_criteria'], default_flow_style=False)}
@@ -287,9 +302,36 @@ def run_scenario(model: str, system_file: Path, scenario: dict, runs: int,
         subject_seconds += response_seconds
         if from_cache:
             subject_cache_hits += 1
+        structural_results = run_structural_checks(response, scenario.get("structural_checks", []))
+        structural_summary = {
+            "total": len(structural_results),
+            "passed": sum(1 for check in structural_results if check["passed"]),
+            "failed": sum(1 for check in structural_results if not check["passed"]),
+        }
+        if structural_summary["failed"]:
+            failed_check = next(check for check in structural_results if not check["passed"])
+            verdicts.append({
+                "verdict": "FAIL",
+                "evidence": f"Structural check failed: {failed_check['check']['type']}",
+                "triggered_criteria": [],
+                "triggered_fail_signals": ["structural_check_failed"],
+                "structural_checks": structural_results,
+                "structural_check_summary": structural_summary,
+                "source": "structural",
+                "full_response": response,
+                "run": r + 1,
+            })
+            continue
+
+        scenario_for_judge = dict(scenario)
+        if structural_results:
+            scenario_for_judge["structural_check_summary"] = structural_summary
         judge_started_at = time.perf_counter()
-        result = judge(scenario, response, timeout=timeout, use_cache=use_cache)
+        result = judge(scenario_for_judge, response, timeout=timeout, use_cache=use_cache)
         judge_seconds += time.perf_counter() - judge_started_at
+        result["source"] = "judge"
+        result["structural_checks"] = structural_results
+        result["structural_check_summary"] = structural_summary
         result["full_response"] = response
         result["run"] = r + 1
         verdicts.append(result)

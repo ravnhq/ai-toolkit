@@ -255,8 +255,8 @@ class GenerateScenariosRuleExtractionTests(unittest.TestCase):
     def test_compute_coverage_returns_full_coverage(self):
         rules = ["GATE-1", "TDD"]
         scenarios = [
-            {"id": "gate1", "rule": "GATE-1"},
-            {"id": "tdd", "rule": "TDD"},
+            {"id": "gate1", "rule": "GATE-1", "rule_id": "gate_1"},
+            {"id": "tdd", "rule": "TDD", "rule_id": "tdd"},
         ]
 
         result = self.gen.compute_coverage(rules, scenarios)
@@ -267,7 +267,7 @@ class GenerateScenariosRuleExtractionTests(unittest.TestCase):
     def test_compute_coverage_detects_untested_rules(self):
         rules = ["GATE-1", "TDD", "SURGICAL"]
         scenarios = [
-            {"id": "gate1", "rule": "GATE-1"},
+            {"id": "gate1", "rule": "GATE-1", "rule_id": "gate_1"},
         ]
 
         result = self.gen.compute_coverage(rules, scenarios)
@@ -275,6 +275,99 @@ class GenerateScenariosRuleExtractionTests(unittest.TestCase):
         self.assertIn("TDD", result["untested"])
         self.assertIn("SURGICAL", result["untested"])
         self.assertAlmostEqual(result["coverage_pct"], 33.3, places=0)
+
+
+class GenerateScenariosCoverageMetadataTests(unittest.TestCase):
+    """Tests for stable rule IDs and deterministic coverage reporting."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.gen = load_script_module("generate_scenarios_coverage", "generate-scenarios.py")
+
+    def test_extract_rules_returns_rule_ids(self):
+        content = "# Title\n\n## GATE-1 Think\nstuff\n\n## TDD\nmore stuff"
+
+        rules = self.gen.extract_rules(content)
+
+        self.assertEqual(
+            rules,
+            [
+                {"rule_id": "gate_1_think", "rule_name": "GATE-1 Think"},
+                {"rule_id": "tdd", "rule_name": "TDD"},
+            ],
+        )
+
+    def test_compute_coverage_tracks_structural_and_llm_only_rules(self):
+        rules = [
+            {"rule_id": "gate_1_think", "rule_name": "GATE-1 Think"},
+            {"rule_id": "tdd", "rule_name": "TDD"},
+            {"rule_id": "surgical", "rule_name": "SURGICAL"},
+        ]
+        scenarios = [
+            {
+                "id": "gate1",
+                "rule": "GATE-1 Think",
+                "rule_id": "gate_1_think",
+                "structural_checks": [{"type": "starts_with", "pattern": "## Assumptions"}],
+            },
+            {
+                "id": "integration_gate1_tdd",
+                "type": "integration",
+                "rule": "GATE-1 Think, TDD",
+                "rule_ids_tested": ["gate_1_think", "tdd"],
+            },
+        ]
+
+        result = self.gen.compute_coverage(rules, scenarios)
+
+        self.assertEqual(result["rules_found"], 3)
+        self.assertEqual(result["rules_tested"], 2)
+        self.assertEqual(result["rules_with_structural_checks"], 1)
+        self.assertEqual(result["coverage_pct"], 66.66666666666666)
+        self.assertEqual(result["untested_rule_ids"], ["surgical"])
+        self.assertEqual(result["llm_only_rule_ids"], ["tdd"])
+
+    def test_compute_coverage_is_unavailable_when_no_rules_discovered(self):
+        result = self.gen.compute_coverage([], [])
+
+        self.assertIsNone(result["coverage_pct"])
+        self.assertEqual(result["coverage_status"], "unavailable")
+
+    def test_normalize_per_rule_scenario_derives_rule_id_from_catalog(self):
+        rules = [
+            {"rule_id": "gate_1_think", "rule_name": "GATE-1 Think"},
+            {"rule_id": "tdd", "rule_name": "TDD"},
+        ]
+        scenario = {
+            "id": "gate1",
+            "rule": "GATE-1 Think",
+            "prompt": "Add caching",
+            "pass_criteria": ["Starts with assumptions"],
+            "fail_signals": ["Jumps to code"],
+        }
+
+        normalized = self.gen.normalize_scenario(scenario, rules)
+
+        self.assertEqual(normalized["rule_id"], "gate_1_think")
+
+    def test_normalize_integration_scenario_derives_rule_ids_from_rule_names(self):
+        rules = [
+            {"rule_id": "gate_1_think", "rule_name": "GATE-1 Think"},
+            {"rule_id": "tdd", "rule_name": "TDD"},
+            {"rule_id": "rhythm", "rule_name": "Rhythm"},
+        ]
+        scenario = {
+            "id": "integration_gate1_tdd",
+            "type": "integration",
+            "rules_tested": ["GATE-1 Think", "TDD"],
+            "prompt": "Proceed",
+            "pass_criteria": ["Keeps ordering"],
+            "fail_signals": ["Drops a rule"],
+        }
+
+        normalized = self.gen.normalize_integration_scenario(scenario, rules)
+
+        self.assertEqual(normalized["rule_ids_tested"], ["gate_1_think", "tdd"])
 
 
 class EvalBehavioralMetricsTests(unittest.TestCase):
@@ -545,6 +638,66 @@ class StructuralCheckTests(unittest.TestCase):
         results = self.eb.run_structural_checks("hello", [])
 
         self.assertEqual(results, [])
+
+
+class StructuralCheckEvaluationTests(unittest.TestCase):
+    """Tests that structural checks affect live evaluation."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.eb = load_script_module("eval_behavioral_structural_eval", "eval-behavioral.py")
+
+    def test_run_scenario_fails_before_judge_when_structural_check_fails(self):
+        scenario = {
+            "id": "gate1",
+            "rule": "GATE-1 Think",
+            "prompt": "Add caching",
+            "pass_criteria": ["Starts with assumptions"],
+            "fail_signals": ["Jumps straight to code"],
+            "structural_checks": [{"type": "starts_with", "pattern": "## Assumptions"}],
+        }
+
+        with mock.patch.object(self.eb, "get_subject_response", return_value=("print('hi')", False, 0.5)):
+            with mock.patch.object(self.eb, "judge") as judge:
+                result = self.eb.run_scenario("sonnet", Path("/tmp/fake.md"), scenario, runs=1)
+
+        self.assertEqual(result["final_verdict"], "FAIL")
+        self.assertEqual(result["fails"], 1)
+        self.assertEqual(result["errors"], 0)
+        self.assertEqual(result["details"][0]["verdict"], "FAIL")
+        self.assertEqual(result["details"][0]["source"], "structural")
+        self.assertFalse(result["details"][0]["structural_checks"][0]["passed"])
+        judge.assert_not_called()
+
+    def test_run_scenario_passes_structural_results_to_judge_when_checks_pass(self):
+        scenario = {
+            "id": "rhythm",
+            "rule": "Rhythm",
+            "prompt": "Proceed",
+            "pass_criteria": ["Starts with a numbered list"],
+            "fail_signals": ["Starts with prose"],
+            "structural_checks": [{"type": "regex", "pattern": r"^\d+\.\s.+→\s*verify:"}],
+        }
+
+        def fake_judge(scenario_arg, response, timeout=300, use_cache=True):
+            self.assertIn("structural_check_summary", scenario_arg)
+            self.assertEqual(scenario_arg["structural_check_summary"]["failed"], 0)
+            return {
+                "verdict": "PASS",
+                "evidence": "format ok",
+                "triggered_criteria": ["Starts with a numbered list"],
+                "triggered_fail_signals": [],
+            }
+
+        response = "1. Add guard clause → verify: unit test"
+        with mock.patch.object(self.eb, "get_subject_response", return_value=(response, False, 0.5)):
+            with mock.patch.object(self.eb, "judge", side_effect=fake_judge) as judge:
+                result = self.eb.run_scenario("sonnet", Path("/tmp/fake.md"), scenario, runs=1)
+
+        self.assertEqual(result["final_verdict"], "PASS")
+        self.assertEqual(result["details"][0]["source"], "judge")
+        self.assertTrue(result["details"][0]["structural_checks"][0]["passed"])
+        judge.assert_called_once()
 
 
 if __name__ == "__main__":

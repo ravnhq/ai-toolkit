@@ -29,7 +29,7 @@ uv run --script [SKILL_DIR]/scripts/generate-scenarios.py [OPTIONS] [TARGET_FILE
 | `--model MODEL` | Model for generation (default: sonnet) |
 | `--no-scenario-cache` | Disable exact-input scenario generation cache |
 | `--no-cache` | Compatibility alias for `--no-scenario-cache` |
-| `--coverage` | Report rule coverage after scenario generation (tested vs untested rules) |
+| `--coverage` | Report discovered-rule coverage after scenario generation, including deterministic structural-check coverage vs LLM-only coverage |
 | `--save-reference PATH` | Save scenarios to a stable reference directory for deterministic test suites |
 
 ### eval-behavioral.py

@@ -49,31 +49,127 @@ _NON_RULE_SECTIONS = {
 }
 
 
-def extract_rule_names(content: str) -> list[str]:
-    """Extract rule/section names from markdown H2 headings, skipping structural sections."""
+def slugify_rule_name(name: str) -> str:
+    """Convert a rule name into a stable snake_case identifier."""
+    slug = re.sub(r"[^a-z0-9]+", "_", name.lower()).strip("_")
+    return slug or "rule"
+
+
+def extract_rules(content: str) -> list[dict[str, str]]:
+    """Extract rules from markdown H2 headings with stable identifiers."""
     rules = []
     for match in re.finditer(r"^##\s+(.+)$", content, re.MULTILINE):
         name = match.group(1).strip()
         if name.lower() not in _NON_RULE_SECTIONS:
-            rules.append(name)
+            rules.append({"rule_id": slugify_rule_name(name), "rule_name": name})
     return rules
 
 
-def compute_coverage(rules: list[str], scenarios: list[dict]) -> dict:
-    """Compute which extracted rules are covered by scenarios."""
-    tested_rules = set()
+def extract_rule_names(content: str) -> list[str]:
+    """Backward-compatible rule-name extraction helper."""
+    return [rule["rule_name"] for rule in extract_rules(content)]
+
+
+def _normalize_rules(rules: list[dict] | list[str]) -> list[dict[str, str]]:
+    normalized = []
+    for rule in rules:
+        if isinstance(rule, str):
+            normalized.append({"rule_id": slugify_rule_name(rule), "rule_name": rule})
+        else:
+            normalized.append({"rule_id": rule["rule_id"], "rule_name": rule["rule_name"]})
+    return normalized
+
+
+def _rule_catalog_map(rules: list[dict] | list[str]) -> dict[str, str]:
+    normalized_rules = _normalize_rules(rules)
+    return {rule["rule_name"]: rule["rule_id"] for rule in normalized_rules}
+
+
+def normalize_scenario(scenario: dict, rules: list[dict] | list[str]) -> dict | None:
+    """Derive and validate stable metadata for a per-rule scenario."""
+    rule_name = scenario.get("rule")
+    if not isinstance(rule_name, str):
+        return None
+
+    rule_id_by_name = _rule_catalog_map(rules)
+    derived_rule_id = rule_id_by_name.get(rule_name)
+    if not derived_rule_id:
+        return None
+
+    normalized = dict(scenario)
+    normalized["rule_id"] = derived_rule_id
+    return normalized
+
+
+def normalize_integration_scenario(scenario: dict, rules: list[dict] | list[str]) -> dict | None:
+    """Derive and validate stable metadata for an integration scenario."""
+    rules_tested = scenario.get("rules_tested")
+    if not isinstance(rules_tested, list) or not all(isinstance(rule, str) for rule in rules_tested):
+        return None
+
+    rule_id_by_name = _rule_catalog_map(rules)
+    try:
+        derived_rule_ids = [rule_id_by_name[rule_name] for rule_name in rules_tested]
+    except KeyError:
+        return None
+
+    normalized = dict(scenario)
+    normalized["rule_ids_tested"] = derived_rule_ids
+    normalized["type"] = "integration"
+    normalized.setdefault("rule", ", ".join(rules_tested))
+    return normalized
+
+
+def compute_coverage(rules: list[dict] | list[str], scenarios: list[dict]) -> dict:
+    """Compute scenario, deterministic, and LLM-only coverage for discovered rules."""
+    normalized_rules = _normalize_rules(rules)
+    if not normalized_rules:
+        return {
+            "coverage_status": "unavailable",
+            "rules_found": 0,
+            "rules_tested": 0,
+            "rules_with_structural_checks": 0,
+            "coverage_pct": None,
+            "untested": [],
+            "untested_rule_ids": [],
+            "llm_only": [],
+            "llm_only_rule_ids": [],
+        }
+
+    discovered = {rule["rule_id"]: rule["rule_name"] for rule in normalized_rules}
+    tested_rule_ids = set()
+    structural_rule_ids = set()
     for s in scenarios:
-        rule = s.get("rule", "")
-        for r in rules:
-            if r.lower() in rule.lower() or rule.lower() in r.lower():
-                tested_rules.add(r)
-    untested = [r for r in rules if r not in tested_rules]
-    coverage_pct = (len(tested_rules) / len(rules) * 100) if rules else 100.0
+        scenario_rule_ids = []
+        if isinstance(s.get("rule_id"), str):
+            scenario_rule_ids.append(s["rule_id"])
+        scenario_rule_ids.extend(
+            rule_id for rule_id in s.get("rule_ids_tested", [])
+            if isinstance(rule_id, str)
+        )
+        for rule_id in scenario_rule_ids:
+            if rule_id in discovered:
+                tested_rule_ids.add(rule_id)
+                if s.get("structural_checks"):
+                    structural_rule_ids.add(rule_id)
+
+    ordered_rule_ids = [rule["rule_id"] for rule in normalized_rules]
+    untested_rule_ids = [rule_id for rule_id in ordered_rule_ids if rule_id not in tested_rule_ids]
+    llm_only_rule_ids = [
+        rule_id for rule_id in ordered_rule_ids
+        if rule_id in tested_rule_ids and rule_id not in structural_rule_ids
+    ]
+    coverage_pct = len(tested_rule_ids) / len(normalized_rules) * 100
     return {
-        "rules_found": len(rules),
-        "rules_tested": len(tested_rules),
+        "coverage_status": "ok",
+        "rules_found": len(normalized_rules),
+        "rules_tested": len(tested_rule_ids),
+        "rules_with_structural_checks": len(structural_rule_ids),
         "coverage_pct": coverage_pct,
-        "untested": untested,
+        "untested": [discovered[rule_id] for rule_id in untested_rule_ids],
+        "untested_rule_ids": untested_rule_ids,
+        "llm_only": [discovered[rule_id] for rule_id in llm_only_rule_ids],
+        "llm_only_rule_ids": llm_only_rule_ids,
     }
 
 
@@ -103,6 +199,7 @@ def generate_scenarios(config_path: Path, is_agent: bool = False,
                        is_skill: bool = False, model: str = "sonnet",
                        use_cache: bool = True) -> tuple[list[dict], dict]:
     content = config_path.read_text()
+    rules = extract_rules(content)
 
     if is_skill:
         file_type = 'skill definition'
@@ -146,6 +243,9 @@ def generate_scenarios(config_path: Path, is_agent: bool = False,
 {content}
 ```
 
+## Rule Catalog
+{yaml.dump(rules, default_flow_style=False, sort_keys=False)}
+
 {context_hints}
 
 ## Example Scenarios (for quality reference)
@@ -154,11 +254,14 @@ def generate_scenarios(config_path: Path, is_agent: bool = False,
 ## Instructions
 1. Read every rule, gate, and constraint in the file
 2. For each testable rule, generate ONE scenario
-3. Make prompts realistic — they should sound like real user requests
-4. Make pass_criteria observable in text output (no tool checks)
-5. Make fail_signals specific enough to avoid false positives
-6. Include code snippets inline in prompts when needed to test code-related rules
-7. Skip rules that can only be tested via multi-turn interaction or tool usage
+3. Use the exact human-readable `rule_name` from the rule catalog in the `rule` field
+4. Make prompts realistic — they should sound like real user requests
+5. Make pass_criteria observable in text output (no tool checks)
+6. Make fail_signals specific enough to avoid false positives
+7. Include code snippets inline in prompts when needed to test code-related rules
+8. Skip rules that can only be tested via multi-turn interaction or tool usage
+9. When a rule has deterministic text structure (exact heading, literal phrase, forbidden phrase, regex shape),
+   include `structural_checks` using only these check types: `starts_with`, `contains`, `not_contains`, `regex`
 
 Generate the JSON array now."""
 
@@ -179,7 +282,14 @@ Generate the JSON array now."""
         if missing:
             print(f"  Warning: scenario '{s.get('id', '?')}' missing {missing}, skipping", file=sys.stderr)
             continue
-        valid.append(s)
+        normalized = normalize_scenario(s, rules)
+        if normalized is None:
+            print(
+                f"  Warning: scenario '{s.get('id', '?')}' rule could not be normalized from catalog, skipping",
+                file=sys.stderr,
+            )
+            continue
+        valid.append(normalized)
 
     metadata = {
         "cache": "miss",
@@ -197,6 +307,7 @@ def generate_integration_scenarios(config_path: Path, is_agent: bool = False,
                                     use_cache: bool = True) -> tuple[list[dict], dict]:
     """Generate integration scenarios that test multiple rules interacting."""
     content = config_path.read_text()
+    rules = extract_rules(content)
 
     if is_skill:
         file_type = 'skill definition'
@@ -239,15 +350,20 @@ def generate_integration_scenarios(config_path: Path, is_agent: bool = False,
 {content}
 ```
 
+## Rule Catalog
+{yaml.dump(rules, default_flow_style=False, sort_keys=False)}
+
 {context_hints}
 
 ## Instructions
 1. Identify rules that can realistically co-occur in a single user request
 2. Focus on combinations where priority, ordering, or potential conflicts matter
 3. Generate 3-5 integration scenarios, each testing 2-4 rules
-4. Make prompts realistic and complex enough that multiple rules naturally apply
-5. Pass criteria MUST check rule interactions (ordering, priority, conflict resolution), not just individual presence
-6. Include code snippets inline in prompts when needed
+4. Use exact human-readable rule names from the rule catalog in `rules_tested`
+5. Make prompts realistic and complex enough that multiple rules naturally apply
+6. Pass criteria MUST check rule interactions (ordering, priority, conflict resolution), not just individual presence
+7. Include code snippets inline in prompts when needed
+8. Add `structural_checks` when the interaction includes deterministic output structure
 
 Generate the JSON array now."""
 
@@ -268,11 +384,14 @@ Generate the JSON array now."""
         if missing:
             print(f"  Warning: integration scenario '{s.get('id', '?')}' missing {missing}, skipping", file=sys.stderr)
             continue
-        # Ensure type is set correctly
-        s["type"] = "integration"
-        # Backfill 'rule' as comma-joined rules_tested for compatibility with eval-behavioral
-        s.setdefault("rule", ", ".join(s["rules_tested"]))
-        valid.append(s)
+        normalized = normalize_integration_scenario(s, rules)
+        if normalized is None:
+            print(
+                f"  Warning: integration scenario '{s.get('id', '?')}' rules could not be normalized from catalog, skipping",
+                file=sys.stderr,
+            )
+            continue
+        valid.append(normalized)
 
     metadata = {
         "cache": "miss",
@@ -331,7 +450,7 @@ def main():
     )
 
     if args.holistic:
-        print(f"Generating integration scenarios...", file=sys.stderr, end="", flush=True)
+        print("Generating integration scenarios...", file=sys.stderr, end="", flush=True)
         integration, int_metadata = generate_integration_scenarios(
             args.config,
             is_agent=args.agent,
@@ -348,11 +467,20 @@ def main():
 
     if args.coverage:
         content = args.config.read_text()
-        rules = extract_rule_names(content)
+        rules = extract_rules(content)
         cov = compute_coverage(rules, scenarios)
-        print(f"Coverage: {cov['rules_tested']}/{cov['rules_found']} rules ({cov['coverage_pct']:.0f}%)", file=sys.stderr)
-        if cov['untested']:
+        if cov["coverage_status"] == "unavailable":
+            print("Coverage: unavailable (no rule sections discovered)", file=sys.stderr)
+        else:
+            print(f"Coverage: {cov['rules_tested']}/{cov['rules_found']} rules ({cov['coverage_pct']:.0f}%)", file=sys.stderr)
+            print(
+                f"  Deterministic checks: {cov['rules_with_structural_checks']}/{cov['rules_tested']} tested rules",
+                file=sys.stderr,
+            )
+        if cov["untested"]:
             print(f"  Untested: {', '.join(cov['untested'])}", file=sys.stderr)
+        if cov["llm_only"]:
+            print(f"  LLM-only: {', '.join(cov['llm_only'])}", file=sys.stderr)
 
     chunks = []
     for s in scenarios:

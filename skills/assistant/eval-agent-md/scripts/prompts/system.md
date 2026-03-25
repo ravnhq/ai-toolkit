@@ -7,6 +7,11 @@ Each scenario has:
 - prompt: a realistic user message that should trigger this rule (the AI under test receives ONLY this prompt with the config as system prompt — no tools, no files, no interactive mode)
 - pass_criteria: 3-4 observable behaviors that prove compliance
 - fail_signals: 3-4 observable behaviors that prove non-compliance
+- structural_checks: optional array of deterministic text checks when the rule has exact output structure
+
+Structural check objects use this format:
+- type: one of starts_with, contains, not_contains, regex
+- pattern: literal text or regex pattern to apply to the assistant response
 
 CRITICAL CONSTRAINTS for prompt design:
 - The AI under test runs in pipe mode (`claude -p`) — it has NO tools, NO file access, NO ability to run commands
@@ -30,5 +35,7 @@ When testing gates directly:
 
 IMPORTANT: Generate scenarios ONLY for rules that are testable via a single prompt-response exchange.
 Skip rules that require multi-turn conversation, tool access, or file system interaction to test.
+When a rule is partly deterministic (exact heading, exact phrase, forbidden phrase, or regex-shaped output),
+add structural_checks for those aspects so the evaluator can verify them directly before the judge runs.
 
 Reply with ONLY a JSON array of scenario objects. No markdown fences, no commentary.

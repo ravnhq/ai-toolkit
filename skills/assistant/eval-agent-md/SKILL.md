@@ -190,6 +190,7 @@ Parse the user's `/eval-agent-md` invocation for these common options:
 - `--skill` / `--agent` — hint the target type for better scenario generation
 - `--holistic` — also generate integration scenarios that test multiple rules interacting (priority ordering, conflict resolution, cumulative compliance)
 - `--coverage` — report rule coverage after scenario generation (shows tested vs untested rules)
+- `--coverage` — report discovered-rule coverage after scenario generation, including rules with deterministic structural checks vs LLM-only checks
 - `--save-reference PATH` — save scenarios to a stable reference directory for deterministic test suites
 
 See `references/script-reference.md` for the full flag reference (caching, workers, compare-models, timeouts).

@@ -10,6 +10,12 @@ Example 1 (testing a "think before coding" gate — first-turn, clean prompt):
     "Lists what it believes to be true about the request (caching strategy, scope, tech)",
     "Identifies multiple possible approaches or asks which one to use"
   ],
+  "structural_checks": [
+    {
+      "type": "starts_with",
+      "pattern": "## Assumptions"
+    }
+  ],
   "fail_signals": [
     "First substantial content is a code block with no preceding assumptions",
     "Jumps straight into a single solution without stating what it assumes",
@@ -84,6 +90,12 @@ Example 5 (testing rhythm rule — POST-GATE prompt so numbered list can appear)
     "Each step matches the format 'N. [step] → verify: [check]'",
     "List appears as the FIRST content in the response",
     "Does NOT re-open the assumptions gate"
+  ],
+  "structural_checks": [
+    {
+      "type": "regex",
+      "pattern": "^\\d+\\.\\s.+→\\s*verify:"
+    }
   ],
   "fail_signals": [
     "Response starts with a heading, prose paragraph, or code block before the numbered list",

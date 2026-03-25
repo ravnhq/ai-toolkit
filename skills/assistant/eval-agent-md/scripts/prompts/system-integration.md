@@ -14,6 +14,7 @@ Each scenario has:
 - prompt: a realistic, moderately complex user message that naturally triggers all listed rules (the AI under test receives ONLY this prompt with the config as system prompt — no tools, no files, no interactive mode)
 - pass_criteria: 3-5 observable behaviors that prove ALL rules are followed AND interact correctly (include ordering/priority checks)
 - fail_signals: 3-5 observable behaviors that prove rules conflict, are misordered, or one is dropped
+- structural_checks: optional array of deterministic text checks when the interaction has exact output structure
 
 CRITICAL CONSTRAINTS for prompt design:
 - The AI under test runs in pipe mode (`claude -p`) — it has NO tools, NO file access, NO ability to run commands
@@ -39,5 +40,6 @@ IMPORTANT:
 - Skip rule combinations that cannot realistically co-occur in a single prompt
 - Prefer combinations where priority ordering or sequencing matters
 - At most 1 scenario should be a first-turn gate-priority test; the rest should be POST-GATE
+- Add structural_checks whenever ordering or formatting can be verified directly from response text
 
 Reply with ONLY a JSON array of scenario objects. No markdown fences, no commentary.
