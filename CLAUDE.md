@@ -17,6 +17,7 @@ A marketplace of modular AI skills for LLM-assisted development. Skills are orga
 
 - MUST use `fd` and `rg` for faster file operations (over `find` and `grep`)
 - Use git for version control
+- Ruby 2.7+ required for audit/harness scripts
 
 ## Commands
 
@@ -24,6 +25,9 @@ A marketplace of modular AI skills for LLM-assisted development. Skills are orga
 ruby scripts/skills_audit.rb                    # Validate all skills (frontmatter, structure, marketplace sync)
 ruby scripts/skills_harness.rb                   # Run skill test harness
 ruby scripts/skill_version.rb <SKILL.md> [build] # Bump skill build number
+ruby scripts/skill_score.rb                      # Score skill quality
+ruby scripts/markdown_lint.rb                    # Lint markdown in skill files
+bash scripts/changelog.sh                        # Generate changelog
 ```
 
 Releases happen automatically via CI on merge to main. For manual releases outside the PR flow: `bash scripts/release.sh <skill-name>`
@@ -72,6 +76,8 @@ Required inside `metadata`:
 
 Optional: `license`, `metadata.version`
 
+Skills can declare `extends: <parent-skill-name>` in frontmatter to inherit rules from a parent skill (e.g., `tech-react` extends `platform-frontend`).
+
 ### Rule File Format
 
 Every rule MUST have:
@@ -96,7 +102,7 @@ Every rule MUST have:
 - MUST include impact levels in rule frontmatter
 - MUST provide both correct and incorrect examples
 - NEVER create duplicate rules across skills — when creating a new rule, FIRST search `skills/` for existing rules that cover the same topic (check platform skills, not just the target skill), THEN proceed only if no duplicate exists
-- ALWAYS check if a rule belongs in generic (platform) or specific (tech) skill
+- ALWAYS check if a rule already exists in another skill within the same role directory before creating a duplicate
 - ALWAYS reference existing skills as examples when extracting new rules — when creating a new skill, FIRST name 2-3 existing skills (e.g., `tech-react`, `platform-testing`) as structural models to follow, THEN build the new skill matching their pattern
 - ALWAYS update the matching entry in `marketplace.json` when bumping `version` in any SKILL.md frontmatter (same commit)
 - MUST use exact `- Error:` / `- Cause:` / `- Solution:` / `Expected behavior:` format in SKILL.md Troubleshooting and Examples sections (required by skills harness)
