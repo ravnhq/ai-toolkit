@@ -118,7 +118,8 @@ end
 
 def check_metadata(path, frontmatter, issues)
   metadata = frontmatter["metadata"]
-  active = path.include?("/skills/") && !path.include?("/skills/_drafts/") && !path.include?("/skills/experimental/")
+  status = frontmatter.dig("metadata", "status")
+  active = path.include?("/skills/") && status != "scaffold" && status != "draft"
 
   return unless active
 
@@ -138,7 +139,8 @@ def check_metadata(path, frontmatter, issues)
 end
 
 def check_structure(path, body, frontmatter, issues)
-  active = path.include?("/skills/") && !path.include?("/skills/_drafts/") && !path.include?("/skills/experimental/")
+  status = frontmatter.dig("metadata", "status")
+  active = path.include?("/skills/") && status != "scaffold" && status != "draft"
 
   if active && !frontmatter["description"].to_s.match?(WHEN_PATTERN)
     issues << Issue.new(severity: :error, code: "description_missing_when", path:, message: "Active skills must include explicit trigger language (`Use when ...`).")
@@ -258,7 +260,8 @@ SKILL_FILES.each do |path|
   check_links(path, body, issues)
 
   # Collect active skill data for version consistency checks
-  if path.include?("/skills/") && !path.include?("/skills/_drafts/") && !path.include?("/skills/experimental/")
+  status = frontmatter.dig("metadata", "status")
+  if path.include?("/skills/") && status != "scaffold" && status != "draft"
     active_skill_data << [path, frontmatter]
   end
 end

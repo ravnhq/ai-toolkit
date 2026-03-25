@@ -1,0 +1,3 @@
+{
+  "response": "I need more context to plan this properly. Could you clarify two things:\n\n1. **Which app?** \u2014 The current repo (`ai-toolkit`) is a skills marketplace, not a web application. Are you referring to a different app, or do you want to create an **authentication skill** for the marketplace?\n\n2. **What kind of auth?** \u2014 Email/password, OAuth (Google, GitHub), JWT, or session-based?\n\nPlease share any relevant details \u2014 framework, language, existing code path, etc. \u2014 and I'll build a precise plan."
+}

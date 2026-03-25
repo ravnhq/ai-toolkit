@@ -1,0 +1,3 @@
+{
+  "response": "## Assumptions\n\n1. \"The app\" refers to some application in this repository \u2014 but this repo is a **skill marketplace** (Markdown files + Ruby scripts), not a web app with users or login flows.\n2. \"Authentication\" could mean several different things in this context.\n\n## Questions\n\n- This repository doesn't contain a web app, API, or service \u2014 it's a collection of AI skill definitions. What application are you referring to? Some possibilities:\n  - A **different project** you have open (not this repo)?\n  - The **Jekyll docs site** (`/docs`) \u2014 adding GitHub OAuth or similar?\n  - Creating an **authentication skill** (a new skill in `skills/` that teaches auth patterns to AI agents)?\n  - Something else entirely?"
+}

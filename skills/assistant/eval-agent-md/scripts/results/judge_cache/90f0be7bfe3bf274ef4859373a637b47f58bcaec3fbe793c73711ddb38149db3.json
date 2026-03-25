@@ -1,0 +1,6 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response is completely empty \u2014 none of the required Pass Criteria (numbered steps, test code, implementation) are present.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": []
+}

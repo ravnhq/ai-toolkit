@@ -1,0 +1,10 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response shows only the modified snippet; file-level comments and untouched functions (get_order, cancel_order) are absent \u2014 cannot verify preservation.",
+  "triggered_criteria": [
+    "File-level comments at the top are preserved unchanged",
+    "get_order and cancel_order functions are left completely untouched",
+    "Existing docstrings and formatting in untouched functions are preserved"
+  ],
+  "triggered_fail_signals": []
+}

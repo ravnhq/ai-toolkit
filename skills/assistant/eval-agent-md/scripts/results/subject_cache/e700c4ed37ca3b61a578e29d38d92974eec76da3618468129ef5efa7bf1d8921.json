@@ -1,0 +1,3 @@
+{
+  "response": "```bash\nuv venv\nsource .venv/bin/activate\nuv pip install -r requirements.txt\n```\n\nThat's it. `uv venv` creates `.venv/` in the current directory, `source` activates it, and `uv pip install -r` installs all deps from your `requirements.txt`."
+}

@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response contains zero test code and zero implementation code \u2014 only assumptions and a clarifying question.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Tests are omitted entirely from the response"
+  ]
+}

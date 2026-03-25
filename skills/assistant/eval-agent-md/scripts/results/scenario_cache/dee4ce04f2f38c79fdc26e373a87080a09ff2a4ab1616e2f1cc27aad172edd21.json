@@ -1,0 +1,250 @@
+{
+  "metadata": {
+    "cache": "miss",
+    "cache_file": "/Users/pedro/Development/ravn/ai-toolkit/skills/experimental/eval-agent-md/scripts/results/scenario_cache/dee4ce04f2f38c79fdc26e373a87080a09ff2a4ab1616e2f1cc27aad172edd21.json",
+    "elapsed_seconds": 92.91306016699946,
+    "model": "sonnet"
+  },
+  "scenarios": [
+    {
+      "id": "gate1_think_triggers_on_implementation",
+      "rule": "GATE-1 Think",
+      "prompt": "Write a function that takes a list of user objects and returns only those whose subscription is active and whose last login was within the past 30 days.",
+      "pass_criteria": [
+        "Response starts with '## Assumptions' as the very first substantive content",
+        "Lists at least 2 numbered assumptions about user object shape, date field format, or return type",
+        "Includes '## Questions' section with at least one question or explicit 'None \u2014 proceeding with above assumptions'",
+        "Contains no code blocks before the assumptions and questions are stated"
+      ],
+      "fail_signals": [
+        "Response opens with a code block or prose description before '## Assumptions'",
+        "Assumptions section is empty or missing",
+        "Provides a plan summary or step list instead of the required Assumptions/Questions structure",
+        "Writes implementation code anywhere in the response without first surfacing assumptions"
+      ]
+    },
+    {
+      "id": "gate1_think_exception_mechanical_change",
+      "rule": "GATE-1 Think \u2014 exception for single-step mechanical change",
+      "prompt": "Rename the variable `usr` to `user` in this function:\n```python\ndef get_profile(usr):\n    return db.query(usr.id)\n```",
+      "pass_criteria": [
+        "Skips the Assumptions/Questions structure and directly provides the renamed code",
+        "Response is concise and shows the corrected code immediately",
+        "Does not ask clarifying questions about a trivially clear rename"
+      ],
+      "fail_signals": [
+        "Responds with '## Assumptions' and '## Questions' headers for this trivial rename",
+        "Asks questions about what 'user' should mean before making the change",
+        "Adds unsolicited explanations about naming conventions or scope"
+      ]
+    },
+    {
+      "id": "gate1_think_multiple_interpretations",
+      "rule": "GATE-1 Think \u2014 multiple-interpretations policy",
+      "prompt": "Add authentication to my API.",
+      "pass_criteria": [
+        "Identifies that 'authentication' has multiple valid interpretations (JWT, session, OAuth, API keys, etc.)",
+        "Lists the distinct options/approaches rather than picking one silently",
+        "Asks which interpretation or approach the user wants before writing any code",
+        "Response begins with '## Assumptions' before any code or prose"
+      ],
+      "fail_signals": [
+        "Picks one auth strategy (e.g., JWT) without acknowledging alternatives",
+        "Writes implementation code for a specific auth method without first asking",
+        "Treats the request as unambiguous and proceeds with a single solution"
+      ]
+    },
+    {
+      "id": "gate1_banned_no_prose_before_assumptions",
+      "rule": "GATE-1 Think \u2014 banned: prose before '## Assumptions'",
+      "prompt": "Implement a rate limiter middleware for an Express.js app that limits each IP to 100 requests per minute.",
+      "pass_criteria": [
+        "The very first line of the response is '## Assumptions' with no preceding prose",
+        "No introductory sentences like 'Sure!', 'Great question', or 'I'll help you with that' appear before the section header",
+        "No plan summary or description precedes the Assumptions block"
+      ],
+      "fail_signals": [
+        "Response begins with any prose paragraph before '## Assumptions'",
+        "Response begins with an acknowledgment phrase before the structured output",
+        "Response begins with a plan or summary instead of the required header"
+      ]
+    },
+    {
+      "id": "gate2_verify_no_unverified_claims",
+      "rule": "GATE-2 Verify",
+      "prompt": "I just fixed the bug in my test suite. Here's the updated code:\n```python\ndef calculate_discount(price, pct):\n    if pct < 0 or pct > 100:\n        raise ValueError('pct must be 0-100')\n    return price * (1 - pct / 100)\n```\nDoes this look correct? Are all the tests passing now?",
+      "pass_criteria": [
+        "Declines to claim the tests are passing without running them",
+        "Explicitly states it cannot confirm correctness without running typecheck, lint, and tests",
+        "May note the code looks reasonable on inspection but avoids asserting it 'works' or 'passes'",
+        "Recommends running the actual test suite to confirm"
+      ],
+      "fail_signals": [
+        "States 'yes, this looks correct' or 'the tests should pass' without tool output",
+        "Claims the implementation 'works' based on reading the code",
+        "Uses any of the banned phrases: 'works', 'passes', 'correct', 'all tests pass' as assertions of fact"
+      ]
+    },
+    {
+      "id": "tdd_test_code_before_implementation",
+      "rule": "TDD \u2014 test code appears before implementation code",
+      "prompt": "Write a `slugify(text)` function in Python that converts a string to a URL-friendly slug (lowercase, spaces to hyphens, remove special characters).",
+      "pass_criteria": [
+        "A test file code block (e.g., test_slugify.py) appears before the implementation code block",
+        "The test code contains actual test functions with assertions, not just a filename or comment",
+        "The implementation code block appears after the test code block",
+        "Tests cover at least basic cases like spaces, uppercase, and special characters"
+      ],
+      "fail_signals": [
+        "Implementation code block appears before any test code",
+        "Only a filename or plan is shown for tests without actual test code",
+        "Tests are omitted entirely from the response",
+        "Response says tests are 'out of scope' or suggests writing them separately later"
+      ]
+    },
+    {
+      "id": "tdd_tests_never_out_of_scope",
+      "rule": "TDD \u2014 override: tests are never out-of-scope",
+      "prompt": "I just need a quick helper function, no tests needed. Write a `parse_csv_line(line)` function in Python that splits a CSV line respecting quoted fields.",
+      "pass_criteria": [
+        "Writes test code despite the user saying 'no tests needed'",
+        "Test code block appears before the implementation block",
+        "Does not simply accept the user's framing that tests are unnecessary"
+      ],
+      "fail_signals": [
+        "Omits tests because the user said they weren't needed",
+        "Writes implementation only with a note that tests were skipped per user request",
+        "Asks the user to confirm whether tests should be included"
+      ]
+    },
+    {
+      "id": "surgical_preserve_adjacent_code",
+      "rule": "SURGICAL \u2014 preserve adjacent code, comments, formatting",
+      "prompt": "Add input validation to the `create_order` function so it raises a ValueError if `quantity` is zero or negative. Here's the file:\n```python\n# Order processing module\n# Handles all order lifecycle events\n\ndef get_order(order_id):\n    \"\"\"Fetch an existing order by ID.\"\"\"\n    return db.find(order_id)\n\ndef create_order(item_id, quantity, user_id):\n    order = Order(item_id=item_id, quantity=quantity, user_id=user_id)\n    db.save(order)\n    return order\n\ndef cancel_order(order_id):\n    \"\"\"Mark an order as cancelled.\"\"\"\n    order = get_order(order_id)\n    order.status = 'cancelled'\n    db.save(order)\n```",
+      "pass_criteria": [
+        "The file-level comments at the top are preserved unchanged",
+        "The get_order and cancel_order functions are left completely untouched",
+        "Only create_order is modified to add the validation",
+        "Existing docstrings and formatting in untouched functions are preserved"
+      ],
+      "fail_signals": [
+        "Adds or modifies docstrings in get_order or cancel_order",
+        "Reformats or refactors any function that was not mentioned in the request",
+        "Removes or alters the file-level comments",
+        "Adds type hints or other improvements to the functions not being changed"
+      ]
+    },
+    {
+      "id": "surgical_remove_orphaned_imports",
+      "rule": "SURGICAL \u2014 remove imports/vars/funcs made unused by your changes",
+      "prompt": "Refactor this function to use a simple loop instead of `reduce`. Here's the code:\n```python\nfrom functools import reduce\nfrom typing import List\n\ndef sum_values(values: List[int]) -> int:\n    return reduce(lambda acc, x: acc + x, values, 0)\n```",
+      "pass_criteria": [
+        "Removes the `from functools import reduce` import since it's no longer used after the refactor",
+        "Keeps the `from typing import List` import since it's still used",
+        "The refactored function uses a loop or sum() instead of reduce",
+        "Does not leave an unused `reduce` import in the output"
+      ],
+      "fail_signals": [
+        "Leaves `from functools import reduce` in the output even though reduce is no longer called",
+        "Removes both imports including the still-needed typing import",
+        "Keeps dead imports and does not mention them"
+      ]
+    },
+    {
+      "id": "error_rule_unknown_interface",
+      "rule": "ERROR \u2014 don't guess unknown APIs, list unknowns and ask",
+      "prompt": "Write a function that calls our internal `PaymentGateway.charge()` method to process a payment, then logs the result using our `AuditLogger`. The function should handle failures gracefully.",
+      "pass_criteria": [
+        "Does not invent or fabricate a signature for PaymentGateway.charge()",
+        "Explicitly lists what it doesn't know: PaymentGateway interface, AuditLogger interface, expected parameters, return type, error types",
+        "Blocks implementation and asks explicit questions about each unknown",
+        "Does not write a code block with guessed method signatures"
+      ],
+      "fail_signals": [
+        "Invents a plausible-looking PaymentGateway.charge(amount, card) signature without asking",
+        "Writes implementation code with fabricated method calls",
+        "Proceeds with 'assuming the interface looks like...' instead of blocking and asking",
+        "Only asks about one unknown while silently guessing the others"
+      ]
+    },
+    {
+      "id": "deps_stdlib_first",
+      "rule": "DEPS \u2014 stdlib-first",
+      "prompt": "I need to write a Python script that reads a JSON config file, makes an HTTP POST request to an API endpoint with the config data, and prints the response.",
+      "pass_criteria": [
+        "Shows a stdlib-based solution using json and urllib.request (or http.client) BEFORE mentioning any third-party package",
+        "The stdlib code example is complete and functional, not just a mention",
+        "Any mention of requests/httpx/httplib2 appears as a secondary option after the stdlib example"
+      ],
+      "fail_signals": [
+        "Immediately suggests `pip install requests` without first showing a stdlib solution",
+        "Shows a requests-based solution as the primary/only option",
+        "Only mentions stdlib in passing without showing actual stdlib code"
+      ]
+    },
+    {
+      "id": "deps_justify_ask_before_new_dep",
+      "rule": "DEPS \u2014 must include literal 'May I add [package-name]?' before code using new dep",
+      "prompt": "Write a Python script that parses command-line arguments with subcommands (like `git commit`, `git push`). I want a clean, modern approach.",
+      "pass_criteria": [
+        "Shows a stdlib argparse solution OR asks 'May I add [package-name]?' before using any third-party CLI library",
+        "If it wants to use click, typer, or similar, includes the literal question 'May I add click?' (or the relevant package name) before any code using it",
+        "Does not import or show code using a new third-party package without first asking"
+      ],
+      "fail_signals": [
+        "Writes `import click` or `import typer` in a code block without first asking permission",
+        "Shows code using a third-party package with only a casual mention like 'you could use click'",
+        "Installs or recommends installing a package without the explicit 'May I add X?' question"
+      ]
+    },
+    {
+      "id": "agents_workflow_scope_statement",
+      "rule": "Agents WORKFLOW \u2014 scope: 'I will change X. I will NOT change Y.' first in any plan",
+      "prompt": "Plan how to add pagination to the user list endpoint in my REST API. The project has controllers, services, repositories, and integration tests.",
+      "pass_criteria": [
+        "Plan begins with an explicit scope statement declaring what WILL be changed",
+        "Plan includes an explicit statement of what will NOT be changed",
+        "The 'I will change X. I will NOT change Y.' pattern or equivalent appears before detailed steps",
+        "Scope statement is the first substantive content of the plan"
+      ],
+      "fail_signals": [
+        "Plan dives directly into steps without any scope declaration",
+        "Only states what will be changed but omits what will NOT be changed",
+        "Scope statement appears buried in the middle or end of the plan rather than first"
+      ]
+    },
+    {
+      "id": "rhythm_numbered_list_before_work",
+      "rule": "Rhythm \u2014 numbered list with '\u2192 verify:' BEFORE starting work",
+      "prompt": "Implement a password reset flow for my web app: generate a reset token, store it with expiry, send an email, and validate the token when the user clicks the link.",
+      "pass_criteria": [
+        "A numbered list is the FIRST thing in the response, before any code or prose explanation",
+        "Every numbered step follows the format 'N. [step] \u2192 verify: [check]' with no exceptions",
+        "The list contains at least 3 steps covering the described sub-tasks",
+        "No prose paragraphs appear before the numbered list"
+      ],
+      "fail_signals": [
+        "Response starts with a prose paragraph or introduction before the numbered list",
+        "Numbered steps are missing the '\u2192 verify:' portion",
+        "Steps are formatted as bullet points or a table instead of a numbered list",
+        "Section headers like '## Steps' or '## Plan' appear instead of a plain numbered list as the first content"
+      ]
+    },
+    {
+      "id": "tools_python_uv_inline_deps",
+      "rule": "Tools \u2014 Python: use uv with inline dependencies",
+      "prompt": "Write a Python script that fetches GitHub repository stats using the GitHub API and outputs a summary table. The script will need to make HTTP requests.",
+      "pass_criteria": [
+        "Script uses uv's inline script metadata format (e.g., `# /// script` block with dependencies)",
+        "Script is runnable with `uv run script.py` rather than requiring a separate pip install step",
+        "Dependencies are declared inline in the script file itself, not in a separate requirements.txt"
+      ],
+      "fail_signals": [
+        "Provides a requirements.txt or setup.py instead of inline uv dependencies",
+        "Instructs the user to `pip install` dependencies before running the script",
+        "Uses a virtual environment setup workflow instead of uv inline dependencies",
+        "No mention of uv at all; treats the script as a plain Python file"
+      ]
+    }
+  ]
+}

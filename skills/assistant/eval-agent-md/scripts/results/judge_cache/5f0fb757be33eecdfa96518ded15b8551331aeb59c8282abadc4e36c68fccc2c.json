@@ -1,0 +1,10 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response opens with notes/assumptions; no 'I will change X. I will NOT change Y.' scope statement anywhere.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Plan dives directly into steps without any scope declaration",
+    "Only states what will be changed but omits what will NOT be changed",
+    "Scope statement appears buried in the middle or end of the plan rather than first"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response only asks clarifying questions, no test code or implementation written",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Omits tests because the user said they weren't needed",
+    "Asks the user to confirm whether tests should be included"
+  ]
+}

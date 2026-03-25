@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response does not start with '## Assumptions'; opens with prose instead, skipping required structured format.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Skips '## Assumptions' and jumps into a plan or code"
+  ]
+}

@@ -1,0 +1,3 @@
+{
+  "response": "Since there's no file path given, I'll apply the guard clause directly to the snippet you provided:\n\n```python\ndef create_order(item_id: int, quantity: int, user_id: int):\n    if quantity <= 0:\n        raise ValueError(f\"quantity must be positive, got {quantity}\")\n    order = Order(item_id=item_id, quantity=quantity, user_id=user_id)\n    db.add(order)\n    db.commit()\n    return order\n```\n\nOne line added before the `Order(...)` instantiation \u2014 everything else is untouched. If you have the actual file path, share it and I'll apply the edit directly with the `Edit` tool."
+}

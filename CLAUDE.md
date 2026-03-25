@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Identity
 
-A marketplace of modular AI skills for LLM-assisted development. Provides layered architecture: generic platform rules + framework-specific patterns for frontend, backend, database, testing, and design.
+A marketplace of modular AI skills for LLM-assisted development. Skills are organized by role (frontend, backend, database, mobile, testing, cli) so developers find everything for their domain in one place.
 
 ## Tech Stack
 
@@ -30,24 +30,21 @@ Releases happen automatically via CI on merge to main. For manual releases outsi
 
 ## Skill Architecture
 
-Skills are organized into **category subdirectories** matching their tier:
+Skills are organized **flat by role** — everything for a domain lives in one directory:
 
 ```
 skills/
-├── universal/     # core-coding-standards, lang-typescript
-├── platform/      # platform-frontend, platform-backend, platform-database, platform-testing, platform-cli
-├── framework/     # tech-react, tech-trpc, tech-drizzle, tech-vitest, swift-concurrency
-├── design/        # design-frontend, design-accessibility, liquid-glass-ios
-├── assistant/     # agent-add-rule, agent-init-deep, agent-skill-creator, promptify
-└── _drafts/       # scaffold skills (in development), also categorized
+├── universal/     # Global standards — apply to all code
+├── frontend/      # Web UI: architecture, components, design, accessibility
+├── backend/       # Server-side: APIs, services, architecture
+├── database/      # Data layer: ORMs, schemas, queries
+├── mobile/        # iOS, Android, React Native
+├── testing/       # Test patterns and frameworks
+├── cli/           # Command-line tool patterns
+└── assistant/     # Agent workflow tools
 ```
 
-**Hierarchy**:
-1. **Universal** - apply to all code
-2. **Platform** - generic patterns (frontend, backend, database, testing, cli)
-3. **Framework** - extend platform skills with specific framework APIs
-4. **Design** - visual and UX patterns
-5. **Assistant** - agent workflow tools
+Scaffold (in-progress) skills live alongside ready skills, distinguished by `metadata.status: scaffold`.
 
 ### Skill Structure
 
@@ -69,7 +66,7 @@ Every SKILL.md MUST have:
 - `description` - what it does + trigger phrases for auto-invocation
 
 Required inside `metadata`:
-- `category` - one of: universal, platform, framework, design, assistant
+- `category` - one of: universal, frontend, backend, database, mobile, testing, cli, assistant
 - `tags` - array of keywords for discoverability
 - `status` - ready or scaffold
 

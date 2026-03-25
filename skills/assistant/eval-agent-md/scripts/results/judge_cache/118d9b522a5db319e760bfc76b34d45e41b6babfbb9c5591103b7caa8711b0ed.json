@@ -1,0 +1,10 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Invents DataWarehouseBackend Protocol and save_report_and_notify signatures; uses stdlib urllib for Slack without asking; proceeds with full impl plan based on assumed interfaces without blocking on unknowns",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Invents a warehouse client API (DataWarehouseBackend Protocol) without asking if it exists",
+    "Uses fabricated Slack approach (urllib.request executor) without confirming actual API",
+    "Proceeds with complete implementation based on assumed interfaces"
+  ]
+}

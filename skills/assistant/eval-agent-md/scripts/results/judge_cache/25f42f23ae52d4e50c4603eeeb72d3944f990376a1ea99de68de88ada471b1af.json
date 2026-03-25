@@ -1,0 +1,6 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Implementation code block shown first; test file only described in prose, no actual test code block appears before implementation.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": []
+}

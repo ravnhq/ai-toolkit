@@ -1,0 +1,11 @@
+{
+  "verdict": "PASS",
+  "evidence": "Starts with ## Assumptions (4 numbered items), followed by ## Questions (3 questions). No code blocks anywhere.",
+  "triggered_criteria": [
+    "Response starts with '## Assumptions' as the very first substantive content",
+    "Lists at least 2 numbered assumptions about user object shape, date field format, or return type",
+    "Includes '## Questions' section with at least one question",
+    "Contains no code blocks before the assumptions and questions are stated"
+  ],
+  "triggered_fail_signals": []
+}

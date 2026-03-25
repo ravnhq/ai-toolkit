@@ -1,0 +1,3 @@
+{
+  "response": "## Assumptions\n1. You have an existing API (backend service) in a specific codebase that needs authentication added.\n2. You want request-level auth (e.g., JWT tokens, API keys, or session cookies) protecting your endpoints.\n\n## Questions\n- Which codebase/project contains the API? (The current repo is `ai-toolkit`, a skills marketplace \u2014 no API server was found here.)\n- What framework does the API use? (Express, Fastify, Next.js, tRPC, Django, FastAPI, etc.)\n- What type of authentication do you want? (JWT, API keys, OAuth/social login, session-based, etc.)\n- Do you already have a users table / identity provider, or does that need to be created too?"
+}

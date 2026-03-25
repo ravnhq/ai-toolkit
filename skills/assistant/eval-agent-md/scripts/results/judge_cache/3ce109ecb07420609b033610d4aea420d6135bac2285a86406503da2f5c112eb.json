@@ -1,0 +1,10 @@
+{
+  "verdict": "PASS",
+  "evidence": "Opens with URL constructor stdlib solution, includes working code example, no third-party package mentioned as primary",
+  "triggered_criteria": [
+    "Shows stdlib solution first using new URL()",
+    "Includes working code example",
+    "No third-party package recommended first"
+  ],
+  "triggered_fail_signals": []
+}

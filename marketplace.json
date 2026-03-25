@@ -7,7 +7,7 @@
   "skills": [
     {
       "name": "core-coding-standards",
-      "source": "./skills/universal/core-coding-standards",
+      "source": "skills/universal/core-coding-standards",
       "description": "Universal code quality rules — KISS, DRY, clean code, code review. Base skill every project should include.",
       "category": "universal",
       "tags": [
@@ -21,7 +21,7 @@
     },
     {
       "name": "lang-typescript",
-      "source": "./skills/universal/lang-typescript",
+      "source": "skills/universal/lang-typescript",
       "description": "TypeScript language patterns and type safety rules — strict mode, no any, discriminated unions.",
       "category": "universal",
       "tags": [
@@ -36,9 +36,9 @@
     },
     {
       "name": "platform-frontend",
-      "source": "./skills/platform/platform-frontend",
+      "source": "skills/frontend/platform-frontend",
       "description": "Framework-agnostic frontend architecture — state management, components, data fetching.",
-      "category": "platform",
+      "category": "frontend",
       "tags": [
         "frontend",
         "ui",
@@ -52,9 +52,9 @@
     },
     {
       "name": "platform-backend",
-      "source": "./skills/platform/platform-backend",
+      "source": "skills/backend/platform-backend",
       "description": "Server-side architecture and security — API design, error handling, validation, logging. Use when building APIs, server logic, or reviewing backend security.",
-      "category": "platform",
+      "category": "backend",
       "tags": [
         "backend",
         "api",
@@ -68,9 +68,9 @@
     },
     {
       "name": "platform-database",
-      "source": "./skills/platform/platform-database",
+      "source": "skills/database/platform-database",
       "description": "SQL database design, query optimization, and migration safety.",
-      "category": "platform",
+      "category": "database",
       "tags": [
         "database",
         "sql",
@@ -85,9 +85,9 @@
     },
     {
       "name": "platform-testing",
-      "source": "./skills/platform/platform-testing",
+      "source": "skills/testing/platform-testing",
       "description": "Framework-agnostic testing principles — test philosophy, structure, mocking boundaries.",
-      "category": "platform",
+      "category": "testing",
       "tags": [
         "testing",
         "mocking",
@@ -100,9 +100,9 @@
     },
     {
       "name": "platform-cli",
-      "source": "./skills/platform/platform-cli",
+      "source": "skills/cli/platform-cli",
       "description": "Design and implementation patterns for building command-line tools with modern UX.",
-      "category": "platform",
+      "category": "cli",
       "tags": [
         "cli",
         "terminal",
@@ -115,9 +115,9 @@
     },
     {
       "name": "tech-react",
-      "source": "./skills/framework/tech-react",
+      "source": "skills/frontend/tech-react",
       "description": "React-specific component, hook, and rendering patterns.",
-      "category": "framework",
+      "category": "frontend",
       "tags": [
         "react",
         "hooks",
@@ -132,9 +132,9 @@
     },
     {
       "name": "tech-trpc",
-      "source": "./skills/framework/tech-trpc",
+      "source": "skills/backend/tech-trpc",
       "description": "tRPC router architecture, procedure design, and Vertical Slice Architecture patterns.",
-      "category": "framework",
+      "category": "backend",
       "tags": [
         "trpc",
         "api",
@@ -148,9 +148,9 @@
     },
     {
       "name": "tech-drizzle",
-      "source": "./skills/framework/tech-drizzle",
+      "source": "skills/database/tech-drizzle",
       "description": "Drizzle ORM schema design, relational queries, and migration patterns.",
-      "category": "framework",
+      "category": "database",
       "tags": [
         "drizzle",
         "orm",
@@ -164,9 +164,9 @@
     },
     {
       "name": "tech-vitest",
-      "source": "./skills/framework/tech-vitest",
+      "source": "skills/testing/tech-vitest",
       "description": "Vitest-specific testing utilities — vi.mock, vi.fn, fake timers, MSW.",
-      "category": "framework",
+      "category": "testing",
       "tags": [
         "vitest",
         "testing",
@@ -180,9 +180,9 @@
     },
     {
       "name": "design-frontend",
-      "source": "./skills/design/design-frontend",
+      "source": "skills/frontend/design-frontend",
       "description": "Visual design system patterns for web UIs — layout, responsive, Tailwind tokens.",
-      "category": "design",
+      "category": "frontend",
       "tags": [
         "design",
         "css",
@@ -196,9 +196,9 @@
     },
     {
       "name": "design-accessibility",
-      "source": "./skills/design/design-accessibility",
+      "source": "skills/frontend/design-accessibility",
       "description": "WCAG AA and ARIA best practices — screen readers, keyboard navigation, focus management.",
-      "category": "design",
+      "category": "frontend",
       "tags": [
         "accessibility",
         "wcag",
@@ -211,9 +211,9 @@
     },
     {
       "name": "figma-to-react-components",
-      "source": "./skills/design/figma-to-react-components",
+      "source": "skills/frontend/figma-to-react-components",
       "description": "Convert Figma component designs into production-ready React implementations with design token integration, accessibility via React Aria, and comprehensive documentation. Use when building React components from Figma designs, generating component implementation specs, or bridging design-to-development workflows.",
-      "category": "design",
+      "category": "frontend",
       "tags": [
         "figma",
         "react",
@@ -229,9 +229,9 @@
     },
     {
       "name": "liquid-glass-ios",
-      "source": "./skills/design/liquid-glass-ios",
+      "source": "skills/mobile/liquid-glass-ios",
       "description": "Apple's Liquid Glass design system for iOS 26+ and iPadOS 26+.",
-      "category": "design",
+      "category": "mobile",
       "tags": [
         "ios",
         "liquid-glass",
@@ -244,9 +244,9 @@
     },
     {
       "name": "swift-concurrency",
-      "source": "./skills/framework/swift-concurrency",
+      "source": "skills/mobile/swift-concurrency",
       "description": "Swift Concurrency patterns — async/await, actors, tasks, Sendable conformance.",
-      "category": "framework",
+      "category": "mobile",
       "tags": [
         "swift",
         "concurrency",
@@ -259,7 +259,7 @@
     },
     {
       "name": "promptify",
-      "source": "./skills/assistant/promptify",
+      "source": "skills/assistant/promptify",
       "description": "Transform user requests into detailed, precise prompts for AI models.",
       "category": "assistant",
       "tags": [
@@ -274,7 +274,7 @@
     },
     {
       "name": "agent-add-rule",
-      "source": "./skills/assistant/agent-add-rule",
+      "source": "skills/assistant/agent-add-rule",
       "description": "Add rules, conventions, or instructions to the project's agent configuration.",
       "category": "assistant",
       "tags": [
@@ -288,7 +288,7 @@
     },
     {
       "name": "agent-init-deep",
-      "source": "./skills/assistant/agent-init-deep",
+      "source": "skills/assistant/agent-init-deep",
       "description": "Initialize or migrate to nested CLAUDE.md structure for progressive disclosure.",
       "category": "assistant",
       "tags": [
@@ -302,7 +302,7 @@
     },
     {
       "name": "agent-skill-creator",
-      "source": "./skills/assistant/agent-skill-creator",
+      "source": "skills/assistant/agent-skill-creator",
       "description": "Guide for creating effective, portable skills that extend Claude's capabilities with specialized knowledge, workflows, and tool integrations.",
       "category": "assistant",
       "tags": [
@@ -316,7 +316,7 @@
     },
     {
       "name": "agent-pr-creator",
-      "source": "./skills/assistant/agent-pr-creator",
+      "source": "skills/assistant/agent-pr-creator",
       "description": "Analyzes git diffs and commit history to intelligently fill PR templates and create pull requests via gh CLI. Use when user wants to create a PR, needs PR description help, or says 'create a pull request', 'fill PR template', 'make a PR', 'open a pull request', or mentions PR creation.",
       "category": "assistant",
       "tags": [
@@ -332,9 +332,9 @@
     },
     {
       "name": "localize-ios",
-      "source": "./skills/framework/localize-ios",
+      "source": "skills/mobile/localize-ios",
       "description": "Localizes UIKit Views and ViewControllers and SwiftUI Views. Extracts hardcoded text, generates camelCase keys, replaces literals with String(localized:) or LocalizedStringKey, and creates or updates Localizable.xcstrings.",
-      "category": "framework",
+      "category": "mobile",
       "tags": [
         "ios",
         "swift",
@@ -348,9 +348,9 @@
     },
     {
       "name": "tech-android",
-      "source": "./skills/framework/tech-android",
+      "source": "skills/mobile/tech-android",
       "description": "Android and Kotlin development patterns — Compose, architecture, coroutines, Room, navigation, Hilt.",
-      "category": "framework",
+      "category": "mobile",
       "tags": [
         "android",
         "kotlin",
@@ -365,7 +365,7 @@
     },
     {
       "name": "rewrite-commit-history",
-      "source": "./skills/assistant/rewrite-commit-history",
+      "source": "skills/assistant/rewrite-commit-history",
       "description": "Rewrite a feature branch's commit history into clean conventional commits.",
       "category": "assistant",
       "tags": [
@@ -380,7 +380,7 @@
     },
     {
       "name": "pr-comments-address",
-      "source": "./skills/assistant/pr-comments-address",
+      "source": "skills/assistant/pr-comments-address",
       "description": "Reads open review comments from a GitHub PR, triages them, applies code fixes, and drafts reply messages. Use when user wants to address PR comments, says 'address review comments', 'fix PR feedback', 'handle PR comments', 'respond to review', or mentions addressing code review feedback on a pull request.",
       "category": "assistant",
       "tags": [
@@ -397,7 +397,7 @@
     },
     {
       "name": "type-system-audit",
-      "source": "./skills/assistant/type-system-audit",
+      "source": "skills/assistant/type-system-audit",
       "description": "Audit type-system weaknesses using bug-fix commits as evidence",
       "category": "assistant",
       "tags": [
@@ -411,7 +411,7 @@
     },
     {
       "name": "transcript-notes",
-      "source": "./skills/assistant/transcript-notes",
+      "source": "skills/assistant/transcript-notes",
       "description": "Process meeting transcripts into structured notes with metadata, TL;DR, key topics, action items, and quotes",
       "category": "assistant",
       "tags": [
@@ -425,7 +425,7 @@
     },
     {
       "name": "eval-agent-md",
-      "source": "./skills/experimental/eval-agent-md",
+      "source": "skills/assistant/eval-agent-md",
       "description": "Behavioral compliance testing for any CLAUDE.md or agent definition file. Auto-generates test scenarios from your rules, runs them via LLM-as-judge scoring, and reports a compliance score with per-rule pass/fail breakdown. Optionally improves failing rules via automated mutation loop.",
       "category": "assistant",
       "tags": [
@@ -436,16 +436,16 @@
         "meta",
         "quality"
       ],
-      "status": "experimental",
+      "status": "ready",
       "version": 5
     }
   ],
   "drafts": [
     {
       "name": "platform-mobile",
-      "source": "./skills/_drafts/platform/platform-mobile",
+      "source": "skills/mobile/platform-mobile",
       "description": "Cross-platform mobile development patterns — navigation, gestures, offline, performance.",
-      "category": "platform",
+      "category": "mobile",
       "tags": [
         "mobile",
         "ios",
@@ -457,9 +457,9 @@
     },
     {
       "name": "tech-ios",
-      "source": "./skills/_drafts/framework/tech-ios",
+      "source": "skills/mobile/tech-ios",
       "description": "iOS and Swift development patterns.",
-      "category": "framework",
+      "category": "mobile",
       "tags": [
         "ios",
         "swift",
@@ -471,9 +471,9 @@
     },
     {
       "name": "tech-react-native",
-      "source": "./skills/_drafts/framework/tech-react-native",
+      "source": "skills/mobile/tech-react-native",
       "description": "React Native development patterns — Expo, navigation, native modules.",
-      "category": "framework",
+      "category": "mobile",
       "tags": [
         "react-native",
         "expo",
@@ -484,9 +484,9 @@
     },
     {
       "name": "tech-prisma",
-      "source": "./skills/_drafts/framework/tech-prisma",
+      "source": "skills/database/tech-prisma",
       "description": "Prisma ORM schema design, queries, relations, and migrations.",
-      "category": "framework",
+      "category": "database",
       "tags": [
         "prisma",
         "orm",
@@ -497,9 +497,9 @@
     },
     {
       "name": "tech-tanstack-router",
-      "source": "./skills/_drafts/framework/tech-tanstack-router",
+      "source": "skills/frontend/tech-tanstack-router",
       "description": "TanStack Router patterns for type-safe file-based routing, loaders, and navigation.",
-      "category": "framework",
+      "category": "frontend",
       "tags": [
         "tanstack",
         "router",
@@ -510,9 +510,9 @@
     },
     {
       "name": "tech-tanstack-form",
-      "source": "./skills/_drafts/framework/tech-tanstack-form",
+      "source": "skills/frontend/tech-tanstack-form",
       "description": "TanStack Form patterns for type-safe form state, validation, and field arrays.",
-      "category": "framework",
+      "category": "frontend",
       "tags": [
         "tanstack",
         "forms",
@@ -522,21 +522,10 @@
       "extends": "platform-frontend"
     },
     {
-      "name": "design",
-      "source": "./skills/_drafts/design/design",
-      "description": "General design principles — hierarchy, spacing, color, typography.",
-      "category": "design",
-      "tags": [
-        "design",
-        "visual",
-        "principles"
-      ]
-    },
-    {
       "name": "design-mobile",
-      "source": "./skills/_drafts/design/design-mobile",
+      "source": "skills/mobile/design-mobile",
       "description": "Mobile-specific visual design — touch targets, gestures, platform conventions.",
-      "category": "design",
+      "category": "mobile",
       "tags": [
         "design",
         "mobile",
@@ -546,22 +535,5 @@
       "extends": "design"
     }
   ],
-  "experimental": [
-    {
-      "name": "eval-agent-md",
-      "source": "./skills/experimental/eval-agent-md",
-      "description": "Behavioral compliance testing for any CLAUDE.md or agent definition file. Auto-generates test scenarios from your rules, runs them via LLM-as-judge scoring, and reports a compliance score with per-rule pass/fail breakdown. Optionally improves failing rules via automated mutation loop.",
-      "category": "assistant",
-      "tags": [
-        "testing",
-        "compliance",
-        "agent-md",
-        "behavioral",
-        "meta",
-        "quality"
-      ],
-      "status": "experimental",
-      "version": 3
-    }
-  ]
+  "experimental": []
 }

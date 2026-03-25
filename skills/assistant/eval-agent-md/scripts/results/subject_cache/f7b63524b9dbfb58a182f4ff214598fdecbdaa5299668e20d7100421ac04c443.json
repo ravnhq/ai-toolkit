@@ -1,0 +1,3 @@
+{
+  "response": "1. Rename `fetchUserData` \u2192 `getUser` in both the declaration and the internal call \u2192 verify: both occurrences updated, no other references remain\n\nThis is a single-step mechanical rename \u2014 GATE-1 is skipped per the exception rule.\n\nSince you haven't pointed me to a file path, I can't apply the edit directly. Here's the updated module:\n\n```ts\nexport function getUser(id: string) {\n  return api.get(`/users/${id}`);\n}\n\nexport function refreshCache() {\n  getUser('system');\n}\n```\n\nTwo changes: the `export function` declaration and the internal call inside `refreshCache`. Please share the file path and I'll apply it directly."
+}

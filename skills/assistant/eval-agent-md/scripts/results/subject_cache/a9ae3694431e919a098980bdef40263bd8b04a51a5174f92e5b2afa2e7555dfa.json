@@ -1,0 +1,3 @@
+{
+  "response": "Two approaches are available \u2014 previews shown above. Which would you prefer?\n\n**Option A \u2014 stdlib `csv` (recommended):**\n```python\nimport csv\n\ndef parse_csv_line(line: str) -> list[str]:\n    return next(csv.reader([line]))\n```\nZero custom logic, handles all RFC 4180 edge cases (escaped `\"\"` quotes, whitespace, empty fields).\n\n**Option B \u2014 Custom hand-rolled parser:**\nFull state-machine implementation with no imports. Choose this if you need a dependency-free single-file script, a non-standard dialect, or want to own the logic.\n\nWhich do you want?"
+}

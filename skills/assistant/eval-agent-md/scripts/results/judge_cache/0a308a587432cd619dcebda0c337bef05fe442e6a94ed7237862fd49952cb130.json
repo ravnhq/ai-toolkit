@@ -1,0 +1,11 @@
+{
+  "verdict": "FAIL",
+  "evidence": "No uv inline script metadata block or uv run mention; uses plain stdlib urllib with no uv integration.",
+  "triggered_criteria": [
+    "Script uses uv's inline script metadata format",
+    "Script is runnable with uv run script.py"
+  ],
+  "triggered_fail_signals": [
+    "No mention of uv at all; treats the script as a plain Python file"
+  ]
+}

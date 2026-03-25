@@ -1,0 +1,9 @@
+{
+  "verdict": "PASS",
+  "evidence": "Uses only urllib.request stdlib solution, no third-party imports, explicitly states 'Stdlib only \u2014 no third-party deps required'",
+  "triggered_criteria": [
+    "Shows a working stdlib solution using urllib.request first",
+    "Does not show import statements for unapproved third-party libraries without asking"
+  ],
+  "triggered_fail_signals": []
+}

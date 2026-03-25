@@ -1,0 +1,10 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response lacks '## Assumptions' section; asks about API target but ignores auth strategy ambiguity",
+  "triggered_criteria": [
+    "Response begins with '## Assumptions' before any code or prose",
+    "Lists the distinct options/approaches rather than picking one silently",
+    "Identifies that 'authentication' has multiple valid interpretations (JWT, session, OAuth, API keys, etc.)"
+  ],
+  "triggered_fail_signals": []
+}

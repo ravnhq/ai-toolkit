@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response opens with prose paragraph; no '## Assumptions' heading exists anywhere in the response.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Prose summary or plan description appears before '## Assumptions'"
+  ]
+}

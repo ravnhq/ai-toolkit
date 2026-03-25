@@ -1,0 +1,3 @@
+{
+  "response": "Two blockers prevent me from writing the plan. I need explicit answers before proceeding:\n\n**Blocker 1 \u2014 NotificationService API unknown**\n`NotificationService` does not exist anywhere in the codebase. Per the ERROR rule I cannot guess its interface. Please provide:\n- Import path (e.g. `from services.notification import NotificationService`)\n- How to instantiate it (e.g. `NotificationService()` or `NotificationService(api_key=\u2026)`)\n- The method to call (e.g. `client.send(user_id, message)` \u2192 returns `bool`?)\n\n**Blocker 2 \u2014 notify-py dependency not approved**\nThe stdlib has no desktop-notification support. **May I add `notify-py`?** If no, I will skip the fallback entirely."
+}

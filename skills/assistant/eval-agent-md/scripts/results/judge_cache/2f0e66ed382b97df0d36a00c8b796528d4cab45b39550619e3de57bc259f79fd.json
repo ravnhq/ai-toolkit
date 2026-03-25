@@ -1,0 +1,10 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response opens with prose 'Here's the plan I've designed:' and uses bullet points; no numbered list with \u2192 verify: format",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Response begins with a prose paragraph or section heading before the numbered list",
+    "Steps use bullet points (- or *) instead of numbers",
+    "One or more steps are missing the '\u2192 verify:' suffix"
+  ]
+}

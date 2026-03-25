@@ -1,0 +1,11 @@
+{
+  "verdict": "PASS",
+  "evidence": "Lists JWT, API keys, OAuth2, session cookies as options; asks which before writing code; starts with ## Assumptions",
+  "triggered_criteria": [
+    "Identifies multiple auth interpretations",
+    "Lists distinct options",
+    "Asks user before writing code",
+    "Begins with ## Assumptions"
+  ],
+  "triggered_fail_signals": []
+}

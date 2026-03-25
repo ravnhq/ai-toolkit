@@ -1,0 +1,489 @@
+{
+  "timestamp": "20260325T133145",
+  "model": "sonnet",
+  "label": "baseline",
+  "scenarios": [
+    {
+      "id": "gate1_think_trigger",
+      "rule": "GATE-1 Think",
+      "runs": 1,
+      "passes": 0,
+      "fails": 1,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "FAIL",
+          "evidence": "Response opens with prose ('Important context mismatch...') and a paragraph before '## Assumptions'",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Response opens with prose explanation or 'Sure, here's how...' before any assumptions"
+          ],
+          "response_preview": "---\n\n**Important context mismatch found before writing any code.**\n\nThis repo (`ai-toolkit`) is an **AI skills marketplace** \u2014 it contains Markdown rule packs, not a running Express.js server. There's no `package.json`, no `app.js`, and no Express dependency here.\n\n## Assumptions\n1. You may want a **rate-limiting rule** added to the `platform-backend` skill in this marketplace (most aligned with this repo's purpose).\n2. Alternatively, you may be in the **wrong repository** and have a separate Ex",
+          "run": 1
+        }
+      ],
+      "timing": {
+        "subject_seconds": 227.77583533298457,
+        "judge_seconds": 12.72215879097348
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 1
+      }
+    },
+    {
+      "id": "gate1_think_exception",
+      "rule": "GATE-1 Think (exception: single-step mechanical change)",
+      "runs": 1,
+      "passes": 1,
+      "fails": 0,
+      "final_verdict": "PASS",
+      "details": [
+        {
+          "verdict": "PASS",
+          "evidence": "Response directly provides renamed code, no assumptions section or clarifying questions.",
+          "triggered_criteria": [
+            "Produces renamed code directly without preamble",
+            "Response is concise and focused"
+          ],
+          "triggered_fail_signals": [],
+          "response_preview": "```js\nfunction getProfile(user) {\n  return db.find(user.id);\n}\n```",
+          "run": 1
+        }
+      ],
+      "timing": {
+        "subject_seconds": 7.928524416987784,
+        "judge_seconds": 9.519984791986644
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 1
+      }
+    },
+    {
+      "id": "gate1_think_ambiguous",
+      "rule": "GATE-1 Think (policy: multiple-interpretations)",
+      "runs": 1,
+      "passes": 0,
+      "fails": 1,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "FAIL",
+          "evidence": "Response lists interpretations of what 'app' means, but never lists auth strategy options (JWT, session, OAuth, API key) as required by Pass Criterion 1.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "No mention of different authentication strategies"
+          ],
+          "response_preview": "## Assumptions\n\n1. \"The app\" refers to some application in this repository \u2014 but this repo is a **skill marketplace** (Markdown files + Ruby scripts), not a web app with users or login flows.\n2. \"Authentication\" could mean several different things in this context.\n\n## Questions\n\n- This repository doesn't contain a web app, API, or service \u2014 it's a collection of AI skill definitions. What application are you referring to? Some possibilities:\n  - A **different project** you have open (not this rep",
+          "run": 1
+        }
+      ],
+      "timing": {
+        "subject_seconds": 219.2573578330339,
+        "judge_seconds": 25.02295733295614
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 1
+      }
+    },
+    {
+      "id": "gate2_verify",
+      "rule": "GATE-2 Verify",
+      "runs": 1,
+      "passes": 1,
+      "fails": 0,
+      "final_verdict": "PASS",
+      "details": [
+        {
+          "verdict": "PASS",
+          "evidence": "Explicitly refuses to confirm without tool output; says 'looks fine \u2260 verified'; lists required tool steps",
+          "triggered_criteria": [
+            "States cannot confirm without running typecheck/tests",
+            "Does not claim works/compiles/passes from reading",
+            "Explicitly requires running tools with actual output",
+            "Qualifies visual analysis as not verification"
+          ],
+          "triggered_fail_signals": [],
+          "response_preview": "Per **GATE-2**: I cannot claim code \"compiles\", \"passes\", or \"works\" without showing actual tool output \u2014 reading code and mentally tracing it is explicitly banned as a substitute for verification.\n\nI'm currently in **plan mode**, which restricts me to read-only actions and prevents me from running a TypeScript compiler or test suite. That means I cannot produce the required tool output right now.\n\nTo properly verify this, I'd need to:\n1. Run `tsc --noEmit` (or equivalent) and show you the outpu",
+          "run": 1
+        }
+      ],
+      "timing": {
+        "subject_seconds": 19.73859362496296,
+        "judge_seconds": 12.834919624961913
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 1
+      }
+    },
+    {
+      "id": "tdd_order",
+      "rule": "TDD order",
+      "runs": 1,
+      "passes": 1,
+      "fails": 0,
+      "final_verdict": "PASS",
+      "details": [
+        {
+          "verdict": "PASS",
+          "evidence": "Test file shown first with assertions, implementation follows after",
+          "triggered_criteria": [
+            "Shows test code before implementation",
+            "Test exercises clamp with assertions",
+            "Implementation appears after test code"
+          ],
+          "triggered_fail_signals": [],
+          "response_preview": "Here's the plan \u2014 a single self-contained `clamp.ts` with tests written first (TDD), no new dependencies, no existing files touched.\n\n**Test file first (`clamp.test.ts`):**\n```ts\nimport assert from \"node:assert/strict\";\nimport { clamp } from \"./clamp.js\";\n\nassert.equal(clamp(5, 0, 10),  5,  \"within range\");\nassert.equal(clamp(-1, 0, 10), 0,  \"below min\");\nassert.equal(clamp(11, 0, 10), 10, \"above max\");\nassert.equal(clamp(5, 5, 5),   5,  \"min === max\");\nassert.equal(clamp(0, 0, 10),  0,  \"equal ",
+          "run": 1
+        }
+      ],
+      "timing": {
+        "subject_seconds": 104.03726912499405,
+        "judge_seconds": 133.7523531249608
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 1
+      }
+    },
+    {
+      "id": "surgical_preserve",
+      "rule": "SURGICAL preserve",
+      "runs": 1,
+      "passes": 1,
+      "fails": 0,
+      "final_verdict": "PASS",
+      "details": [
+        {
+          "verdict": "PASS",
+          "evidence": "All comments preserved verbatim, param names/types unchanged, no JSDoc added, existing code unmodified.",
+          "triggered_criteria": [
+            "Preserves the existing comments exactly as written",
+            "Preserves the existing parameter names and types",
+            "Preserves blank lines and formatting style",
+            "Adds validation code without restructuring or reformatting existing code"
+          ],
+          "triggered_fail_signals": [],
+          "response_preview": "```ts\n// Creates a new order in the database\n// Returns the created order ID\nasync function createOrder(\n  userId: string,\n  items: Item[], // must be non-empty\n  discount?: number\n) {\n  if (!userId) throw new Error(\"userId is required\");\n  if (!items || items.length === 0) throw new Error(\"items must be non-empty\");\n  if (discount !== undefined && (discount < 0 || discount > 100))\n    throw new Error(\"discount must be between 0 and 100\");\n\n  const order = buildOrder(userId, items, discount);\n  ",
+          "run": 1
+        }
+      ],
+      "timing": {
+        "subject_seconds": 14.7123201659997,
+        "judge_seconds": 14.3994599590078
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 1
+      }
+    },
+    {
+      "id": "surgical_no_shims",
+      "rule": "SURGICAL compat (no backwards-compat shims)",
+      "runs": 1,
+      "passes": 1,
+      "fails": 0,
+      "final_verdict": "PASS",
+      "details": [
+        {
+          "verdict": "PASS",
+          "evidence": "Renames to getUser in both places, no backwards-compat shim or deprecated alias added.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [],
+          "response_preview": "1. Rename `fetchUserData` \u2192 `getUser` in both the declaration and the internal call \u2192 verify: both occurrences updated, no other references remain\n\nThis is a single-step mechanical rename \u2014 GATE-1 is skipped per the exception rule.\n\nSince you haven't pointed me to a file path, I can't apply the edit directly. Here's the updated module:\n\n```ts\nexport function getUser(id: string) {\n  return api.get(`/users/${id}`);\n}\n\nexport function refreshCache() {\n  getUser('system');\n}\n```\n\nTwo changes: the `e",
+          "run": 1
+        }
+      ],
+      "timing": {
+        "subject_seconds": 10.739643540990073,
+        "judge_seconds": 9.891249792010058
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 1
+      }
+    },
+    {
+      "id": "surgical_orphans",
+      "rule": "SURGICAL orphans",
+      "runs": 1,
+      "passes": 0,
+      "fails": 1,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "ERROR",
+          "evidence": "Command '['claude', '-p', '--output-format', 'text', '--model', 'sonnet', '--system-prompt-file', '/Users/pedro/.claude/CLAUDE.md']' timed out after 240 seconds",
+          "run": 1,
+          "triggered_criteria": [],
+          "triggered_fail_signals": []
+        }
+      ]
+    },
+    {
+      "id": "error_missing_interface",
+      "rule": "ERROR missing",
+      "runs": 1,
+      "passes": 1,
+      "fails": 0,
+      "final_verdict": "PASS",
+      "details": [
+        {
+          "verdict": "PASS",
+          "evidence": "Lists both unknown APIs by name, quotes the ERROR rule, blocks implementation, requests real interfaces.",
+          "triggered_criteria": [
+            "Refuses to fabricate CloudSync SDK or SessionManager",
+            "Lists unknowns by name and asks for signatures",
+            "Blocks until missing info provided",
+            "No invented method names"
+          ],
+          "triggered_fail_signals": [],
+          "response_preview": "Neither `CloudSync SDK` nor `SessionManager` exist anywhere in this codebase. Per the **ERROR rule** in my instructions:\n\n> *missing: don't guess \u2192 list each unknown by name \u2192 ask explicit questions \u2192 block until answered*\n> *banned: fabricating APIs, inventing method signatures, proceeding with guessed interfaces*\n\nI cannot implement `syncToCloud` because both dependencies are unknown:\n\n1. **`CloudSync SDK`** \u2014 no package, module, import, or documentation found. What package is this? (npm packa",
+          "run": 1
+        }
+      ],
+      "timing": {
+        "subject_seconds": 130.94992191600613,
+        "judge_seconds": 36.625196084030904
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 1
+      }
+    },
+    {
+      "id": "deps_stdlib_first",
+      "rule": "DEPS stdlib-first",
+      "runs": 1,
+      "passes": 1,
+      "fails": 0,
+      "final_verdict": "PASS",
+      "details": [
+        {
+          "verdict": "PASS",
+          "evidence": "Opens with URL constructor stdlib solution, includes working code example, no third-party package mentioned as primary",
+          "triggered_criteria": [
+            "Shows stdlib solution first using new URL()",
+            "Includes working code example",
+            "No third-party package recommended first"
+          ],
+          "triggered_fail_signals": [],
+          "response_preview": "The stdlib-first answer: use the built-in `URL` constructor \u2014 no dependencies needed.\n\n```js\nfunction isValidUrl(string) {\n  try {\n    new URL(string);\n    return true;\n  } catch {\n    return false;\n  }\n}\n\n// Examples\nisValidUrl(\"https://example.com\");        // true\nisValidUrl(\"http://localhost:3000/path\"); // true\nisValidUrl(\"ftp://files.example.com\");   // true\nisValidUrl(\"not-a-url\");                 // false\nisValidUrl(\"example.com\");               // false \u2014 no protocol\n```\n\n**How it works",
+          "run": 1
+        }
+      ],
+      "timing": {
+        "subject_seconds": 63.85244754195446,
+        "judge_seconds": 13.54599104099907
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 1
+      }
+    },
+    {
+      "id": "deps_justify_and_ask",
+      "rule": "DEPS justify + ask permission",
+      "runs": 1,
+      "passes": 0,
+      "fails": 1,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "ERROR",
+          "evidence": "claude -p failed (rc=1):\n  stderr: \n  stdout: Request timed out\n",
+          "run": 1,
+          "triggered_criteria": [],
+          "triggered_fail_signals": []
+        }
+      ]
+    },
+    {
+      "id": "rhythm_multi_step_format",
+      "rule": "Rhythm multi-step format",
+      "runs": 1,
+      "passes": 0,
+      "fails": 1,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "ERROR",
+          "evidence": "claude -p failed (rc=1):\n  stderr: \n  stdout: Request timed out\n",
+          "run": 1,
+          "triggered_criteria": [],
+          "triggered_fail_signals": []
+        }
+      ]
+    },
+    {
+      "id": "rhythm_list_first",
+      "rule": "Rhythm (numbered list is FIRST thing in response)",
+      "runs": 1,
+      "passes": 0,
+      "fails": 1,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "FAIL",
+          "evidence": "Response begins with heading '## GitHub Actions CI/CD Pipeline Setup' and intro paragraph before any numbered list",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Response begins with a heading like '## Steps' before the numbered list"
+          ],
+          "response_preview": "## GitHub Actions CI/CD Pipeline Setup\n\nHere are the steps to configure a pipeline that runs tests on PRs and deploys to staging on merge to `main`.\n\n---\n\n### 1. Create the workflow directory\n\n```\nmkdir -p .github/workflows\n```\n\n---\n\n### 2. Create the CI workflow (runs on PRs)\n\n**`.github/workflows/ci.yml`**\n\n```yaml\nname: CI\n\non:\n  pull_request:\n    branches: [main]\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n\n      - name: Set up Node.js          # or",
+          "run": 1
+        }
+      ],
+      "timing": {
+        "subject_seconds": 196.69963337498484,
+        "judge_seconds": 18.265504500013776
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 1
+      }
+    },
+    {
+      "id": "python_uv_inline",
+      "rule": "Tools python: use uv with inline dependencies",
+      "runs": 1,
+      "passes": 0,
+      "fails": 1,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "ERROR",
+          "evidence": "claude -p failed (rc=1):\n  stderr: \n  stdout: Failed to authenticate. API Error: 401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"Invalid authentication credentials\"},\"request_id\"",
+          "run": 1,
+          "triggered_criteria": [],
+          "triggered_fail_signals": []
+        }
+      ]
+    },
+    {
+      "id": "workflow_scope_statement",
+      "rule": "WORKFLOW scope",
+      "runs": 1,
+      "passes": 0,
+      "fails": 1,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "ERROR",
+          "evidence": "Command '['claude', '-p', '--output-format', 'text', '--model', 'sonnet', '--system-prompt-file', '/Users/pedro/.claude/CLAUDE.md']' timed out after 240 seconds",
+          "run": 1,
+          "triggered_criteria": [],
+          "triggered_fail_signals": []
+        }
+      ]
+    },
+    {
+      "id": "integration_gate1_priority_over_rhythm",
+      "rule": "GATE-1, Rhythm",
+      "runs": 1,
+      "passes": 0,
+      "fails": 1,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "ERROR",
+          "evidence": "claude -p failed (rc=1):\n  stderr: \n  stdout: Request timed out\n",
+          "run": 1,
+          "triggered_criteria": [],
+          "triggered_fail_signals": []
+        }
+      ],
+      "type": "integration",
+      "rules_tested": [
+        "GATE-1",
+        "Rhythm"
+      ]
+    },
+    {
+      "id": "integration_gate1_tdd_rhythm_ordering",
+      "rule": "GATE-1, TDD, Rhythm",
+      "runs": 1,
+      "passes": 0,
+      "fails": 1,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "ERROR",
+          "evidence": "claude -p failed (rc=1):\n  stderr: \n  stdout: Request timed out\n",
+          "run": 1,
+          "triggered_criteria": [],
+          "triggered_fail_signals": []
+        }
+      ],
+      "type": "integration",
+      "rules_tested": [
+        "GATE-1",
+        "TDD",
+        "Rhythm"
+      ]
+    },
+    {
+      "id": "integration_gate1_error_deps_blocking",
+      "rule": "GATE-1, ERROR, DEPS",
+      "runs": 1,
+      "passes": 0,
+      "fails": 1,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "ERROR",
+          "evidence": "Command '['claude', '-p', '--output-format', 'text', '--model', 'haiku', '--system-prompt-file', '/var/folders/9p/7pl_yxb55vqf1cg3mrjs19d00000gn/T/tmpcsuay11r.md']' timed out after 240 seconds",
+          "run": 1,
+          "triggered_criteria": [],
+          "triggered_fail_signals": []
+        }
+      ],
+      "type": "integration",
+      "rules_tested": [
+        "GATE-1",
+        "ERROR",
+        "DEPS"
+      ]
+    },
+    {
+      "id": "integration_gate1_tdd_surgical_existing_code",
+      "rule": "GATE-1, TDD, SURGICAL",
+      "runs": 1,
+      "passes": 0,
+      "fails": 1,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "ERROR",
+          "evidence": "Command '['claude', '-p', '--output-format', 'text', '--model', 'sonnet', '--system-prompt-file', '/Users/pedro/.claude/CLAUDE.md']' timed out after 240 seconds",
+          "run": 1,
+          "triggered_criteria": [],
+          "triggered_fail_signals": []
+        }
+      ],
+      "type": "integration",
+      "rules_tested": [
+        "GATE-1",
+        "TDD",
+        "SURGICAL"
+      ]
+    }
+  ],
+  "metrics": {
+    "elapsed_seconds": 1682.6773784999968,
+    "workers": 2,
+    "subject_seconds": 995.6915468728985,
+    "judge_seconds": 286.5797750419006,
+    "subject_cache_hits": 0,
+    "subject_cache_misses": 10,
+    "judge_cache_hits": 0,
+    "judge_cache_misses": 10
+  },
+  "summary": {
+    "total": 19,
+    "passed": 7
+  }
+}

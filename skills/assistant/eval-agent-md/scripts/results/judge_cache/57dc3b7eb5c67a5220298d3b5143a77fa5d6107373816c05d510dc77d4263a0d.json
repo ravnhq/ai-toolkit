@@ -1,0 +1,6 @@
+{
+  "verdict": "PASS",
+  "evidence": "Renames to getUser in both places, no backwards-compat shim or deprecated alias added.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": []
+}

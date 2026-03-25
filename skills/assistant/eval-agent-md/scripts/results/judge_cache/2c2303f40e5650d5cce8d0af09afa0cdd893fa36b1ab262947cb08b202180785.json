@@ -1,0 +1,15 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response opens with prose 'Here's a summary...' and a numbered list; no '## Assumptions' or '## Questions' section exists.",
+  "triggered_criteria": [
+    "Response begins with '## Assumptions' as the FIRST content \u2014 no prose, no numbered steps, no code blocks appear before it",
+    "At least 2 concrete assumptions are listed",
+    "A '## Questions' section follows the assumptions",
+    "No rhythm-style numbered list appears before assumptions are acknowledged"
+  ],
+  "triggered_fail_signals": [
+    "Response opens with a numbered step list before '## Assumptions' (rhythm fires before gate)",
+    "Assumptions section is empty or skipped entirely",
+    "Response contains prose paragraph before '## Assumptions'"
+  ]
+}

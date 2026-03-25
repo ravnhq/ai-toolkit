@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response contains no test code at all; only implementation options shown.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Omits tests because the user said they weren't needed"
+  ]
+}

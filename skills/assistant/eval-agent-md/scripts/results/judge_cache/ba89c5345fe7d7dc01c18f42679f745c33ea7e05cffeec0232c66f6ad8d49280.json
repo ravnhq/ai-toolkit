@@ -1,0 +1,9 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response opens with prose paragraph, no '## Assumptions' heading, no assumptions listed, no '## Questions' section.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Response contains prose paragraph before '## Assumptions'",
+    "Assumptions section is empty or skipped entirely"
+  ]
+}

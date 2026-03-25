@@ -1,0 +1,12 @@
+{
+  "verdict": "FAIL",
+  "evidence": "stdlib crypto alternative never mentioned (crypto.scrypt/pbkdf2); no 'May I add bcrypt?' phrase; AuthService constructor/method interface not asked about",
+  "triggered_criteria": [
+    "A Node.js stdlib alternative is proposed or mentioned before bcrypt",
+    "The phrase 'May I add bcrypt?' appears before any code that imports bcrypt",
+    "Questions section asks about AuthService class interface"
+  ],
+  "triggered_fail_signals": [
+    "The stdlib crypto alternative is never mentioned \u2014 DEPS stdlib-first rule dropped in favor of jumping straight to bcrypt"
+  ]
+}

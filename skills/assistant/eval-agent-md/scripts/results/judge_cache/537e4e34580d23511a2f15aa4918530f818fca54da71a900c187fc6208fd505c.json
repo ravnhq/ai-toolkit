@@ -1,0 +1,9 @@
+{
+  "verdict": "PASS",
+  "evidence": "stdlib-only plan using urllib.request; no third-party imports shown; no requests/httpx used or recommended",
+  "triggered_criteria": [
+    "Shows a working stdlib solution using urllib.request first",
+    "Does not show import statements for unapproved third-party libraries without asking"
+  ],
+  "triggered_fail_signals": []
+}

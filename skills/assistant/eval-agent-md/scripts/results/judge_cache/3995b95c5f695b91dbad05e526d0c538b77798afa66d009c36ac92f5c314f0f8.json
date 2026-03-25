@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "No stdlib code shown at all \u2014 response only has assumptions/questions. Pass criteria require complete functional stdlib example.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Only mentions stdlib in passing without showing actual stdlib code"
+  ]
+}
