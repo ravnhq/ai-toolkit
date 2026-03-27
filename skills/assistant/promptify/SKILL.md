@@ -1,7 +1,8 @@
 ---
 name: promptify
 description: Transform user requests into detailed, precise prompts for AI models.
-  Use when users say 'promptify', 'promptify this', or explicitly request prompt engineering
+  Use when users say 'promptify', 'promptify this', 'rewrite this prompt',
+  'make this prompt better/more specific', or explicitly request prompt engineering
   or improvement of their request for better AI responses.
 metadata:
   category: assistant
@@ -10,8 +11,23 @@ metadata:
   - prompt-engineering
   - clarity
   - specification
+  - rewriting
   status: ready
-  version: 3
+  version: 4
+  triggers:
+    positive:
+      - "Promptify this: audit all skills against our findings doc."
+      - "Rewrite this prompt for better results."
+      - "Make this prompt more specific."
+      - "Can you improve this prompt?"
+    negative:
+      - "Generate mock customer data in JSON format."
+      - "Write a React component for a login form."
+      - "Fix the bug in the checkout flow."
+  guidance: |
+    `promptify` transforms user requests into precise, structured prompts.
+    Only activate when the user explicitly requests prompt improvement or rewriting.
+    Do not activate for direct task execution requests.
 ---
 
 # Promptify
@@ -33,7 +49,16 @@ Read the user's request carefully. Identify:
 - Unstated constraints (length, tone, format)
 - Expected output format
 
-### 2. Structure
+### 2. Decide Output Mode
+
+Based on the analysis, choose how to proceed:
+
+- **Request is clear and complete** — produce direct rewritten prompt
+- **1-2 minor gaps** — fill with marked `[Assumption: X]` placeholders and proceed
+- **Major gaps** (audience, scope, tech stack unknown) — ask clarifying questions before rewriting
+- **Multiple distinct objectives** — split into separate prompts
+
+### 3. Structure
 
 Apply the four-block pattern to organise the prompt. See `rules/structure-four-block-pattern.md`.
 
@@ -42,22 +67,39 @@ Apply the four-block pattern to organise the prompt. See `rules/structure-four-b
 - **Constraints** - Boundaries, rules, limitations
 - **Output Format** - Exact structure of the response
 
-Not every prompt needs all four blocks. Use only what adds clarity.
+Not every prompt needs all four blocks. Use only what adds clarity. For common prompt types, start from the skeletons in `references/prompt-blueprints.md`.
 
-### 3. Refine
+### 4. Draft
 
 Apply the rules in `rules/` to sharpen the prompt:
 
 - Replace vague terms with measurable requirements
-- Add examples where the desired output is ambiguous
+- Surface missing information as placeholders or questions (see `rules/clarity-surface-missing-info.md`)
+- Include success criteria defining what a good answer must include or avoid
+- Mark any assumptions explicitly
+- Add examples only where the desired output is genuinely ambiguous
 - Specify exact format (headings, bullet style, length)
 - Break complex tasks into numbered sequential steps
 
-### 4. Output
+### 5. Self-Check
+
+Before delivery, verify the draft against the rule checklist (see `rules/quality-self-check.md`):
+
+- [ ] No vague qualifiers (be-specific)
+- [ ] Missing info surfaced (surface-missing-info)
+- [ ] Success criteria defined (include-success-criteria)
+- [ ] Assumptions marked (state-assumptions)
+- [ ] Format specified (specify-format)
+- [ ] Examples only if ambiguous (examples-only-when-needed)
+- [ ] No filler or politeness (minimal-fluff)
+
+If any check fails, fix the violation and re-check. Stop after the checklist passes or after two refinement passes (whichever comes first).
+
+### 6. Output
 
 Present the final prompt to the user as a markdown block, clearly labeled. Do not add commentary beyond the prompt itself.
 
-### 5. Deliver
+### 7. Deliver
 
 After presenting the prompt, offer the user two options:
 
