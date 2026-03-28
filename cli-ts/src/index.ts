@@ -3,7 +3,7 @@
 import { Command } from "commander";
 import { CORVUS_VERSION } from "./core/paths.js";
 import { ensureConfigDir } from "./core/config.js";
-import { autoUpdateCheck } from "./core/updater.js";
+import { autoUpdateCheck, bootstrapRegistry } from "./core/updater.js";
 import { showBanner, showLogo } from "./tui/display.js";
 import { cmdInstall } from "./commands/install.js";
 import { cmdList } from "./commands/list.js";
@@ -15,6 +15,7 @@ import { cmdRemove } from "./commands/remove.js";
 import { cmdSync } from "./commands/sync.js";
 import { cmdDoctor } from "./commands/doctor.js";
 import { cmdShowerThought } from "./commands/shower-thought.js";
+import { cmdPhrase, cmdPoorCorvusAlmanac } from "./commands/phrase.js";
 import { cmdCompletions } from "./commands/completions.js";
 import { cmdGitignore } from "./commands/gitignore.js";
 
@@ -36,8 +37,9 @@ if (process.argv.includes("--logo")) {
 // No args → interactive TUI
 if (process.argv.length <= 2) {
   ensureConfigDir();
+  bootstrapRegistry();
   await autoUpdateCheck();
-  cmdShowerThought();
+  Math.random() < 0.5 ? cmdShowerThought() : cmdPhrase();
   try {
     await cmdInstall([]);
   } catch (err: unknown) {
@@ -59,6 +61,7 @@ program
   .addHelpText("before", () => { showBanner(); return ""; })
   .hook("preAction", () => {
     ensureConfigDir();
+    bootstrapRegistry();
   });
 
 program
@@ -175,6 +178,20 @@ program
   .description("Random shower thought from Dave")
   .action(() => {
     cmdShowerThought();
+  });
+
+program
+  .command("phrase")
+  .description("Random maxim from the Poor Corvus Almanack")
+  .action(() => {
+    cmdPhrase();
+  });
+
+program
+  .command("poor-corvus-almanac")
+  .description("Print all 50 maxims of synthetic intelligence")
+  .action(() => {
+    cmdPoorCorvusAlmanac();
   });
 
 program.parseAsync().catch((err: unknown) => {

@@ -4,11 +4,24 @@ import { globalConfigGet } from "./config.js";
 import {
   LAST_UPDATE_FILE,
   REPO_DIR,
+  REPO_URL,
   UPDATE_CHECK_DAYS,
 } from "./paths.js";
-import { info, success, warn } from "../utils/logger.js";
-import { gitFetch, gitPull, gitRevParse } from "../utils/git.js";
+import { info, success, warn, die } from "../utils/logger.js";
+import { gitFetch, gitPull, gitRevParse, gitClone } from "../utils/git.js";
 import { confirm } from "../tui/prompts.js";
+
+export function bootstrapRegistry(): void {
+  if (!existsSync(`${REPO_DIR}/.git`)) {
+    info("Setting up corvus for the first time...");
+    if (!gitClone(REPO_URL, REPO_DIR)) {
+      die("Could not initialize registry. Check your internet connection.");
+    }
+    touchLastUpdate();
+    success("Registry ready");
+    console.log();
+  }
+}
 
 export function epochNow(): number {
   return Math.floor(Date.now() / 1000);

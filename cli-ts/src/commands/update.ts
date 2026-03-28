@@ -17,10 +17,10 @@ import {
   registrySkillSourceDir,
   registrySkillVersion,
 } from "../core/registry.js";
-import { CORVUSRC, REPO_DIR } from "../core/paths.js";
+import { CORVUSRC, REPO_DIR, REPO_URL } from "../core/paths.js";
 import { touchLastUpdate } from "../core/updater.js";
 import { info, success, warn, die, skillName } from "../utils/logger.js";
-import { gitPull } from "../utils/git.js";
+import { gitPull, gitClone } from "../utils/git.js";
 import { copySkill } from "../utils/fs.js";
 
 export function cmdUpdate(): void {
@@ -37,7 +37,12 @@ export function cmdUpdate(): void {
       warn("Could not update repository (offline?)");
     }
   } else {
-    die("Repository not found. Run the installer again.");
+    info("Registry not found — cloning for the first time...");
+    if (gitClone(REPO_URL, REPO_DIR)) {
+      success("Repository cloned");
+    } else {
+      die("Could not clone repository. Check your internet connection.");
+    }
   }
 
   touchLastUpdate();
