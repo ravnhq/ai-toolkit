@@ -13,7 +13,7 @@ import { die, skillName, success, warn } from "../utils/logger.js";
 
 export function cmdRemove(args: string[]): void {
   if (args.length === 0) {
-    die("Usage: ravencito remove <skill-name> [--global]");
+    die("Usage: corvus remove <skill-name> [--global]");
   }
 
   let globalMode = false;

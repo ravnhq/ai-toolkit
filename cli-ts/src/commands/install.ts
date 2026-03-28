@@ -169,7 +169,7 @@ async function installSkills(
   for (const skill of skills) {
     if (!registrySkillExists(skill)) {
       die(
-        `Skill not found: ${skill}. Run 'ravencito search ${skill}' to find similar skills.`,
+        `Skill not found: ${skill}. Run 'corvus search ${skill}' to find similar skills.`,
       );
     }
   }
@@ -256,7 +256,7 @@ function installToTarget(skills: string[], target: InstallTarget, customPath?: s
     };
     projectConfigSet("install_dir", dirMap[target] ?? ".claude/rules");
     console.log();
-    success("Skills installed! ravencito is ready to help.");
+    success("Skills installed! corvus is ready to help.");
   }
 }
 

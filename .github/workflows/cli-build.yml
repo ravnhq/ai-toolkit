@@ -35,8 +35,8 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ravencito-binaries
-          path: cli-ts/dist-bin/ravencito-*
+          name: corvus-binaries
+          path: cli-ts/dist-bin/corvus-*
           retention-days: 30
 
       - name: Publish release
@@ -46,7 +46,7 @@ jobs:
           gh release delete cli-latest --yes 2>/dev/null || true
           git tag -f cli-latest
           git push -f origin cli-latest
-          gh release create cli-latest cli-ts/dist-bin/ravencito-* \
-            --title "ravencito latest" \
+          gh release create cli-latest cli-ts/dist-bin/corvus-* \
+            --title "corvus latest" \
             --notes "Latest build from main" \
             --latest

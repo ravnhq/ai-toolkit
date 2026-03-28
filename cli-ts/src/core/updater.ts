@@ -64,16 +64,16 @@ export async function autoUpdateCheck(): Promise<void> {
     const count = countRemoteUpdates();
     console.log();
     warn(
-      `ravencito found ${count} shiny new update${count === 1 ? "" : "s"}!`,
+      `corvus found ${count} shiny new update${count === 1 ? "" : "s"}!`,
     );
     const doUpdate = await confirm("Install now?");
     if (doUpdate) {
       pullUpdates();
       touchLastUpdate();
-      success("Updated! Restart ravencito to use the latest version.");
+      success("Updated! Restart corvus to use the latest version.");
     } else {
       touchLastUpdate();
-      info("Skipped. Run 'ravencito update' anytime.");
+      info("Skipped. Run 'corvus update' anytime.");
     }
     console.log();
   } else {

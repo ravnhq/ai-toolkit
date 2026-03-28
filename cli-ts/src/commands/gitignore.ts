@@ -8,8 +8,8 @@ import {
 } from "../core/config.js";
 import { info, success } from "../utils/logger.js";
 
-const SECTION_START = "# ravencito — managed, do not edit this block";
-const SECTION_END = "# end ravencito";
+const SECTION_START = "# corvus — managed, do not edit this block";
+const SECTION_END = "# end corvus";
 
 export function cmdGitignore(): void {
   const projectRoot = findProjectRoot();
@@ -20,7 +20,7 @@ export function cmdGitignore(): void {
     .map((entry) => entry.split(":")[0])
     .map((name) => `${installDir}/${name}/`);
 
-  const lines = [SECTION_START, ".ravencitorc", ...skillEntries, SECTION_END];
+  const lines = [SECTION_START, ".corvusrc", ...skillEntries, SECTION_END];
 
   let content = existsSync(gitignorePath)
     ? readFileSync(gitignorePath, "utf-8")
@@ -34,7 +34,7 @@ export function cmdGitignore(): void {
       content.slice(0, startIdx) +
       lines.join("\n") +
       content.slice(endIdx + SECTION_END.length);
-    info("Updated ravencito section in .gitignore");
+    info("Updated corvus section in .gitignore");
   } else {
     const sep =
       content.length > 0 && !content.endsWith("\n")
@@ -43,11 +43,11 @@ export function cmdGitignore(): void {
           ? "\n"
           : "";
     content = content + sep + lines.join("\n") + "\n";
-    info("Added ravencito section to .gitignore");
+    info("Added corvus section to .gitignore");
   }
 
   writeFileSync(gitignorePath, content);
   success(
-    `.ravencitorc and ${skillEntries.length} skill path(s) added to .gitignore`,
+    `.corvusrc and ${skillEntries.length} skill path(s) added to .gitignore`,
   );
 }

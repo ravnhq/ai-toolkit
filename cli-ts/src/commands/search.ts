@@ -4,7 +4,7 @@ import { info, warn, die } from "../utils/logger.js";
 
 export function cmdSearch(args: string[]): void {
   if (args.length === 0) {
-    die("Usage: ravencito search <query>");
+    die("Usage: corvus search <query>");
   }
 
   const query = args.join(" ");
@@ -15,7 +15,7 @@ export function cmdSearch(args: string[]): void {
   if (results.length === 0) {
     warn(`No skills found matching '${query}'`);
     console.log();
-    info("Try broader terms or run 'ravencito list' to see all skills.");
+    info("Try broader terms or run 'corvus list' to see all skills.");
     return;
   }
 

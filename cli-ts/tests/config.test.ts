@@ -12,7 +12,7 @@ import {
 } from "../src/core/config.js";
 
 function tmpFile(): string {
-  const dir = mkdtempSync(join(tmpdir(), "ravencito-test-"));
+  const dir = mkdtempSync(join(tmpdir(), "corvus-test-"));
   return join(dir, "config");
 }
 

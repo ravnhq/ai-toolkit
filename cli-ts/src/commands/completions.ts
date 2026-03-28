@@ -26,14 +26,14 @@ function detectShell(): string {
 }
 
 function printZshInstructions(): void {
-  const src = resolve(REPO_DIR, "cli-ts/completions/_ravencito.zsh");
+  const src = resolve(REPO_DIR, "cli-ts/completions/_corvus.zsh");
   const ohmyzsh = "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/completions";
 
-  console.log(`# Zsh completions for ravencito
+  console.log(`# Zsh completions for corvus
 #
 # Option 1 — oh-my-zsh (recommended):
 mkdir -p "${ohmyzsh}"
-cp "${src}" "${ohmyzsh}/_ravencito"
+cp "${src}" "${ohmyzsh}/_corvus"
 # Then reload: exec zsh
 
 # Option 2 — manual fpath:
@@ -44,9 +44,9 @@ cp "${src}" "${ohmyzsh}/_ravencito"
 }
 
 function printBashInstructions(): void {
-  const src = resolve(REPO_DIR, "cli-ts/completions/ravencito.bash");
+  const src = resolve(REPO_DIR, "cli-ts/completions/corvus.bash");
 
-  console.log(`# Bash completions for ravencito
+  console.log(`# Bash completions for corvus
 #
 # Add this to your ~/.bashrc or ~/.bash_profile:
 source "${src}"
@@ -54,14 +54,14 @@ source "${src}"
 }
 
 function printFishInstructions(): void {
-  const src = resolve(REPO_DIR, "cli-ts/completions/ravencito.fish");
+  const src = resolve(REPO_DIR, "cli-ts/completions/corvus.fish");
   const fishDir = "~/.config/fish/completions";
 
-  console.log(`# Fish completions for ravencito
+  console.log(`# Fish completions for corvus
 #
 # Copy the completions file to your fish completions directory:
 mkdir -p ${fishDir}
-cp "${src}" ${fishDir}/ravencito.fish
+cp "${src}" ${fishDir}/corvus.fish
 # Completions load automatically — no reload needed.
 `);
 }

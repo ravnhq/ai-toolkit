@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build ravencito CLI binaries using Bun
+# Build corvus CLI binaries using Bun
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -8,7 +8,7 @@ DIST_DIR="${PROJECT_DIR}/dist-bin"
 
 mkdir -p "$DIST_DIR"
 
-echo "Building ravencito binaries..."
+echo "Building corvus binaries..."
 
 # Build for each platform
 TARGETS=(
@@ -20,7 +20,7 @@ TARGETS=(
 
 for target in "${TARGETS[@]}"; do
   platform="${target#bun-}"
-  outfile="${DIST_DIR}/ravencito-${platform}"
+  outfile="${DIST_DIR}/corvus-${platform}"
   echo "  Building ${platform}..."
   bun build "${PROJECT_DIR}/src/index.ts" \
     --compile \
@@ -31,4 +31,4 @@ done
 
 echo ""
 echo "✓ All binaries built in ${DIST_DIR}/"
-ls -lh "$DIST_DIR"/ravencito-*
+ls -lh "$DIST_DIR"/corvus-*

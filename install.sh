@@ -13,7 +13,7 @@ case "$ARCH" in
   *) echo "Unsupported arch: $ARCH"; exit 1 ;;
 esac
 
-BINARY="ravencito-${OS}-${ARCH}"
+BINARY="corvus-${OS}-${ARCH}"
 URL="https://github.com/${REPO}/releases/download/${TAG}/${BINARY}"
 
 echo "Downloading ${BINARY}..."
@@ -22,15 +22,15 @@ curl -fsSL "$URL" -o "$TMP"
 chmod +x "$TMP"
 
 if [ -w "$INSTALL_DIR" ]; then
-  mv "$TMP" "${INSTALL_DIR}/ravencito"
+  mv "$TMP" "${INSTALL_DIR}/corvus"
 elif command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
-  sudo mv "$TMP" "${INSTALL_DIR}/ravencito"
+  sudo mv "$TMP" "${INSTALL_DIR}/corvus"
 else
   INSTALL_DIR="$HOME/.local/bin"
   mkdir -p "$INSTALL_DIR"
-  mv "$TMP" "${INSTALL_DIR}/ravencito"
+  mv "$TMP" "${INSTALL_DIR}/corvus"
   echo "  Note: add ~/.local/bin to your PATH if not already present"
 fi
 
-echo "✓ Installed to ${INSTALL_DIR}/ravencito"
-echo "  Run: ravencito --version"
+echo "✓ Installed to ${INSTALL_DIR}/corvus"
+echo "  Run: corvus --version"

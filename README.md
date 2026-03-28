@@ -1,7 +1,7 @@
 # Ravn AI Toolkit
 
 <p align="center">
-  <img src="docs/assets/images/ravencito.png" alt="Ravencito" width="200" />
+  <img src="docs/assets/images/corvus.png" alt="Corvus" width="200" />
 </p>
 
 [![Skills Quality](https://github.com/ravnhq/ai-toolkit/actions/workflows/skills-quality.yml/badge.svg)](https://github.com/ravnhq/ai-toolkit/actions/workflows/skills-quality.yml)
@@ -10,7 +10,7 @@ Modular "skills" — portable rule packs that teach AI coding agents (Claude Cod
 
 ## Quick Start
 
-### Using ravencito CLI
+### Using corvus CLI
 
 #### Option 1 — curl installer (recommended, macOS/Linux)
 
@@ -36,10 +36,10 @@ cd ai-toolkit/cli-ts && npm install && npm run build && npm install -g .
 
 ```bash
 # Confirm it's working
-ravencito --version
+corvus --version
 
 # Uninstall
-sudo rm /usr/local/bin/ravencito
+sudo rm /usr/local/bin/corvus
 ```
 
 <details>
@@ -49,7 +49,7 @@ sudo rm /usr/local/bin/ravencito
 
 **Why not `npm install -g`?** That approach requires Node.js ≥18 to be installed, downloads dependencies at install time, and can break if Node.js is upgraded or `node_modules` are corrupted. The compiled binary has zero runtime dependencies.
 
-**Same model as Claude Code.** Anthropic's official CLI (`@anthropic-ai/claude-code`) is also distributed as a pre-built native binary — `npm install -g` downloads it rather than compiling from source. ravencito follows the same pattern: `install.sh` downloads a pre-built binary from the `cli-latest` GitHub Release.
+**Same model as Claude Code.** Anthropic's official CLI (`@anthropic-ai/claude-code`) is also distributed as a pre-built native binary — `npm install -g` downloads it rather than compiling from source. corvus follows the same pattern: `install.sh` downloads a pre-built binary from the `cli-latest` GitHub Release.
 
 To build binaries locally: `cd cli-ts && npm run build:bin`
 </details>
@@ -58,37 +58,37 @@ To build binaries locally: `cd cli-ts && npm run build:bin`
 
 ```bash
 # Browse all skills interactively (TUI)
-ravencito install
+corvus install
 
 # Install skills directly
-ravencito install tech-react tech-drizzle
+corvus install tech-react tech-drizzle
 
 # Install a full stack recipe in one command
-ravencito install --recipe fullstack-ts
+corvus install --recipe fullstack-ts
 
 # Install with explicit target flags (ordered by user base)
-ravencito install --claude tech-react              # project-level → .claude/rules
-ravencito install --cursor tech-react              # project-level → .cursor/rules
-ravencito install --opencode tech-react            # project-level → .opencode/rules
-ravencito install --codex tech-react               # project-level → .codex/rules
-ravencito install --global-claude lang-typescript  # global → ~/.claude/rules
-ravencito install --global-cursor lang-typescript  # global → ~/.cursor/rules
-ravencito install --global-opencode lang-typescript # global → ~/.config/opencode/rules
-ravencito install --global-codex lang-typescript   # global → ~/.codex/rules
+corvus install --claude tech-react              # project-level → .claude/rules
+corvus install --cursor tech-react              # project-level → .cursor/rules
+corvus install --opencode tech-react            # project-level → .opencode/rules
+corvus install --codex tech-react               # project-level → .codex/rules
+corvus install --global-claude lang-typescript  # global → ~/.claude/rules
+corvus install --global-cursor lang-typescript  # global → ~/.cursor/rules
+corvus install --global-opencode lang-typescript # global → ~/.config/opencode/rules
+corvus install --global-codex lang-typescript   # global → ~/.codex/rules
 
 # Search, preview, and manage
-ravencito search testing
-ravencito list                    # browse available skills by category
-ravencito info tech-vitest
-ravencito status
-ravencito update
-ravencito remove tech-vitest
-ravencito gitignore               # add .ravencitorc and skill paths to .gitignore
-ravencito doctor                  # health check for orphaned skills, missing deps
-ravencito shower-thought          # random shower thought from Dave
+corvus search testing
+corvus list                    # browse available skills by category
+corvus info tech-vitest
+corvus status
+corvus update
+corvus remove tech-vitest
+corvus gitignore               # add .corvusrc and skill paths to .gitignore
+corvus doctor                  # health check for orphaned skills, missing deps
+corvus shower-thought          # random shower thought from Dave
 
 # Shell completions (zsh, bash, and fish supported)
-ravencito completions --shell fish
+corvus completions --shell fish
 ```
 
 ### Using npx
@@ -136,13 +136,13 @@ liquid-glass-ios               ← standalone
 
 ### Stack Recipes
 
-With ravencito, install entire stacks in one command. Dependencies are resolved automatically.
+With corvus, install entire stacks in one command. Dependencies are resolved automatically.
 
 | Recipe                    | Skills                                                                             | Command                                   |
 |---------------------------|------------------------------------------------------------------------------------|-------------------------------------------|
-| **Full-stack TypeScript** | lang-typescript, tech-react, tech-trpc, tech-drizzle, tech-vitest, design-frontend | `ravencito install --recipe fullstack-ts` |
-| **iOS / Swift**           | swift-concurrency, liquid-glass-ios                                                | `ravencito install --recipe ios-swift`    |
-| **Backend API**           | lang-typescript, tech-trpc, tech-drizzle, platform-testing                         | `ravencito install --recipe backend-api`  |
+| **Full-stack TypeScript** | lang-typescript, tech-react, tech-trpc, tech-drizzle, tech-vitest, design-frontend | `corvus install --recipe fullstack-ts` |
+| **iOS / Swift**           | swift-concurrency, liquid-glass-ios                                                | `corvus install --recipe ios-swift`    |
+| **Backend API**           | lang-typescript, tech-trpc, tech-drizzle, platform-testing                         | `corvus install --recipe backend-api`  |
 
 <details>
 <summary>Using npx instead</summary>
@@ -223,29 +223,29 @@ npx skills add ravnhq/ai-toolkit -s platform-testing
 | `agent-pr-creator`       | Analyzes git diffs and commit history to create pull requests via gh CLI.        | —       |
 | `pr-comments-address`    | Reads open PR review comments, triages them, applies fixes, and drafts replies.  | —       |
 | `rewrite-commit-history` | Rewrite a feature branch's commit history into clean conventional commits.       | —       |
-| `agent-skills-manager`   | Manage AI skills via ravencito CLI — install, update, search, and configure.     | —       |
+| `agent-skills-manager`   | Manage AI skills via corvus CLI — install, update, search, and configure.     | —       |
 
 ## Team Sync
 
-When using ravencito, skill choices are tracked in a `.ravencitorc` file you can commit to git:
+When using corvus, skill choices are tracked in a `.corvusrc` file you can commit to git:
 
 ```bash
 # One dev installs skills
-ravencito install tech-react tech-drizzle
+corvus install tech-react tech-drizzle
 
-# Keep .ravencitorc and skill folders out of git
-ravencito gitignore
+# Keep .corvusrc and skill folders out of git
+corvus gitignore
 
-# Or commit .ravencitorc so teammates can sync your exact setup
-git add .ravencitorc && git commit -m "add AI skills config"
+# Or commit .corvusrc so teammates can sync your exact setup
+git add .corvusrc && git commit -m "add AI skills config"
 
 # Teammates clone and sync
-ravencito sync
+corvus sync
 ```
 
-**Project vs global:** `.ravencitorc` is only created for project-level installs. Global installs (`--global`, `--global-claude`, etc.) are tracked in `~/.ravencito/config` and apply to every project on your machine without touching your repo.
+**Project vs global:** `.corvusrc` is only created for project-level installs. Global installs (`--global`, `--global-claude`, etc.) are tracked in `~/.corvus/config` and apply to every project on your machine without touching your repo.
 
-Run `ravencito doctor` to check for orphaned skills, missing deps, or version mismatches.
+Run `corvus doctor` to check for orphaned skills, missing deps, or version mismatches.
 
 ## Versioning
 
@@ -293,7 +293,7 @@ PRs trigger skill quality checks automatically. On merge to `main`:
 2. Build numbers are bumped for changed skills
 3. Release tags are created and GitHub Releases published
 
-Changes to `cli-ts/**` also trigger a separate binary build workflow that compiles ravencito for all platforms (darwin-arm64, darwin-x64, linux-x64, linux-arm64) using Bun and publishes them to the `cli-latest` GitHub Release.
+Changes to `cli-ts/**` also trigger a separate binary build workflow that compiles corvus for all platforms (darwin-arm64, darwin-x64, linux-x64, linux-arm64) using Bun and publishes them to the `cli-latest` GitHub Release.
 
 ### Workflow
 

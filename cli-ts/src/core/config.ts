@@ -1,9 +1,9 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import {
-  RAVENCITO_DIR,
-  RAVENCITO_CONFIG,
-  RAVENCITORC,
+  CORVUS_DIR,
+  CORVUS_CONFIG,
+  CORVUSRC,
 } from "./paths.js";
 
 // ─── INI-style config ────────────────────────────────────────────────────────
@@ -49,15 +49,15 @@ export function configSet(file: string, key: string, value: string): void {
 // ─── Global config ───────────────────────────────────────────────────────────
 
 export function ensureConfigDir(): void {
-  mkdirSync(RAVENCITO_DIR, { recursive: true });
+  mkdirSync(CORVUS_DIR, { recursive: true });
 }
 
 export function globalConfigGet(key: string, defaultValue = ""): string {
-  return configGet(RAVENCITO_CONFIG, key, defaultValue);
+  return configGet(CORVUS_CONFIG, key, defaultValue);
 }
 
 export function globalConfigSet(key: string, value: string): void {
-  configSet(RAVENCITO_CONFIG, key, value);
+  configSet(CORVUS_CONFIG, key, value);
 }
 
 // ─── Project config ──────────────────────────────────────────────────────────
@@ -66,7 +66,7 @@ export function findProjectRoot(): string {
   let dir = process.cwd();
   while (dir !== "/") {
     if (
-      existsSync(join(dir, RAVENCITORC)) ||
+      existsSync(join(dir, CORVUSRC)) ||
       existsSync(join(dir, ".git"))
     ) {
       return dir;
@@ -78,12 +78,12 @@ export function findProjectRoot(): string {
 
 export function projectConfigGet(key: string, defaultValue = ""): string {
   const root = findProjectRoot();
-  return configGet(join(root, RAVENCITORC), key, defaultValue);
+  return configGet(join(root, CORVUSRC), key, defaultValue);
 }
 
 export function projectConfigSet(key: string, value: string): void {
   const root = findProjectRoot();
-  configSet(join(root, RAVENCITORC), key, value);
+  configSet(join(root, CORVUSRC), key, value);
 }
 
 // ─── Skill list helpers ──────────────────────────────────────────────────────

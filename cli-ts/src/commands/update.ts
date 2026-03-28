@@ -17,7 +17,7 @@ import {
   registrySkillSourceDir,
   registrySkillVersion,
 } from "../core/registry.js";
-import { RAVENCITORC, REPO_DIR } from "../core/paths.js";
+import { CORVUSRC, REPO_DIR } from "../core/paths.js";
 import { touchLastUpdate } from "../core/updater.js";
 import { info, success, warn, die, skillName } from "../utils/logger.js";
 import { gitPull } from "../utils/git.js";
@@ -25,7 +25,7 @@ import { copySkill } from "../utils/fs.js";
 
 export function cmdUpdate(): void {
   console.log();
-  console.log(chalk.white.bold("Updating ravencito"));
+  console.log(chalk.white.bold("Updating corvus"));
   console.log();
 
   // Update repo cache
@@ -46,7 +46,7 @@ export function cmdUpdate(): void {
 
   // Update project skills
   const projectRoot = findProjectRoot();
-  const rcFile = join(projectRoot, RAVENCITORC);
+  const rcFile = join(projectRoot, CORVUSRC);
 
   if (existsSync(rcFile)) {
     console.log();

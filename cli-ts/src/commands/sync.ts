@@ -2,7 +2,7 @@ import { existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import chalk from "chalk";
 import { configGet, findProjectRoot, parseSkillList } from "../core/config.js";
-import { RAVENCITORC } from "../core/paths.js";
+import { CORVUSRC } from "../core/paths.js";
 import {
   ensureRegistry,
   registrySkillSourceDir,
@@ -14,24 +14,24 @@ export function cmdSync(): void {
   ensureRegistry();
 
   const projectRoot = findProjectRoot();
-  const rcFile = join(projectRoot, RAVENCITORC);
+  const rcFile = join(projectRoot, CORVUSRC);
 
   if (!existsSync(rcFile)) {
-    die("No .ravencitorc found in project. Nothing to sync.");
+    die("No .corvusrc found in project. Nothing to sync.");
   }
 
   console.log();
-  console.log(chalk.white.bold("Syncing skills from .ravencitorc"));
+  console.log(chalk.white.bold("Syncing skills from .corvusrc"));
   console.log();
 
   const installDir = configGet(rcFile, "install_dir", "");
   if (!installDir) {
-    die(".ravencitorc is missing install_dir. Run 'ravencito install' first.");
+    die(".corvusrc is missing install_dir. Run 'corvus install' first.");
   }
 
   const skillList = configGet(rcFile, "skills", "");
   if (!skillList) {
-    info("No skills listed in .ravencitorc.");
+    info("No skills listed in .corvusrc.");
     return;
   }
 

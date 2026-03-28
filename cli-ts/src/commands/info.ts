@@ -13,7 +13,7 @@ import { error, info, die } from "../utils/logger.js";
 
 export function cmdInfo(args: string[]): void {
   if (args.length === 0) {
-    die("Usage: ravencito info <skill-name>");
+    die("Usage: corvus info <skill-name>");
   }
 
   const name = args[0];
@@ -81,7 +81,7 @@ export function cmdInfo(args: string[]): void {
   }
 
   console.log(chalk.white.bold("Install:"));
-  console.log(`  ravencito install ${name}`);
-  console.log(`  ravencito install --global ${name}`);
+  console.log(`  corvus install ${name}`);
+  console.log(`  corvus install --global ${name}`);
   console.log();
 }

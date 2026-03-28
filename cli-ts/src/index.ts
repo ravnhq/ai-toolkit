@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-import { RAVENCITO_VERSION } from "./core/paths.js";
+import { CORVUS_VERSION } from "./core/paths.js";
 import { ensureConfigDir } from "./core/config.js";
 import { autoUpdateCheck } from "./core/updater.js";
 import { showBanner, showLogo } from "./tui/display.js";
@@ -52,10 +52,10 @@ if (process.argv.length <= 2) {
 const program = new Command();
 
 program
-  .name("ravencito")
+  .name("corvus")
   .description("AI Skills Manager")
-  .version(RAVENCITO_VERSION, "-v, --version")
-  .showHelpAfterError('Run "ravencito --help" for usage information.')
+  .version(CORVUS_VERSION, "-v, --version")
+  .showHelpAfterError('Run "corvus --help" for usage information.')
   .addHelpText("before", () => { showBanner(); return ""; })
   .hook("preAction", () => {
     ensureConfigDir();
@@ -142,7 +142,7 @@ program
 
 program
   .command("sync")
-  .description("Sync team skills from .ravencitorc")
+  .description("Sync team skills from .corvusrc")
   .action(() => {
     cmdSync();
   });
@@ -164,7 +164,7 @@ program
 
 program
   .command("gitignore")
-  .description("Add .ravencitorc and installed skills to .gitignore")
+  .description("Add .corvusrc and installed skills to .gitignore")
   .action(() => {
     cmdGitignore();
   });

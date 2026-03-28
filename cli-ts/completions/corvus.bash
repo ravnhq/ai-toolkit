@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Bash completion for ravencito
+# Bash completion for corvus
 
-_ravencito() {
+_corvus() {
     local cur prev commands
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
@@ -22,25 +22,25 @@ _ravencito() {
             if [[ "$cur" == -* ]]; then
                 COMPREPLY=($(compgen -W "--global -g --claude --cursor --codex --global-claude --global-cursor --global-codex --recipe -r --no-deps" -- "$cur"))
             elif [[ "$prev" == "--recipe" || "$prev" == "-r" ]]; then
-                local recipe_dir="${HOME}/.ravencito/repo/cli/recipes"
+                local recipe_dir="${HOME}/.corvus/repo/cli/recipes"
                 if [[ -d "$recipe_dir" ]]; then
                     local recipes
                     recipes=$(ls "$recipe_dir" 2>/dev/null | sed 's/\.txt$//')
                     COMPREPLY=($(compgen -W "$recipes" -- "$cur"))
                 fi
             else
-                _ravencito_complete_skills
+                _corvus_complete_skills
             fi
             ;;
         remove)
             if [[ "$cur" == -* ]]; then
                 COMPREPLY=($(compgen -W "--global -g" -- "$cur"))
             else
-                _ravencito_complete_installed
+                _corvus_complete_installed
             fi
             ;;
         search|info)
-            _ravencito_complete_skills
+            _corvus_complete_skills
             ;;
         list)
             COMPREPLY=($(compgen -W "universal platform framework design assistant" -- "$cur"))
@@ -55,8 +55,8 @@ _ravencito() {
     esac
 }
 
-_ravencito_complete_skills() {
-    local cache_file="${HOME}/.ravencito/repo/marketplace.json"
+_corvus_complete_skills() {
+    local cache_file="${HOME}/.corvus/repo/marketplace.json"
     if [[ -f "$cache_file" ]] && command -v jq >/dev/null 2>&1; then
         local skills
         skills=$(jq -r '.skills[].name' "$cache_file" 2>/dev/null)
@@ -64,8 +64,8 @@ _ravencito_complete_skills() {
     fi
 }
 
-_ravencito_complete_installed() {
-    local rc_file=".ravencitorc"
+_corvus_complete_installed() {
+    local rc_file=".corvusrc"
     if [[ -f "$rc_file" ]]; then
         local list skills
         list=$(grep "^skills=" "$rc_file" 2>/dev/null | cut -d'=' -f2-)
@@ -74,4 +74,4 @@ _ravencito_complete_installed() {
     fi
 }
 
-complete -F _ravencito ravencito
+complete -F _corvus corvus

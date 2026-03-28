@@ -10,7 +10,7 @@ export function showBanner(): void {
   if (existsSync(bannerFile)) {
     console.log(chalk.cyan(readFileSync(bannerFile, "utf-8")));
   } else {
-    console.log(`${chalk.cyan("ravencito")} \u2014 AI Skills Manager\n`);
+    console.log(`${chalk.cyan("corvus")} \u2014 AI Skills Manager\n`);
   }
 }
 

@@ -1,6 +1,6 @@
-#compdef ravencito
+#compdef corvus
 
-_ravencito() {
+_corvus() {
     local -a commands
     commands=(
         'help:Show banner and help'
@@ -11,12 +11,12 @@ _ravencito() {
         'info:Preview skill details'
         'status:Show installed vs latest versions'
         'remove:Uninstall a skill'
-        'sync:Sync team skills from .ravencitorc'
+        'sync:Sync team skills from .corvusrc'
         'doctor:Health check'
         'shower-thought:Random shower thought from Dave'
         'shower-thoughts:Random shower thought from Dave'
         'completions:Print shell completion setup instructions'
-        'gitignore:Add .ravencitorc and installed skills to .gitignore'
+        'gitignore:Add .corvusrc and installed skills to .gitignore'
     )
 
     local -a global_opts
@@ -25,7 +25,7 @@ _ravencito() {
         '-h[Show help]'
         '--version[Show version]'
         '-v[Show version]'
-        '--logo[Show full-size ravencito art]'
+        '--logo[Show full-size corvus art]'
     )
 
     _arguments -C \
@@ -35,7 +35,7 @@ _ravencito() {
 
     case "$state" in
         command)
-            _describe 'ravencito command' commands
+            _describe 'corvus command' commands
             ;;
         args)
             case "$words[1]" in
@@ -51,19 +51,19 @@ _ravencito() {
                         '--global-cursor[Install to ~/.cursor/rules]' \
                         '--global-opencode[Install to ~/.config/opencode/rules]' \
                         '--global-codex[Install to ~/.codex/rules]' \
-                        '--recipe[Install a predefined recipe]:recipe:_ravencito_recipes' \
-                        '-r[Install a predefined recipe]:recipe:_ravencito_recipes' \
+                        '--recipe[Install a predefined recipe]:recipe:_corvus_recipes' \
+                        '-r[Install a predefined recipe]:recipe:_corvus_recipes' \
                         '--no-deps[Skip dependency resolution]' \
-                        '*:skill:_ravencito_skills'
+                        '*:skill:_corvus_skills'
                     ;;
                 remove)
                     _arguments \
                         '--global[Remove from global skills]' \
                         '-g[Remove from global skills]' \
-                        '*:skill:_ravencito_installed_skills'
+                        '*:skill:_corvus_installed_skills'
                     ;;
                 search|info)
-                    _arguments '*:skill:_ravencito_skills'
+                    _arguments '*:skill:_corvus_skills'
                     ;;
                 list)
                     local -a categories
@@ -80,9 +80,9 @@ _ravencito() {
     esac
 }
 
-_ravencito_skills() {
+_corvus_skills() {
     local -a skills
-    local cache_file="${HOME}/.ravencito/repo/marketplace.json"
+    local cache_file="${HOME}/.corvus/repo/marketplace.json"
     if [[ -f "$cache_file" ]]; then
         if command -v jq >/dev/null 2>&1; then
             skills=($(jq -r '.skills[].name' "$cache_file" 2>/dev/null))
@@ -91,9 +91,9 @@ _ravencito_skills() {
     _describe 'skill' skills
 }
 
-_ravencito_installed_skills() {
+_corvus_installed_skills() {
     local -a skills
-    local rc_file=".ravencitorc"
+    local rc_file=".corvusrc"
     if [[ -f "$rc_file" ]]; then
         local list
         list=$(grep "^skills=" "$rc_file" 2>/dev/null | cut -d'=' -f2-)
@@ -104,13 +104,13 @@ _ravencito_installed_skills() {
     _describe 'installed skill' skills
 }
 
-_ravencito_recipes() {
+_corvus_recipes() {
     local -a recipes
-    local recipe_dir="${HOME}/.ravencito/repo/cli-ts/recipes"
+    local recipe_dir="${HOME}/.corvus/repo/cli-ts/recipes"
     if [[ -d "$recipe_dir" ]]; then
         recipes=(${recipe_dir}/*.txt(:t:r))
     fi
     _describe 'recipe' recipes
 }
 
-_ravencito "$@"
+_corvus "$@"

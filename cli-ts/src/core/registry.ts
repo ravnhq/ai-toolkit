@@ -31,7 +31,7 @@ let _cache: Marketplace | null = null;
 function loadMarketplace(): Marketplace {
   if (_cache) return _cache;
   if (!existsSync(MARKETPLACE_PATH)) {
-    die("Registry not found. Run 'ravencito update' to refresh.");
+    die("Registry not found. Run 'corvus update' to refresh.");
   }
   _cache = JSON.parse(readFileSync(MARKETPLACE_PATH, "utf-8")) as Marketplace;
   return _cache;

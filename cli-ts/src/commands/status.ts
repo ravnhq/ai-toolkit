@@ -10,7 +10,7 @@ import {
   parseSkillList,
   projectConfigGet,
 } from "../core/config.js";
-import { RAVENCITORC } from "../core/paths.js";
+import { CORVUSRC } from "../core/paths.js";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { info } from "../utils/logger.js";
@@ -27,7 +27,7 @@ export function cmdStatus(): void {
   process.stdout.write(chalk.white.bold("Global Skills"));
   if (!globalSkills) {
     console.log(` ${chalk.dim("(none)")}`);
-    info("Run 'ravencito install --global <skill>' to add global defaults.");
+    info("Run 'corvus install --global <skill>' to add global defaults.");
   } else {
     console.log();
     showSkillStatus(globalSkills);
@@ -36,15 +36,15 @@ export function cmdStatus(): void {
 
   // Project skills
   const projectRoot = findProjectRoot();
-  const rcFile = join(projectRoot, RAVENCITORC);
+  const rcFile = join(projectRoot, CORVUSRC);
 
   process.stdout.write(
     `${chalk.white.bold("Project Skills")} ${chalk.dim(`(${projectRoot})`)}`,
   );
 
   if (!existsSync(rcFile)) {
-    console.log(` ${chalk.dim("(no .ravencitorc)")}`);
-    info("Run 'ravencito install <skill>' in a project to get started.");
+    console.log(` ${chalk.dim("(no .corvusrc)")}`);
+    info("Run 'corvus install <skill>' in a project to get started.");
   } else {
     console.log();
     const projectSkills = getProjectSkills();

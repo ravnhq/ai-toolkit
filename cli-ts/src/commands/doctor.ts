@@ -8,11 +8,11 @@ import {
   parseSkillList,
 } from "../core/config.js";
 import {
-  RAVENCITO_DIR,
-  RAVENCITORC,
+  CORVUS_DIR,
+  CORVUSRC,
   REPO_DIR,
   MARKETPLACE_PATH,
-  RAVENCITO_CONFIG,
+  CORVUS_CONFIG,
 } from "../core/paths.js";
 import { registrySkillExists, ensureRegistry } from "../core/registry.js";
 import { success, warn } from "../utils/logger.js";
@@ -22,18 +22,18 @@ const nl = () => console.log(); // blank line for terminal spacing
 
 export function cmdDoctor(): void {
   nl();
-  console.log(chalk.white.bold("ravencito doctor"));
+  console.log(chalk.white.bold("corvus doctor"));
   nl();
 
   let issues = 0;
 
   // Installation checks
-  issues += check("ravencito directory", existsSync(RAVENCITO_DIR));
+  issues += check("corvus directory", existsSync(CORVUS_DIR));
   issues += check(
     "Repository cache",
     existsSync(join(REPO_DIR, ".git")),
   );
-  issues += check("Config file", existsSync(RAVENCITO_CONFIG));
+  issues += check("Config file", existsSync(CORVUS_CONFIG));
   issues += check("marketplace.json", existsSync(MARKETPLACE_PATH));
 
   // Dependencies
@@ -48,10 +48,10 @@ export function cmdDoctor(): void {
   console.log(chalk.white.bold("Project"));
 
   const projectRoot = findProjectRoot();
-  const rcFile = join(projectRoot, RAVENCITORC);
+  const rcFile = join(projectRoot, CORVUSRC);
 
   if (existsSync(rcFile)) {
-    success(`.ravencitorc found at ${rcFile}`);
+    success(`.corvusrc found at ${rcFile}`);
 
     const installDir = configGet(rcFile, "install_dir", "");
     if (installDir) {
@@ -103,16 +103,16 @@ export function cmdDoctor(): void {
       }
     }
   } else {
-    console.log(chalk.dim("  No .ravencitorc in current project"));
+    console.log(chalk.dim("  No .corvusrc in current project"));
   }
 
   // Summary
   nl();
   if (issues === 0) {
-    success("All checks passed! ravencito is healthy.");
+    success("All checks passed! corvus is healthy.");
   } else {
     warn(
-      `${issues} issue(s) found. Run 'ravencito update' to fix most issues.`,
+      `${issues} issue(s) found. Run 'corvus update' to fix most issues.`,
     );
   }
   nl();

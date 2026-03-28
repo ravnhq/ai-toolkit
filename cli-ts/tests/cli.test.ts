@@ -21,14 +21,14 @@ describe("CLI integration", () => {
     const result = await run("x");
     expect(result.code).toBe(1);
     expect(result.stderr).toContain("unknown command 'x'");
-    expect(result.stderr).toContain('Run "ravencito --help" for usage information.');
+    expect(result.stderr).toContain('Run "corvus --help" for usage information.');
   });
 
   it("rejects typos like 'drs' with exit 1 and shows help hint", async () => {
     const result = await run("drs");
     expect(result.code).toBe(1);
     expect(result.stderr).toContain("unknown command 'drs'");
-    expect(result.stderr).toContain('Run "ravencito --help" for usage information.');
+    expect(result.stderr).toContain('Run "corvus --help" for usage information.');
   });
 
   it("--version prints version and exits 0", async () => {
@@ -37,10 +37,10 @@ describe("CLI integration", () => {
     expect(result.stdout.trim()).toMatch(/^\d+\.\d+\.\d+/);
   });
 
-  it("--logo prints ravencito and exits 0", async () => {
+  it("--logo prints corvus and exits 0", async () => {
     const result = await run("--logo");
     expect(result.code).toBe(0);
-    expect(result.stdout.toLowerCase()).toContain("r a v e n c i t o");
+    expect(result.stdout.toLowerCase()).toContain("c o r v u s");
   });
 
   it("shower-thought prints a Dave quote", async () => {
@@ -64,14 +64,14 @@ describe("CLI integration", () => {
   it("completions --shell zsh prints setup instructions", async () => {
     const result = await run("completions", "--shell", "zsh");
     expect(result.code).toBe(0);
-    expect(result.stdout).toContain("Zsh completions for ravencito");
+    expect(result.stdout).toContain("Zsh completions for corvus");
     expect(result.stdout).toContain("oh-my-zsh");
   });
 
   it("completions --shell bash prints setup instructions", async () => {
     const result = await run("completions", "--shell", "bash");
     expect(result.code).toBe(0);
-    expect(result.stdout).toContain("Bash completions for ravencito");
+    expect(result.stdout).toContain("Bash completions for corvus");
   });
 
   it("install --help lists all target flags", async () => {
