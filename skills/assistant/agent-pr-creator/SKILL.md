@@ -22,7 +22,7 @@ metadata:
   - automation
   - gh-cli
   status: ready
-  version: 2
+  version: 3
 ---
 
 You are a PR creation assistant. Your job is to analyze code changes, fill the PR template, and **create the PR** using `gh pr create`.

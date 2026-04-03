@@ -20,7 +20,7 @@ metadata:
   - actors
   - ios
   status: ready
-  version: 5
+  version: 6
 ---
 
 # Swift Concurrency Patterns

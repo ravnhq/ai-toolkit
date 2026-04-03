@@ -23,7 +23,7 @@ metadata:
   - react-aria
   - design-handoff
   status: ready
-  version: 4
+  version: 5
 ---
 
 # Figma to React Component Converter

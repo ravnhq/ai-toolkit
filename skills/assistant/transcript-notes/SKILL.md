@@ -22,7 +22,7 @@ metadata:
   - action-items
   - summary
   status: ready
-  version: 2
+  version: 3
 ---
 
 # Transcript Notes

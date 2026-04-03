@@ -21,7 +21,7 @@ metadata:
   - jetpack
   - mobile
   status: ready
-  version: 6
+  version: 7
 ---
 
 # Android & Kotlin Patterns

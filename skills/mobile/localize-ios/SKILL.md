@@ -17,7 +17,7 @@ allowed-tools:
 - Agent
 metadata:
   category: mobile
-  version: 3
+  version: 4
 ---
 
 # Localize Swift

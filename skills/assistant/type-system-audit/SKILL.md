@@ -21,7 +21,7 @@ metadata:
   - static-analysis
   - code-quality
   status: ready
-  version: 4
+  version: 5
 ---
 
 # Type-System Audit: Commit-First, Not Theory-First

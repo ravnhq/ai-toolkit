@@ -20,7 +20,7 @@ metadata:
   - commands
   - flags
   status: ready
-  version: 5
+  version: 6
 ---
 
 # CLI Development Patterns

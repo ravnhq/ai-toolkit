@@ -32,7 +32,7 @@ metadata:
   - code-quality
   - static-analysis
   status: ready
-  version: 8
+  version: 9
 ---
 
 # TypeScript Linter Skill

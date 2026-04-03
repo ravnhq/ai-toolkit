@@ -25,7 +25,7 @@ metadata:
   - conventional-commits
   - rewrite
   status: ready
-  version: 3
+  version: 4
 ---
 
 # Rewrite Commit History

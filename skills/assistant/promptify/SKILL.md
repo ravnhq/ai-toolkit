@@ -21,7 +21,7 @@ metadata:
   - specification
   - rewriting
   status: ready
-  version: 6
+  version: 7
   triggers:
     positive:
     - 'Promptify this: audit all skills against our findings doc.'

@@ -17,7 +17,7 @@
       ],
       "status": "ready",
       "rules": 2,
-      "version": 4
+      "version": 5
     },
     {
       "name": "grill-me",
@@ -31,7 +31,7 @@
         "decision-making"
       ],
       "status": "ready",
-      "version": 3
+      "version": 4
     },
     {
       "name": "lang-typescript",
@@ -46,7 +46,7 @@
       "extends": "core-coding-standards",
       "status": "ready",
       "rules": 4,
-      "version": 4
+      "version": 5
     },
     {
       "name": "platform-frontend",
@@ -62,7 +62,7 @@
       "extends": "core-coding-standards",
       "status": "ready",
       "rules": 6,
-      "version": 5
+      "version": 6
     },
     {
       "name": "platform-backend",
@@ -78,7 +78,7 @@
       "extends": "core-coding-standards",
       "status": "ready",
       "rules": 13,
-      "version": 5
+      "version": 6
     },
     {
       "name": "platform-database",
@@ -95,7 +95,7 @@
       "extends": "core-coding-standards",
       "status": "ready",
       "rules": 19,
-      "version": 5
+      "version": 6
     },
     {
       "name": "platform-testing",
@@ -110,7 +110,7 @@
       "extends": "core-coding-standards",
       "status": "ready",
       "rules": 3,
-      "version": 5
+      "version": 6
     },
     {
       "name": "platform-cli",
@@ -125,7 +125,7 @@
       ],
       "extends": "core-coding-standards",
       "status": "ready",
-      "version": 5
+      "version": 6
     },
     {
       "name": "tech-react",
@@ -142,7 +142,7 @@
       "extends": "platform-frontend",
       "status": "ready",
       "rules": 8,
-      "version": 5
+      "version": 6
     },
     {
       "name": "tech-trpc",
@@ -158,7 +158,7 @@
       "extends": "platform-backend",
       "status": "ready",
       "rules": 8,
-      "version": 5
+      "version": 6
     },
     {
       "name": "tech-drizzle",
@@ -174,7 +174,7 @@
       "extends": "platform-database",
       "status": "ready",
       "rules": 9,
-      "version": 5
+      "version": 6
     },
     {
       "name": "tech-vitest",
@@ -190,7 +190,7 @@
       "extends": "platform-testing",
       "status": "ready",
       "rules": 7,
-      "version": 5
+      "version": 6
     },
     {
       "name": "design-frontend",
@@ -206,7 +206,7 @@
       ],
       "status": "ready",
       "rules": 7,
-      "version": 5
+      "version": 6
     },
     {
       "name": "design-accessibility",
@@ -221,7 +221,7 @@
       ],
       "status": "ready",
       "rules": 4,
-      "version": 5
+      "version": 6
     },
     {
       "name": "figma-to-react-components",
@@ -239,7 +239,7 @@
       ],
       "status": "ready",
       "rules": 5,
-      "version": 4
+      "version": 5
     },
     {
       "name": "liquid-glass-ios",
@@ -254,7 +254,7 @@
         "design"
       ],
       "status": "ready",
-      "version": 5
+      "version": 6
     },
     {
       "name": "swift-concurrency",
@@ -269,7 +269,7 @@
         "ios"
       ],
       "status": "ready",
-      "version": 5
+      "version": 6
     },
     {
       "name": "promptify",
@@ -285,7 +285,7 @@
       ],
       "status": "ready",
       "rules": 11,
-      "version": 6
+      "version": 7
     },
     {
       "name": "agent-add-rule",
@@ -299,7 +299,7 @@
         "configuration"
       ],
       "status": "ready",
-      "version": 4
+      "version": 5
     },
     {
       "name": "agent-init-deep",
@@ -313,7 +313,7 @@
         "setup"
       ],
       "status": "ready",
-      "version": 4
+      "version": 5
     },
     {
       "name": "agent-skill-creator",
@@ -327,7 +327,7 @@
         "templates"
       ],
       "status": "ready",
-      "version": 7
+      "version": 8
     },
     {
       "name": "agent-pr-creator",
@@ -343,7 +343,7 @@
         "gh-cli"
       ],
       "status": "ready",
-      "version": 2
+      "version": 3
     },
     {
       "name": "localize-ios",
@@ -359,7 +359,7 @@
         "uikit"
       ],
       "status": "ready",
-      "version": 3
+      "version": 4
     },
     {
       "name": "tech-android",
@@ -376,7 +376,7 @@
       "extends": "core-coding-standards",
       "status": "ready",
       "rules": 11,
-      "version": 6
+      "version": 7
     },
     {
       "name": "rewrite-commit-history",
@@ -391,7 +391,7 @@
         "rewrite"
       ],
       "status": "ready",
-      "version": 3
+      "version": 4
     },
     {
       "name": "pr-comments-address",
@@ -408,7 +408,7 @@
         "gh-cli"
       ],
       "status": "ready",
-      "version": 3
+      "version": 4
     },
     {
       "name": "type-system-audit",
@@ -422,7 +422,7 @@
         "code-quality"
       ],
       "status": "ready",
-      "version": 4
+      "version": 5
     },
     {
       "name": "transcript-notes",
@@ -436,7 +436,7 @@
         "documentation"
       ],
       "status": "ready",
-      "version": 2
+      "version": 3
     },
     {
       "name": "eval-agent-md",
@@ -452,7 +452,7 @@
         "quality"
       ],
       "status": "ready",
-      "version": 8
+      "version": 9
     },
     {
       "name": "ts-linter",
@@ -469,7 +469,7 @@
       "extends": "core-coding-standards",
       "status": "ready",
       "rules": 0,
-      "version": 8
+      "version": 9
     }
   ]
 }

@@ -25,7 +25,7 @@ metadata:
   - meta
   - quality
   status: ready
-  version: 8
+  version: 9
 ---
 
 # eval-agent-md — Behavioral Compliance Testing

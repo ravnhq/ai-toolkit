@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-04-03
+
+- Added allowed-tools CLI manifest field to all 30 active skills.
 ## 2026-04-02
 
 - Improved Turborepo support — pnpm -w flag, turbo typecheck, tsconfig guidance.
