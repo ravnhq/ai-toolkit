@@ -17,12 +17,27 @@ allowed-tools:
 - Agent
 metadata:
   category: mobile
-  version: 3
+  status: ready
+  version: 4
 ---
 
 # Localize Swift
 
 Localize UIKit Views and ViewControllers and SwiftUI Views: extract hardcoded strings, generate consistent keys, replace literals with the correct Swift API, and create or update the `.xcstrings` String Catalog.
+
+## Overview
+
+String Catalogs (`.xcstrings`, Xcode 15+) are the Apple-recommended localization format. This skill guides extraction of hardcoded strings, generation of camelCase keys, and replacement with typed APIs (`String(localized:)` or xcstrings-tool's `.localizable(...)`).
+
+## Rules
+
+See [rules index](rules/_sections.md) for detailed patterns covering:
+- Always use String Catalogs over legacy `.strings` files
+- LocalizedStringKey vs. String(localized:) API selection
+- Plural rules and string interpolation patterns
+- Accessibility label localization
+- RTL layout considerations
+- Testing localized content
 
 ## Workflow
 
