@@ -1,7 +1,6 @@
 ---
 name: tech-react
-description: React-specific component, hook, and rendering patterns. Use when writing
-  React components, hooks, JSX, or optimizing React performance.
+description: React 19 patterns for components, hooks, Server Components, and data fetching. Use when writing React components, managing state with hooks, implementing Suspense boundaries, optimizing renders with proper memoization, or building Server/Client component hierarchies.
 allowed-tools:
 - Bash
 - Read
@@ -18,12 +17,38 @@ metadata:
   - hooks
   - components
   - jsx
+  - server-components
+  - suspense
+  - use-hook
   - web
   status: ready
   version: 5
 ---
 
-# Rules
+# Core Challenges
+
+React patterns evolve with each major version. React 19 introduced the `use()` hook for promise handling and formalized Server Component boundaries with clearer client/server semantics. Common pitfalls include:
+
+- **Hook ordering violations**: Conditionally calling hooks breaks React's tracking system
+- **Unnecessary memoization**: useMemo/useCallback/React.memo add overhead without measurement
+- **Oversized components**: Mixing Server and Client logic prevents streaming optimization
+- **Missing Suspense boundaries**: Async data without Suspense blocks entire render
+- **Stale closures**: Effects with incorrect dependency arrays or missing cleanup
+- **Key misuse**: Index keys cause state to attach to wrong list items after reorder
+
+React 19 improves these patterns: `use()` hook for consuming promises, Server Components for data fetching without extra requests, and `useTransition()` for non-blocking updates.
+
+## Workflow
+
+1. **Identify component responsibilities**: Determine if component should be Server (data-heavy) or Client (interactive)
+2. **Define hooks at top level**: All hooks must execute unconditionally before any returns
+3. **Use Suspense for async**: Wrap `use()` hook calls with Suspense boundaries for loading fallback
+4. **Compose with keys**: Use stable, unique keys for list items; use key prop to reset component state
+5. **Measure before optimizing**: Profile with React DevTools before adding memoization
+6. **Clean up subscriptions**: Always return cleanup function from effects that subscribe to systems
+7. **Keep components small**: Extract Client Components for interactivity, let Server Components handle data
+
+## Rules
 
 See [rules index](rules/_sections.md) for detailed patterns.
 
@@ -35,6 +60,12 @@ User: "Refactor this React component to reduce re-renders and clarify hook usage
 
 Expected behavior: Use `tech-react` guidance, follow its workflow, and return actionable output.
 
+### Positive Trigger: Server Component Boundary
+
+User: "I'm fetching data on the client with useEffect. How should I refactor this with Server Components?"
+
+Expected behavior: Move data fetch to Server Component, pass promise to Client Component via `use()` hook, wrap with Suspense boundary.
+
 ### Non-Trigger
 
 User: "Write a Bash script to package release artifacts."
@@ -43,26 +74,155 @@ Expected behavior: Do not prioritize `tech-react`; choose a more relevant skill 
 
 ## Troubleshooting
 
-### Skill Does Not Trigger
+### Hook Call Violations ("Rendered more hooks than during the previous render")
 
-- Error: The skill is not selected when expected.
-- Cause: Request wording does not clearly match the description trigger conditions.
-- Solution: Rephrase with explicit domain/task keywords from the description and retry.
+- Error: React throws "Rendered fewer/more hooks than during the previous render"
+- Cause: Hooks called inside conditions, loops, or early returns
+- Solution: Move hook calls before any conditional logic; use `enabled` option in data hooks to skip execution
 
-### Guidance Conflicts With Another Skill
+### Suspense Fallback Never Shows
 
-- Error: Instructions from multiple skills conflict in one task.
-- Cause: Overlapping scope across loaded skills.
-- Solution: State which skill is authoritative for the current step and apply that workflow first.
+- Error: Loading fallback doesn't appear when `use()` suspends
+- Cause: Suspense boundary is not wrapping the component that calls `use()`
+- Solution: Ensure `<Suspense>` is a parent of the component, not a sibling
 
-### Output Is Too Generic
+### Server Component Can't Use State/Events
 
-- Error: Result lacks concrete, actionable detail.
-- Cause: Task input omitted context, constraints, or target format.
-- Solution: Add specific constraints (environment, scope, format, success criteria) and rerun.
+- Error: useState, onClick handlers don't work in Server Components
+- Cause: Server Components render once on server; they can't respond to client interaction
+- Solution: Extract interactive parts to Client Components with "use client" directive; Server Component handles data fetching and passes to Client Component
 
-## Workflow
+### useEffect Runs Twice or Creates Memory Leaks
 
-1. Identify whether the request clearly matches `tech-react` scope and triggers.
-2. Apply the skill rules and referenced guidance to produce a concrete result.
-3. Validate output quality against constraints; if gaps remain, refine once with explicit assumptions.
+- Error: Effect side effect runs multiple times; cleanup doesn't execute
+- Cause: Missing dependency array or missing cleanup return function
+- Solution: Include dependency array; return cleanup function for subscriptions/timers/listeners
+
+### List Items Lose Focus or Appear in Wrong Order
+
+- Error: Input focus jumps between rows; items appear shuffled after sort
+- Cause: Using array index as key instead of stable unique identifier
+- Solution: Change `key={index}` to `key={item.id}` with unique property from data
+
+## Examples: Error Patterns
+
+### Error 1: Conditional Hook
+
+**Incorrect:**
+
+```tsx
+function UserProfile({ userId }: { userId: string | null }) {
+  if (!userId) {
+    return <div>Select a user</div>;
+  }
+
+  // Hook called conditionally - React can't track it!
+  const [profile, setProfile] = useState(null);
+  return <div>{profile?.name}</div>;
+}
+```
+
+**Correct:**
+
+```tsx
+function UserProfile({ userId }: { userId: string | null }) {
+  const [profile, setProfile] = useState(null);
+
+  // Early return AFTER hooks
+  if (!userId) {
+    return <div>Select a user</div>;
+  }
+
+  return <div>{profile?.name}</div>;
+}
+```
+
+### Error 2: Suspense Without use() Hook
+
+**Incorrect:**
+
+```tsx
+function Comments({ id }: { id: string }) {
+  const [comments, setComments] = useState([]);
+
+  useEffect(() => {
+    fetchComments(id).then(setComments);
+  }, [id]);
+
+  return <ul>{comments.map(c => <li key={c.id}>{c.text}</li>)}</ul>;
+}
+```
+
+**Correct:**
+
+```tsx
+function Comments({ commentsPromise }: { commentsPromise: Promise<Comment[]> }) {
+  const comments = use(commentsPromise);
+  return <ul>{comments.map(c => <li key={c.id}>{c.text}</li>)}</ul>;
+}
+
+function CommentsSection({ id }: { id: string }) {
+  return (
+    <Suspense fallback={<div>Loading comments...</div>}>
+      <Comments commentsPromise={fetchComments(id)} />
+    </Suspense>
+  );
+}
+```
+
+### Error 3: Server/Client Boundary Confusion
+
+**Incorrect:**
+
+```tsx
+// BAD: Server Component with useState
+async function NotesPage() {
+  const [selectedNote, setSelectedNote] = useState(null); // ERROR: Can't use state
+  const notes = await db.notes.getAll();
+
+  return (
+    <div>
+      {notes.map(note => (
+        <button onClick={() => setSelectedNote(note)}>
+          {note.title}
+        </button>
+      ))}
+    </div>
+  );
+}
+```
+
+**Correct:**
+
+```tsx
+// Server Component - fetch data
+async function NotesPage() {
+  const notes = await db.notes.getAll();
+
+  return (
+    <div>
+      <NotesList notes={notes} />
+    </div>
+  );
+}
+
+// Client Component - handle interaction
+"use client";
+
+function NotesList({ notes }: { notes: Note[] }) {
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+
+  return (
+    <div>
+      {notes.map(note => (
+        <button
+          key={note.id}
+          onClick={() => setSelectedNote(note)}
+        >
+          {note.title}
+        </button>
+      ))}
+    </div>
+  );
+}
+```

@@ -24,3 +24,8 @@ The section ID (in parentheses) is the filename prefix used to group rules.
 
 **Impact:** MEDIUM
 **Description:** React-specific performance patterns including memoization, key props, and avoiding unnecessary re-renders.
+
+## 5. Server Components (server)
+
+**Impact:** HIGH
+**Description:** Server Components and Server/Client boundaries. Understand where to fetch data, when to use "use client", and streaming patterns with Suspense.
