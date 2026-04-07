@@ -80,4 +80,55 @@ if (invitation.expiresAt < new Date()) {
 | `UNAUTHORIZED` | 401 | Not authenticated |
 | `FORBIDDEN` | 403 | Authenticated but not allowed |
 
-**Why it matters:** Domain-specific errors are self-documenting and provide clear feedback to clients. Proper HTTP codes help with caching, retries, and debugging.
+**Error factory pattern for consistent creation:**
+
+```typescript
+// errors/factory.ts
+import { TRPCError } from '@trpc/server';
+
+export const errors = {
+  notFound: (resource: string, id?: string) =>
+    new TRPCError({
+      code: 'NOT_FOUND',
+      message: id ? `${resource} '${id}' not found` : `${resource} not found`,
+    }),
+
+  invalidInput: (field: string, reason: string) =>
+    new TRPCError({
+      code: 'BAD_REQUEST',
+      message: `Invalid ${field}: ${reason}`,
+    }),
+
+  unauthorized: (reason = 'Authentication required') =>
+    new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: reason,
+    }),
+
+  forbidden: (resource: string) =>
+    new TRPCError({
+      code: 'FORBIDDEN',
+      message: `You do not have access to ${resource}`,
+    }),
+
+  conflict: (resource: string) =>
+    new TRPCError({
+      code: 'CONFLICT',
+      message: `${resource} already exists`,
+    }),
+};
+
+// Usage in procedures:
+if (!user) throw errors.notFound('User', userId);
+if (email && existingUser?.email === email) throw errors.conflict('Email');
+if (!hasAccess) throw errors.forbidden('this resource');
+```
+
+**Why it matters:**
+- Domain-specific errors are self-documenting and provide clear feedback to clients
+- Proper HTTP codes help with caching, retries, and debugging
+- Error factories reduce boilerplate and ensure consistency across the codebase
+- Type-safe error handling on client with `TRPCClientError` type guards
+- Errors are part of the API contract; clients depend on specific error codes for retry logic
+
+Reference: [tRPC Error Handling](https://trpc.io/docs/server/error-handling)
