@@ -97,7 +97,7 @@ For each unresolved branch, ask exactly one focused question:
 Example:
 
 ```
-You're planning async message processing. The question is: 
+You're planning async message processing. The question is:
 should messages be processed in order (FIFO) or can they be out of order?
 
 My recommendation: enforce FIFO unless you have a specific reason not to.
@@ -131,8 +131,8 @@ Given that, my question becomes: should we reuse this pattern or replace it?
 If the user's answer contradicts earlier statements or introduces new risks, surface this explicitly:
 
 ```
-You said earlier that latency is critical, but now you're proposing a 
-synchronous validation step that could block for seconds. 
+You said earlier that latency is critical, but now you're proposing a
+synchronous validation step that could block for seconds.
 How do you reconcile these constraints?
 ```
 

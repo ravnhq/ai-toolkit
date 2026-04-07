@@ -29,7 +29,7 @@ test('generates order summary', () => {
 // GOOD — snapshot structure, assert calculations
 test('generates order summary', () => {
   vi.setSystemTime(new Date('2024-01-01'));
-  
+
   const order = createOrder({
     items: [{ name: 'Widget', price: 100 }],
   });

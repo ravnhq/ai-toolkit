@@ -30,6 +30,8 @@ ruby scripts/markdown_lint.rb                    # Lint markdown in skill files
 bash scripts/changelog.sh                        # Generate changelog
 ```
 
+Before pushing, run `ruby scripts/markdown_lint.rb` — CI will reject markdown lint failures.
+
 Releases happen automatically via CI on merge to main. For manual releases outside the PR flow: `bash scripts/release.sh <skill-name>`
 
 ## Skill Architecture

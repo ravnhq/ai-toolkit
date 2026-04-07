@@ -114,13 +114,11 @@ For each approved code change:
 5. **Verify the change is applied** by reading the relevant lines after the edit
 
 Example workflow for a single change:
-```bash
-# Read file
-cat src/auth.ts
 
-# Make the change (using Edit tool)
-# Then verify
-git diff src/auth.ts
+```bash
+cat src/auth.ts          # read file
+                         # make the change (using Edit tool)
+git diff src/auth.ts     # then verify
 ```
 
 ### Phase 6: Verify Changes

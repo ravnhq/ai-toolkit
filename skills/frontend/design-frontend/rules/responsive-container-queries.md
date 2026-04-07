@@ -46,11 +46,11 @@ Use `@container` on parent elements and container query variants (`@sm:`, `@md:`
 <div class="@container rounded-lg border p-4">
   <div class="flex flex-col @sm:flex-row gap-4">
     <img class="h-24 w-24 @sm:h-32 @sm:w-32 object-cover rounded" src="..." />
-    
+
     <div class="flex flex-col justify-between flex-1">
       <h3 class="font-bold text-base @sm:text-lg">Product Name</h3>
       <p class="text-sm @sm:text-base text-gray-600">Description hidden on small containers</p>
-      
+
       <div class="flex gap-2 mt-4">
         <button class="flex-1 @sm:flex-none px-4 py-2 bg-blue-600">Add</button>
       </div>

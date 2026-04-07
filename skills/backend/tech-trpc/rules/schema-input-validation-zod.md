@@ -95,14 +95,14 @@ async function handleUserCreation(data: unknown) {
   } catch (cause) {
     if (cause instanceof TRPCClientError<AppRouter>) {
       const zodError = cause.data?.zodError;
-      
+
       if (zodError?.fieldErrors) {
         // Display field-specific errors
         for (const [field, errors] of Object.entries(zodError.fieldErrors)) {
           console.error(`${field}: ${errors.join(', ')}`);
         }
       }
-      
+
       return null;
     }
     throw cause;
