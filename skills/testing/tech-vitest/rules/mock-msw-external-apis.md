@@ -6,9 +6,9 @@ tags: mocking, msw, http, external-apis
 
 ## Mock External APIs with MSW
 
-Use [MSW (Mock Service Worker)](https://mswjs.io/) to intercept HTTP requests at the network level instead of mocking HTTP clients directly. MSW intercepts at the network level, so tests exercise real fetch/axios code paths without coupling to a specific HTTP client.
+Use [MSW (Mock Service Worker)](https://mswjs.io/) to intercept HTTP requests at the network level instead of mocking HTTP clients directly. MSW intercepts at the network level, so tests exercise real fetch/axios code paths without coupling to a specific HTTP client. MSW v2+ uses `http` and `HttpResponse` from the `msw` package.
 
-**Setup MSW server with default handlers:**
+**Setup MSW server with default handlers (v2+):**
 
 ```typescript
 // test/mocks/handlers.ts
@@ -61,6 +61,31 @@ it("handles payment failure", async () => {
 });
 ```
 
+**Mock GraphQL queries with MSW:**
+
+```typescript
+import { graphql, HttpResponse } from "msw";
+import { server } from "@/test/setup";
+
+const graphqlHandlers = [
+  graphql.query("GetUser", ({ variables }) => {
+    return HttpResponse.json({
+      data: {
+        user: { id: variables.id, name: "Test User" },
+      },
+    });
+  }),
+
+  graphql.mutation("CreatePost", () => {
+    return HttpResponse.json({
+      data: { post: { id: "post_123", title: "New Post" } },
+    });
+  }),
+];
+
+export const server = setupServer(...graphqlHandlers);
+```
+
 **Bad -- mocking the HTTP client directly:**
 
 ```typescript
@@ -101,10 +126,32 @@ it("processes payment successfully", async () => {
 });
 ```
 
+**Edge case: catch unhandled requests in tests**
+
+```typescript
+beforeAll(() => {
+  server.listen({
+    onUnhandledRequest: "error", // Fail test if request not mocked
+  });
+});
+
+afterEach(() => {
+  server.resetHandlers(); // Clear per-test overrides
+});
+
+// ✅ This test will fail if fetch() or axios() calls an unmocked URL
+test('must mock all external requests', async () => {
+  // Will throw if we forgot to add a handler for this endpoint
+  await callSomeAPI();
+});
+```
+
 **Why it matters:**
 - Tests real HTTP behavior (headers, status codes, network errors)
 - No coupling to implementation (switching from axios to fetch does not break tests)
 - `onUnhandledRequest: "error"` catches missing mocks and prevents accidental real API calls
 - Handlers are reusable across tests and reset automatically in `afterEach`
+- MSW v2+ API changed from `rest.post()` to `http.post()`; both `http` and `graphql` are available
+- Works with any HTTP client (fetch, axios, node-fetch, undici)
 
 Reference: [MSW Documentation](https://mswjs.io/docs)

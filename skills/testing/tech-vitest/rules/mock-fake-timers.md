@@ -75,10 +75,77 @@ vi.runOnlyPendingTimers();
 vi.advanceTimersToNextTimer();
 ```
 
+**Clean up fake timers in afterEach:**
+
+```typescript
+import { beforeEach, afterEach, test, expect, vi } from 'vitest';
+
+beforeEach(() => {
+  vi.useFakeTimers();
+});
+
+afterEach(() => {
+  vi.useRealTimers();  // Critical — reset between tests
+});
+
+test('first test with faked time', () => {
+  vi.setSystemTime(new Date('2024-01-01'));
+  // ...
+});
+
+test('second test gets real time again', () => {
+  // Time is no longer faked
+  expect(new Date()).toBeAfter(new Date('2024-01-01'));
+});
+```
+
+**Fake timers with modern async/await:**
+
+```typescript
+test('async function respects fake timers', async () => {
+  vi.useFakeTimers();
+  const callback = vi.fn();
+
+  const delayedCall = new Promise(resolve => {
+    setTimeout(() => {
+      callback();
+      resolve(true);
+    }, 1000);
+  });
+
+  // Advance timers to trigger the setTimeout
+  vi.advanceTimersByTime(1000);
+  await delayedCall;
+
+  expect(callback).toHaveBeenCalled();
+  vi.useRealTimers();
+});
+```
+
+**Edge case: Promise microtasks before fake timers take effect:**
+
+```typescript
+test('microtasks execute before timers advance', async () => {
+  vi.useFakeTimers();
+  const order: string[] = [];
+
+  Promise.resolve().then(() => order.push('microtask'));
+  setTimeout(() => order.push('timer'), 0);
+
+  // Microtasks run first, before advancing timers
+  await vi.runAllTimersAsync();
+
+  expect(order).toEqual(['microtask', 'timer']);
+  vi.useRealTimers();
+});
+```
+
 **Why it matters:**
-- Tests run instantly instead of waiting
-- Deterministic time in tests
-- Test edge cases like expiration
-- No flaky tests from timing issues
+- Tests run instantly instead of waiting for real time
+- Deterministic time in tests eliminates race conditions
+- Test edge cases like expiration reliably
+- Prevent flaky tests from timing issues
+- Must reset with `vi.useRealTimers()` to prevent contamination between tests
+- Microtasks (Promises) execute before timers advance; order matters for async code
 
 Reference: [Vitest Fake Timers](https://vitest.dev/api/vi.html#vi-usefaketimers)
