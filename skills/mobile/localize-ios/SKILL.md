@@ -17,6 +17,13 @@ allowed-tools:
 - Agent
 metadata:
   category: mobile
+  tags:
+  - ios
+  - swift
+  - localization
+  - xcstrings
+  - swiftui
+  - uikit
   status: ready
   version: 4
 ---

@@ -22,7 +22,7 @@ metadata:
   - use-hook
   - web
   status: ready
-  version: 5
+  version: 6
 ---
 
 # Core Challenges

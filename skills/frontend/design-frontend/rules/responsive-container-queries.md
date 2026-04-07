@@ -4,7 +4,7 @@ impact: HIGH
 tags: responsive, container-queries, components, layout
 ---
 
-## Use Container Queries for Component Queries for Component-Level Responsiveness
+## Use Container Queries for Component-Level Responsiveness
 
 Use `@container` on parent elements and container query variants (`@sm:`, `@md:`, `@lg:`) on children to build components that respond to their container size, not viewport size. This enables truly reusable components that adapt to any layout context.
 
