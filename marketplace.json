@@ -31,7 +31,7 @@
         "decision-making"
       ],
       "status": "ready",
-      "version": 3
+      "version": 5
     },
     {
       "name": "lang-typescript",
@@ -130,19 +130,22 @@
     {
       "name": "tech-react",
       "source": "skills/frontend/tech-react",
-      "description": "React-specific component, hook, and rendering patterns.",
+      "description": "React 19 patterns for components, hooks, Server Components, and data fetching with Suspense.",
       "category": "frontend",
       "tags": [
         "react",
         "hooks",
         "components",
         "jsx",
+        "server-components",
+        "suspense",
+        "use-hook",
         "web"
       ],
       "extends": "platform-frontend",
       "status": "ready",
-      "rules": 8,
-      "version": 5
+      "rules": 11,
+      "version": 6
     },
     {
       "name": "tech-trpc",
@@ -343,7 +346,7 @@
         "gh-cli"
       ],
       "status": "ready",
-      "version": 2
+      "version": 4
     },
     {
       "name": "localize-ios",
@@ -408,7 +411,7 @@
         "gh-cli"
       ],
       "status": "ready",
-      "version": 3
+      "version": 5
     },
     {
       "name": "type-system-audit",
@@ -422,7 +425,7 @@
         "code-quality"
       ],
       "status": "ready",
-      "version": 4
+      "version": 6
     },
     {
       "name": "transcript-notes",
