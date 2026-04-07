@@ -1,10 +1,10 @@
 ---
 name: type-system-audit
 description: 'Audit a repository for type-system weaknesses using recent bug-fix commits
-  as hard evidence. Produces prioritized findings and refactors tied to specific commits.
-  Use when: reviewing type safety, auditing types, analyzing type bugs. Triggers on:
-  "type audit", "type system review", "audit types", "type safety audit", "type-system
-  audit".'
+  as hard evidence. Produces prioritized findings tied to specific commits showing
+  which types allowed real bugs. Use when: reviewing type safety, auditing types,
+  analyzing type bugs. Triggers on: type audit, type system review, audit types, type
+  safety audit.'
 allowed-tools:
 - Bash
 - Read
@@ -21,18 +21,16 @@ metadata:
   - static-analysis
   - code-quality
   status: ready
-  version: 4
+  version: 6
 ---
 
-# Type-System Audit: Commit-First, Not Theory-First
+# Type-System Audit
 
-## Objective
-
-Audit this repository for type-system weaknesses using bug-fix commits as hard evidence — not speculation. Identify which types allowed invalid states that caused real bugs, and which improvements would eliminate entire defect classes.
+Audit a repository for type-system weaknesses using bug-fix commits as hard evidence—not speculation. Identify which types allowed invalid states that caused real bugs, and recommend stricter types that would prevent entire defect classes. All findings are tied to specific commits for credibility.
 
 ## Workflow
 
-### Step 1: Identify Language and Type System
+### Phase 1: Identify Language and Type System
 
 Determine the primary language(s) and type system in use. Use the table below to adapt the audit approach:
 
@@ -43,7 +41,7 @@ Determine the primary language(s) and type system in use. Use the table below to
 | Kotlin | `T?`, `!!`, null-safe operators | `sealed class` / `when` | `@Serializable`, `require()` | `.kt` |
 | Python | `Optional[T]`, `None` checks | `Union`, `Literal`, `TypedDict` | `pydantic`, `attrs` | `.py`, `.pyi` |
 
-### Step 2: Commit Selection
+### Phase 2: Commit Selection
 
 Run Stage 1 first (high-signal conventional commits):
 
@@ -62,7 +60,7 @@ Decision points:
 
 Select 10–20 candidates. Prefer commits touching domain logic, data models, or API boundaries.
 
-### Step 3: Per-Commit Inspection
+### Phase 3: Per-Commit Inspection
 
 For each candidate commit, inspect the diff:
 
@@ -75,7 +73,7 @@ Large-diff guidance (>500 lines): use `--stat` to identify type-definition files
 
 Look for: type definitions and interfaces changed, added guards or normalization logic, null checks added, validation added at API boundaries, test changes that hint at a shape mismatch.
 
-### Step 4: Evidence Gathering
+### Phase 4: Evidence Gathering
 
 Apply the "What to Look For" patterns to each commit. Record every match as a candidate finding.
 
@@ -84,7 +82,7 @@ Discard criteria — skip a commit if:
 - The change is only to comments, docs, or non-typed configuration
 - The fix is in test setup code with no production type implications
 
-### Step 5: Finding Generation
+### Phase 5: Finding Generation
 
 For each confirmed finding, fill out the per-finding template. Cite the specific commit SHA and the exact file and type involved.
 
@@ -97,13 +95,15 @@ git show HEAD:path/to/type.ts   # Read current version of the type file
 Cross-validation gate — before finalizing a finding, answer:
 - "Would a stricter type have prevented this at compile time?" — If **no**, discard. If **yes**, keep. If **partially**, mark `[partial]`.
 
-### Step 6: Output Assembly
+### Phase 6: Output Assembly
 
 Produce all required output sections. Prioritize findings by blast radius: how many call sites or bugs would a stricter type prevent?
 
 Quality gate before finalizing: verify all 7 template fields are filled for every finding. A finding with empty fields is not ready.
 
 ## What to Look For
+
+Refer to `references/common-type-weakness-patterns.md` for detailed explanations and examples of each weakness type. Core patterns to recognize:
 
 - **Nullable/optional values modeled too loosely** — fields that can be `null` or absent but aren't encoded in the type
 - **Sentinel values masking missing data** — `""`, `"null"`, `-1`, `0` used where `null | T` would be correct
@@ -112,6 +112,9 @@ Quality gate before finalizing: verify all 7 template fields are filled for ever
 - **Invalid states representable as valid objects** — field combinations encoding impossible domain states (e.g., `status: "complete"` with `completedAt: null`)
 - **Guard or normalization logic compensating for permissive types** — runtime checks that exist only because the type is too wide
 - **Function signatures accepting impossible data** — parameters the function will immediately reject at runtime
+- **Async/Promise violations** — uncaught promise rejections, missing awaits, lost type information in chains
+- **Missing type narrowing after checks** — redundant null checks after guards that should narrow types
+- **Using `any` as a workaround** — type issues solved with `any` instead of fixing the underlying type
 
 ## Per-Finding Template
 
