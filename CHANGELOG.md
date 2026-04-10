@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-04-10
+
+- Add corvus CLI for interactive skill management (#16).
 ## 2026-04-07
 
 - Added background sub-agent skill for dispatching tasks. (#22)
