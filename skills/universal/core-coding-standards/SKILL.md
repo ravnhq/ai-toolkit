@@ -2,6 +2,14 @@
 name: core-coding-standards
 description: Universal code quality rules — KISS, DRY, clean code, code review. Base
   skill every project should include. Use when writing or reviewing any code.
+allowed-tools:
+- Bash
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Agent
 metadata:
   category: universal
   tags:
@@ -9,7 +17,7 @@ metadata:
   - review
   - fundamentals
   status: ready
-  version: 3
+  version: 4
 ---
 
 # Principles

@@ -7,6 +7,14 @@ description: 'Add a new rule, convention, or instruction to the project''s agent
   coding standard'', ''add instruction for claude'', ''update claude.md with''.
 
   '
+allowed-tools:
+- Bash
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Agent
 metadata:
   category: assistant
   tags:
@@ -15,7 +23,7 @@ metadata:
   - claude-md
   - configuration
   status: ready
-  version: 3
+  version: 4
 ---
 
 # Add Rule — Place Agent Instructions Correctly

@@ -1,9 +1,17 @@
 ---
 name: transcript-notes
 description: 'Convert meeting transcript .txt files into structured .md notes with
-  metadata, TL;DR, key topics, action items, and quotes. Use when processing raw
-  transcripts into formatted notes. Triggers on: "process transcript", "generate
-  notes from transcript", "transcript to notes", "/transcript-notes".'
+  metadata, TL;DR, key topics, action items, and quotes. Use when processing raw transcripts
+  into formatted notes. Triggers on: "process transcript", "generate notes from transcript",
+  "transcript to notes", "/transcript-notes".'
+allowed-tools:
+- Bash
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Agent
 metadata:
   category: assistant
   tags:
@@ -14,7 +22,7 @@ metadata:
   - action-items
   - summary
   status: ready
-  version: 1
+  version: 2
 ---
 
 # Transcript Notes

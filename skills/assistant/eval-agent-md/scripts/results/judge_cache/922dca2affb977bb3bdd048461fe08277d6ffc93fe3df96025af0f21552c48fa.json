@@ -1,0 +1,14 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Invents WarehouseClient Protocol with `async def save(report: dict)` and fabricates Slack webhook approach without asking",
+  "triggered_criteria": [
+    "Does NOT invent or fabricate method signatures without confirming they exist",
+    "Blocks on answering unknowns before producing implementation code",
+    "Explicitly lists unknown interfaces by name and asks specific questions"
+  ],
+  "triggered_fail_signals": [
+    "Invents a warehouse client API without asking if it exists",
+    "Uses a fabricated Slack SDK method signature without confirming the actual API",
+    "Proceeds with a complete implementation based on assumed interfaces"
+  ]
+}

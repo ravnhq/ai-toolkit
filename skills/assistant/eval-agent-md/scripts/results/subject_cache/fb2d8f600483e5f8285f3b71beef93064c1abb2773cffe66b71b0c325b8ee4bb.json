@@ -1,0 +1,3 @@
+{
+  "response": "## Assumptions\n1. The function should collapse multiple consecutive spaces/hyphens into a single hyphen and strip leading/trailing hyphens (e.g., `\"  hello  world  \"` \u2192 `\"hello-world\"`).\n2. ASCII-only scope \u2014 special characters and punctuation are removed, but the handling of accented/Unicode characters (e.g., `\"caf\u00e9\"` \u2192 `\"cafe\"` vs `\"caf\"`) is unspecified.\n\n## Questions\n- Should accented/Unicode characters be **transliterated** to their ASCII equivalent (e.g., `\u00e9` \u2192 `e`, `\u00f1` \u2192 `n`) or simply **stripped**?"
+}

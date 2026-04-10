@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
-# Manual per-skill build release (local use only).
-# CI handles releases automatically on merge to main.
+# Manual per-skill build bump (local use only).
+# Bumps the build number and commits. CI creates tags on merge to main.
 # Use this script when you need to release outside the normal PR flow.
 #
 # Usage: ./scripts/release.sh <skill-name> [build]
@@ -89,42 +89,29 @@ else
 fi
 success "Updated $SKILL_NAME build to $NEW_BUILD"
 
-# Step 3: Check tag doesn't already exist
-TAG="skill-${SKILL_NAME}-b${NEW_BUILD}"
-if git rev-parse "$TAG" >/dev/null 2>&1; then
-  error "Tag $TAG already exists"
-fi
-
-# Step 4: Commit build bump
+# Step 3: Commit build bump
 info "Committing build bump..."
 git add "$SKILL_PATH" marketplace.json
 git commit -m "chore(${SKILL_NAME}): bump build to ${NEW_BUILD}"
 success "Created commit"
 
-# Step 5: Create annotated tag
-info "Creating annotated tag $TAG..."
-git tag -a "$TAG" -m "Release ${SKILL_NAME} build ${NEW_BUILD}"
-success "Created tag $TAG"
-
-# Step 6: Ask about pushing
+# Step 4: Ask about pushing
 echo
+TAG="skill-${SKILL_NAME}-b${NEW_BUILD}"
 info "Build release prepared locally:"
 echo "  Skill: $SKILL_NAME"
 echo "  Build: $NEW_BUILD"
-echo "  Tag: $TAG"
+echo "  Expected tag: $TAG (created by CI on merge)"
 echo "  Commit: $(git rev-parse --short HEAD)"
 echo
 read -p "Push to remote? (y/N) " -n 1 -r
 echo
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-  # Push commit and tag
   info "Pushing to remote..."
   git push origin "$CURRENT_BRANCH"
-  git push origin "$TAG"
-  success "Pushed commit and tag"
+  success "Pushed commit — CI will create tag $TAG on merge to main"
 else
   info "Release prepared but not pushed. To push manually:"
   echo "  git push origin $CURRENT_BRANCH"
-  echo "  git push origin $TAG"
 fi

@@ -1,0 +1,27 @@
+{
+  "_comment": "Replace <LINT_CMD> and <TSC_CMD> with detected commands from package.json. Fallbacks: 'npx eslint . --max-warnings=0' and 'npx tsc --noEmit'.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/lint-typecheck.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<LINT_CMD> 2>&1 | head -30 && <TSC_CMD> 2>&1 | head -30"
+          }
+        ]
+      }
+    ]
+  }
+}

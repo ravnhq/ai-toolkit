@@ -1,0 +1,78 @@
+{
+  "timestamp": "20260323T195637",
+  "model": "sonnet",
+  "label": "baseline",
+  "scenarios": [
+    {
+      "id": "step_order_file_before_generate",
+      "rule": "Workflow Step Order \u2014 locate file (Step 1) must happen before generating scenarios (Step 2)",
+      "runs": 1,
+      "passes": 0,
+      "fails": 1,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "FAIL",
+          "evidence": "Assistant response is empty \u2014 no steps described at all, no file location step, no confirmation, no scenario generation order.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Jumps directly to running behavioral tests without mentioning file location or confirmation",
+            "Presents steps out of the documented order (generate \u2192 locate, or run \u2192 generate)"
+          ],
+          "response_preview": "",
+          "run": 1
+        }
+      ]
+    },
+    {
+      "id": "progress_reporting_before_run",
+      "rule": "Progress Reporting \u2014 must inform user BEFORE running behavioral tests with timing and mechanics",
+      "runs": 1,
+      "passes": 1,
+      "fails": 0,
+      "final_verdict": "PASS",
+      "details": [
+        {
+          "verdict": "PASS",
+          "evidence": "States 8 scenarios x 1 run, explains two claude -p calls (subject+judge), gives 'a few minutes' estimate, mentions streaming results",
+          "triggered_criteria": [
+            "States scenario/run count",
+            "Explains two-call mechanic",
+            "Gives time estimate",
+            "Mentions streaming results"
+          ],
+          "triggered_fail_signals": [],
+          "response_preview": "Based on the `eval-agent-md` skill's Step 3 instructions, here's exactly what I should say:\n\n> Running 8 scenarios x 1 run(s) against sonnet... each scenario calls `claude -p` twice (subject + judge), so this takes a few minutes. You'll see per-scenario results as they complete.\n\nThat's the prescribed transition message \u2014 it sets expectations on timing, explains the two-call structure per scenario (subject invocation + LLM-as-judge scoring), and tells the user that output will stream in real tim",
+          "run": 1
+        }
+      ]
+    },
+    {
+      "id": "self_flag_resolves_to_skill_md",
+      "rule": "--self flag \u2014 must resolve target to the skill's own SKILL.md, ignore any path argument",
+      "runs": 1,
+      "passes": 1,
+      "fails": 0,
+      "final_verdict": "PASS",
+      "details": [
+        {
+          "verdict": "PASS",
+          "evidence": "Targets skill's own SKILL.md, explains --self overrides path arg, quotes 'Implies --skill, ignores path argument'",
+          "triggered_criteria": [
+            "Targets the skill's own SKILL.md, not ./CLAUDE.md",
+            "Explains that --self takes priority and overrides any path argument",
+            "Mentions that --self implies --skill flag",
+            "Does not use ./CLAUDE.md as the target despite it being provided"
+          ],
+          "triggered_fail_signals": [],
+          "response_preview": "The answer is clear and rule-based:\n\n## Target: `skills/experimental/eval-agent-md/SKILL.md`\n\n**Why `--self` wins over `./CLAUDE.md`:**\n\nThe skill spec is explicit:\n\n> `--self` \u2014 auto-resolve to this skill's **own SKILL.md** for dogfooding. **Implies `--skill`, ignores path argument.**\n\nSo even though you passed `./CLAUDE.md` as a positional argument, `--self` overrides it entirely. The path argument is silently dropped.\n\n**`[SKILL_DIR]` resolves to:**\n```\n/Users/pedro/Development/ravn/ai-toolki",
+          "run": 1
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "passed": 2
+  }
+}

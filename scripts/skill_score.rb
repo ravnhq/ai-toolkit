@@ -104,7 +104,8 @@ audit_errors = 0
 name = frontmatter["name"].to_s
 folder = File.basename(File.dirname(skill_path))
 metadata = frontmatter["metadata"]
-active = skill_path.include?("/skills/") && !skill_path.include?("/skills/_drafts/")
+status = frontmatter.dig("metadata", "status")
+active = skill_path.include?("/skills/") && status != "scaffold" && status != "draft"
 
 audit_errors += 1 unless frontmatter.key?("name")
 audit_errors += 1 unless frontmatter.key?("description")

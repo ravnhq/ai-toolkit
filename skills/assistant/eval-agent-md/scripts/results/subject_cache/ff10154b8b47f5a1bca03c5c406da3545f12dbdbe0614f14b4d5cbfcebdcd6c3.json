@@ -1,0 +1,3 @@
+{
+  "response": "The file doesn't exist on disk \u2014 you pasted the snippet inline. Here's the edit to apply:\n\n```python\ndef create_order(item_id, quantity, user_id):\n    if quantity <= 0:\n        raise ValueError(f\"quantity must be positive, got {quantity}\")\n    order = Order(item_id=item_id, quantity=quantity, user_id=user_id)\n    db.save(order)\n    return order\n```\n\nThe guard raises `ValueError` immediately if `quantity` is `0` or negative, before any `Order` object is constructed or persisted. The error message includes the offending value to aid debugging."
+}

@@ -1,0 +1,8 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+
+profile = "workspace_write"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+[sandbox_workspace_write]
+network_access = true

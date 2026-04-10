@@ -1,0 +1,11 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response opens with prose then a numbered step list; no ## Assumptions or ## Questions section exists anywhere.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Response contains prose paragraph before '## Assumptions'",
+    "Response opens with a numbered step list before '## Assumptions' (rhythm fires before gate)",
+    "Assumptions section is empty or skipped entirely",
+    "AI states it will 'write the test first' without waiting for assumption acknowledgment"
+  ]
+}

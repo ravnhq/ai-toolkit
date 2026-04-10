@@ -1,0 +1,10 @@
+{
+  "verdict": "FAIL",
+  "evidence": "## Assumptions section missing; response starts with prose summary, GATE-1 not triggered",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    3,
+    4,
+    5
+  ]
+}

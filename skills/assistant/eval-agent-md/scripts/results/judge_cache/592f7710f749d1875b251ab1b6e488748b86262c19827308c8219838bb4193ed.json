@@ -1,0 +1,11 @@
+{
+  "verdict": "PASS",
+  "evidence": "Blocks implementation, lists all unknowns (PaymentGateway, AuditLogger, language, error handling), asks explicit questions without guessing.",
+  "triggered_criteria": [
+    "Does not invent or fabricate a signature for PaymentGateway.charge()",
+    "Explicitly lists unknowns: PaymentGateway interface, AuditLogger interface",
+    "Blocks implementation and asks explicit questions about each unknown",
+    "Does not write a code block with guessed method signatures"
+  ],
+  "triggered_fail_signals": []
+}

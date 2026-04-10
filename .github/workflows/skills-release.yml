@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.3.1
         with:
           fetch-depth: 2
 
@@ -139,9 +139,12 @@ jobs:
           for TAG in $TAGS; do
             SKILL=$(echo "$TAG" | sed 's/^skill-//;s/-b[0-9]*$//')
             BUILD=$(echo "$TAG" | sed 's/.*-b//')
-            git tag -a "$TAG" -m "Release ${SKILL} build ${BUILD}"
+            git tag -fa "$TAG" -m "Release ${SKILL} build ${BUILD}"
             echo "Tagged ${TAG}"
           done
 
           git push origin main
-          git push origin --tags
+
+          for TAG in $TAGS; do
+            git push --force origin "$TAG"
+          done

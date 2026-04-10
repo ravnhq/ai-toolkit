@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response lists interpretations of what 'app' means, but never lists auth strategy options (JWT, session, OAuth, API key) as required by Pass Criterion 1.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "No mention of different authentication strategies"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "verdict": "PASS",
+  "evidence": "First code uses csv.DictReader stdlib, complete and runnable, no pandas mentioned",
+  "triggered_criteria": [
+    "stdlib csv solution shown first",
+    "complete runnable example",
+    "no third-party library"
+  ],
+  "triggered_fail_signals": []
+}

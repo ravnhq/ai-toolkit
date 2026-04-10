@@ -8,6 +8,14 @@ description: 'Guide for creating effective, portable skills that extend Claude''
   "build a skill", "new skill", "update this skill", "improve skill description",
   "skill structure", "skill triggers".'
 license: Complete terms in LICENSE.txt
+allowed-tools:
+- Bash
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Agent
 metadata:
   category: assistant
   tags:
@@ -16,7 +24,7 @@ metadata:
   - authoring
   - templates
   status: ready
-  version: 6
+  version: 7
 ---
 
 # Skill Creator

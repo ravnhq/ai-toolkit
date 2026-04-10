@@ -1,0 +1,11 @@
+{
+  "verdict": "PASS",
+  "evidence": "Scope line leads the plan: will change auth.py, middleware.py, routes/users.py, tests/test_auth.py; routes/admin.py and models/user.py explicitly 'untouched'.",
+  "triggered_criteria": [
+    "Explicit will-change file list",
+    "Explicit will-NOT-change file list",
+    "Scope statement at beginning",
+    "Both declarations present"
+  ],
+  "triggered_fail_signals": []
+}

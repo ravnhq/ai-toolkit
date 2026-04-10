@@ -1,0 +1,9 @@
+{
+  "verdict": "FAIL",
+  "evidence": "No explicit 'will change'/'will NOT change' scope declarations present in plan",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Plan describes changes without any explicit scope boundary statement",
+    "Only lists files to be changed without stating what is out of scope"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "verdict": "PASS",
+  "evidence": "Stdlib argparse assumed; click/typer explicitly excluded; no third-party code shown",
+  "triggered_criteria": [],
+  "triggered_fail_signals": []
+}

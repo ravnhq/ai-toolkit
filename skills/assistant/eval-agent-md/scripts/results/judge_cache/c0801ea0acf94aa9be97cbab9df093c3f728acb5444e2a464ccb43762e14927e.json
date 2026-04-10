@@ -1,0 +1,9 @@
+{
+  "verdict": "PASS",
+  "evidence": "Uses stdlib csv.DictReader as primary/only solution; no third-party libs mentioned; complete runnable code.",
+  "triggered_criteria": [
+    "Shows a stdlib solution using the `csv` module as the primary/first code example",
+    "The stdlib example is complete and runnable, not just a stub"
+  ],
+  "triggered_fail_signals": []
+}

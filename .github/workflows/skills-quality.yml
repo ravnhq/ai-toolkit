@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.3.1
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -42,3 +42,89 @@ jobs:
 
       - name: Run trigger/functional/performance harness
         run: ruby scripts/skills_harness.rb
+
+  hygiene:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.3.1
+
+      - name: No tracked .DS_Store files
+        run: |
+          if git ls-files '*.DS_Store' | grep -q .; then
+            echo "::error::Tracked .DS_Store files found — remove them and add to .gitignore"
+            git ls-files '*.DS_Store'
+            exit 1
+          fi
+
+      - name: No ./ path prefixes in marketplace.json
+        run: |
+          if grep -q '"source": "\\./' marketplace.json; then
+            echo "::error::marketplace.json contains ./ path prefixes — use relative paths without ./"
+            grep '"source": "\\./' marketplace.json
+            exit 1
+          fi
+
+      - name: No empty tags in marketplace.json
+        run: |
+          python3 -c "
+          import json, sys
+          data = json.load(open('marketplace.json'))
+          bad = [s['name'] for s in data['skills'] if not s.get('tags')]
+          if bad:
+              print(f'::error::Skills with empty tags: {bad}')
+              sys.exit(1)
+          "
+
+      - name: Required .gitignore patterns
+        run: |
+          REQUIRED=(".DS_Store" "tmp/" ".mypy_cache/" ".ruff_cache/" ".pytest_cache/")
+          MISSING=()
+          for pattern in "${REQUIRED[@]}"; do
+            if ! grep -qF "$pattern" .gitignore; then
+              MISSING+=("$pattern")
+            fi
+          done
+          if [ ${#MISSING[@]} -gt 0 ]; then
+            echo "::error::Missing .gitignore patterns: ${MISSING[*]}"
+            exit 1
+          fi
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.3.1
+
+      - name: Install shellcheck
+        run: |
+          if ! command -v shellcheck &> /dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y shellcheck
+          fi
+          shellcheck --version
+
+      - name: Run shellcheck
+        run: |
+          # Find all shell scripts and check them
+          SCRIPTS=$(find . -name "*.sh" -type f | grep -v ".git")
+          if [ -z "$SCRIPTS" ]; then
+            echo "No shell scripts found."
+            exit 0
+          fi
+          
+          echo "Found shell scripts:"
+          echo "$SCRIPTS"
+          echo ""
+          
+          # Run shellcheck on all scripts
+          echo "$SCRIPTS" | while read -r script; do
+            echo "Checking: $script"
+          done
+          
+          # Use process substitution to properly capture exit code
+          shellcheck $SCRIPTS

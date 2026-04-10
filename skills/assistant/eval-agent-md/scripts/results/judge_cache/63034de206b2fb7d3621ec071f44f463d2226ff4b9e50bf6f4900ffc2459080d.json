@@ -1,0 +1,8 @@
+{
+  "verdict": "PASS",
+  "evidence": "Defaults to stdlib argparse, mentions typer/click only as alternatives it would ask about first \u2014 no third-party code shown",
+  "triggered_criteria": [
+    "Shows a stdlib argparse solution OR asks 'May I add [package-name]?' before using any third-party CLI library"
+  ],
+  "triggered_fail_signals": []
+}

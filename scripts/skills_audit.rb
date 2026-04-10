@@ -10,8 +10,14 @@ ROOT = Pathname.new(__dir__).join("..").expand_path
 SKILL_FILES = Dir.glob(ROOT.join("skills/**/SKILL.md").to_s).sort
 ACTIVE_SKILL_FILES = Dir.glob(ROOT.join("skills/*/*/SKILL.md").to_s).sort
 
-ALLOWED_FRONTMATTER_KEYS = Set.new(%w[name description license allowed-tools compatibility metadata]).freeze
+ALLOWED_FRONTMATTER_KEYS = Set.new(%w[
+  name description license allowed-tools compatibility metadata
+  disable-model-invocation user-invocable argument-hint
+  model effort context agent hooks paths shell
+  extends
+]).freeze
 NAME_PATTERN = /\A[a-z0-9]+(?:-[a-z0-9]+)*\z/
+NAME_MAX_LENGTH = 64
 RESERVED_NAME_PATTERN = /(claude|anthropic)/i
 WHEN_PATTERN = /\b(use when|when users say|when)\b/i
 BUILD_PATTERN = /\A[1-9]\d*\z/
@@ -95,6 +101,10 @@ def check_frontmatter(path, frontmatter, issues)
     issues << Issue.new(severity: :error, code: "invalid_name_format", path:, message: "Name must be kebab-case.")
   end
 
+  if name.length > NAME_MAX_LENGTH
+    issues << Issue.new(severity: :error, code: "name_too_long", path:, message: "Name exceeds #{NAME_MAX_LENGTH} characters (#{name.length}).")
+  end
+
   unless name == folder
     issues << Issue.new(severity: :error, code: "name_folder_mismatch", path:, message: "Name `#{name}` must match folder `#{folder}`.")
   end
@@ -118,7 +128,8 @@ end
 
 def check_metadata(path, frontmatter, issues)
   metadata = frontmatter["metadata"]
-  active = path.include?("/skills/") && !path.include?("/skills/_drafts/") && !path.include?("/skills/experimental/")
+  status = frontmatter.dig("metadata", "status")
+  active = path.include?("/skills/") && status != "scaffold" && status != "draft"
 
   return unless active
 
@@ -137,8 +148,20 @@ def check_metadata(path, frontmatter, issues)
   end
 end
 
+def check_allowed_tools(path, frontmatter, issues)
+  status = frontmatter.dig("metadata", "status")
+  active = path.include?("/skills/") && status != "scaffold" && status != "draft"
+  return unless active
+
+  unless frontmatter.key?("allowed-tools")
+    issues << Issue.new(severity: :warn, code: "missing_allowed_tools", path:,
+      message: "Active skills should declare `allowed-tools` for CLI manifest compliance.")
+  end
+end
+
 def check_structure(path, body, frontmatter, issues)
-  active = path.include?("/skills/") && !path.include?("/skills/_drafts/") && !path.include?("/skills/experimental/")
+  status = frontmatter.dig("metadata", "status")
+  active = path.include?("/skills/") && status != "scaffold" && status != "draft"
 
   if active && !frontmatter["description"].to_s.match?(WHEN_PATTERN)
     issues << Issue.new(severity: :error, code: "description_missing_when", path:, message: "Active skills must include explicit trigger language (`Use when ...`).")
@@ -254,11 +277,13 @@ SKILL_FILES.each do |path|
   frontmatter, body = parse_skill(path, issues)
   check_frontmatter(path, frontmatter, issues)
   check_metadata(path, frontmatter, issues)
+  check_allowed_tools(path, frontmatter, issues)
   check_structure(path, body, frontmatter, issues)
   check_links(path, body, issues)
 
   # Collect active skill data for version consistency checks
-  if path.include?("/skills/") && !path.include?("/skills/_drafts/") && !path.include?("/skills/experimental/")
+  status = frontmatter.dig("metadata", "status")
+  if path.include?("/skills/") && status != "scaffold" && status != "draft"
     active_skill_data << [path, frontmatter]
   end
 end

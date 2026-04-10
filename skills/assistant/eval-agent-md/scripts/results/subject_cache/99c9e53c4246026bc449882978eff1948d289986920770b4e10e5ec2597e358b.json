@@ -1,0 +1,3 @@
+{
+  "response": "## Assumptions\n1. You want a pure Python function (no third-party deps) that handles standard CSV quoting \u2014 quoted fields can contain commas and escaped double-quotes (`\"\"`).\n2. The output is a list of strings, one per field.\n\n## Questions\n- Python's stdlib `csv` module already does exactly this \u2014 `next(csv.reader([line]))` handles all edge cases (escaped quotes, whitespace, etc.) with zero new code. Should I use that instead of writing a custom parser?"
+}

@@ -1,0 +1,12 @@
+{
+  "verdict": "FAIL",
+  "evidence": "No actual test code block shown; only a plan describing what tests would cover",
+  "triggered_criteria": [
+    "test code block must be first code block",
+    "test file must contain at least 2 concrete assertions"
+  ],
+  "triggered_fail_signals": [
+    "Describes what tests would look like without showing actual test code",
+    "Only shows a filename or test plan without actual test code content"
+  ]
+}

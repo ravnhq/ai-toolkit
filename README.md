@@ -6,7 +6,7 @@
 
 [![Skills Quality](https://github.com/ravnhq/ai-toolkit/actions/workflows/skills-quality.yml/badge.svg)](https://github.com/ravnhq/ai-toolkit/actions/workflows/skills-quality.yml)
 
-Modular "skills" — portable rule packs that teach AI coding agents (Claude Code, Cursor, etc.) best practices for specific technologies — so every project gets consistent, expert-level guidance without copy-pasting prompts. **26 ready skills** across five layers.
+Modular "skills" — portable rule packs that teach AI coding agents (Claude Code, Cursor, etc.) best practices for specific technologies — so every project gets consistent, expert-level guidance without copy-pasting prompts. **30 ready skills** organized by role.
 
 ## Quick Start
 
@@ -106,32 +106,20 @@ npx skills update
 
 ## How Skills Work
 
-### Skill Hierarchy
+### Skill Organization
 
-Skills are layered so you only install what you need. Framework skills inherit all rules from their parent platform skill.
+Skills are grouped by role — everything for a domain lives in one directory. Install what you need.
 
 ```
-core-coding-standards          ← universal baseline
-├── lang-typescript
-├── platform-frontend          ← framework-agnostic UI patterns
-│   └── tech-react
-├── platform-backend           ← framework-agnostic server patterns
-│   └── tech-trpc
-├── platform-database          ← framework-agnostic DB patterns
-│   └── tech-drizzle
-├── platform-testing           ← framework-agnostic test patterns
-│   └── tech-vitest
-└── platform-cli
-
-platform-mobile (draft)        ← framework-agnostic mobile patterns
-└── tech-android
-
-swift-concurrency              ← standalone (no parent)
-localize-ios                   ← standalone
-design-frontend                ← standalone
-design-accessibility           ← standalone
-figma-to-react-components      ← standalone
-liquid-glass-ios               ← standalone
+skills/
+├── universal/     # Global standards — apply to all code
+├── frontend/      # Web UI: architecture, components, design, accessibility
+├── backend/       # Server-side: APIs, services, architecture
+├── database/      # Data layer: ORMs, schemas, queries
+├── mobile/        # iOS, Android, React Native
+├── testing/       # Test patterns and frameworks
+├── cli/           # Command-line tool patterns
+└── assistant/     # Agent workflow tools
 ```
 
 ### Stack Recipes
@@ -176,54 +164,75 @@ npx skills add ravnhq/ai-toolkit -s platform-testing
 
 ### Universal
 
-| Skill                   | Description                                                                                                 | Extends                 |
-|-------------------------|-------------------------------------------------------------------------------------------------------------|-------------------------|
-| `core-coding-standards` | Universal code quality rules — KISS, DRY, clean code, code review. Base skill every project should include. | —                       |
-| `lang-typescript`       | TypeScript language patterns and type safety rules — strict mode, no any, discriminated unions.             | `core-coding-standards` |
+| Skill | Description |
+|-------|-------------|
+| `core-coding-standards` | Universal code quality rules — KISS, DRY, clean code, code review. Base skill every project should include. |
+| `lang-typescript` | TypeScript language patterns and type safety rules — strict mode, no any, discriminated unions. |
+| `ts-linter` | Set up and enforce a strict, production-grade ESLint configuration for TypeScript projects. |
 
-### Platform
+### Frontend
 
-| Skill               | Description                                                                              | Extends                 |
-|---------------------|------------------------------------------------------------------------------------------|-------------------------|
-| `platform-frontend` | Framework-agnostic frontend architecture — state management, components, data fetching.  | `core-coding-standards` |
-| `platform-backend`  | Server-side architecture and security — API design, error handling, validation, logging. | `core-coding-standards` |
-| `platform-database` | SQL database design, query optimization, and migration safety.                           | `core-coding-standards` |
-| `platform-testing`  | Framework-agnostic testing principles — test philosophy, structure, mocking boundaries.  | `core-coding-standards` |
-| `platform-cli`      | Design and implementation patterns for building command-line tools with modern UX.       | `core-coding-standards` |
+| Skill | Description |
+|-------|-------------|
+| `platform-frontend` | Framework-agnostic frontend architecture — state management, components, data fetching. |
+| `tech-react` | React-specific component, hook, and rendering patterns. |
+| `design-frontend` | Visual design system patterns for web UIs — layout, responsive, Tailwind tokens. |
+| `design-accessibility` | WCAG AA and ARIA best practices — screen readers, keyboard navigation, focus management. |
+| `figma-to-react-components` | Convert Figma component designs into production-ready React implementations with design token integration and accessibility. |
 
-### Framework
+### Backend
 
-| Skill               | Description                                                                                       | Extends             |
-|---------------------|---------------------------------------------------------------------------------------------------|---------------------|
-| `tech-react`        | React-specific component, hook, and rendering patterns.                                           | `platform-frontend` |
-| `tech-trpc`         | tRPC router architecture, procedure design, and Vertical Slice Architecture patterns.             | `platform-backend`  |
-| `tech-drizzle`      | Drizzle ORM schema design, relational queries, and migration patterns.                            | `platform-database` |
-| `tech-vitest`       | Vitest-specific testing utilities — vi.mock, vi.fn, fake timers, MSW.                             | `platform-testing`  |
-| `swift-concurrency` | Swift Concurrency patterns — async/await, actors, tasks, Sendable conformance.                    | —                   |
-| `localize-ios`      | Localizes UIKit and SwiftUI views — extracts text, generates keys, creates Localizable.xcstrings. | —                   |
-| `tech-android`      | Android and Kotlin development patterns — Compose, architecture, coroutines, Room, Hilt.          | `platform-mobile`   |
+| Skill | Description |
+|-------|-------------|
+| `platform-backend` | Server-side architecture and security — API design, error handling, validation, logging. |
+| `tech-trpc` | tRPC router architecture, procedure design, and Vertical Slice Architecture patterns. |
 
-### Design
+### Database
 
-| Skill                       | Description                                                                                                                  | Extends |
-|-----------------------------|------------------------------------------------------------------------------------------------------------------------------|---------|
-| `design-frontend`           | Visual design system patterns for web UIs — layout, responsive, Tailwind tokens.                                             | —       |
-| `design-accessibility`      | WCAG AA and ARIA best practices — screen readers, keyboard navigation, focus management.                                     | —       |
-| `figma-to-react-components` | Convert Figma component designs into production-ready React implementations with design token integration and accessibility. | —       |
-| `liquid-glass-ios`          | Apple's Liquid Glass design system for iOS 26+ and iPadOS 26+.                                                               | —       |
+| Skill | Description |
+|-------|-------------|
+| `platform-database` | SQL database design, query optimization, and migration safety. |
+| `tech-drizzle` | Drizzle ORM schema design, relational queries, and migration patterns. |
+
+### Mobile
+
+| Skill | Description |
+|-------|-------------|
+| `tech-android` | Android development patterns and best practices. |
+| `swift-concurrency` | Swift Concurrency patterns — async/await, actors, tasks, Sendable conformance. |
+| `localize-ios` | iOS localization patterns and best practices. |
+| `liquid-glass-ios` | Apple's Liquid Glass design system for iOS 26+ and iPadOS 26+. |
+
+### Testing
+
+| Skill | Description |
+|-------|-------------|
+| `platform-testing` | Framework-agnostic testing principles — test philosophy, structure, mocking boundaries. |
+| `tech-vitest` | Vitest-specific testing utilities — vi.mock, vi.fn, fake timers, MSW. |
+
+### CLI
+
+| Skill | Description |
+|-------|-------------|
+| `platform-cli` | Design and implementation patterns for building command-line tools with modern UX. |
 
 ### Assistant
 
-| Skill                    | Description                                                                      | Extends |
-|--------------------------|----------------------------------------------------------------------------------|---------|
-| `promptify`              | Transform user requests into detailed, precise prompts for AI models.            | —       |
-| `agent-add-rule`         | Add rules, conventions, or instructions to the project's agent configuration.    | —       |
-| `agent-init-deep`        | Initialize or migrate to nested CLAUDE.md structure for progressive disclosure.  | —       |
-| `agent-skill-creator`    | Guide for creating effective, portable skills that extend Claude's capabilities. | —       |
-| `agent-pr-creator`       | Analyzes git diffs and commit history to create pull requests via gh CLI.        | —       |
-| `pr-comments-address`    | Reads open PR review comments, triages them, applies fixes, and drafts replies.  | —       |
-| `rewrite-commit-history` | Rewrite a feature branch's commit history into clean conventional commits.       | —       |
-| `agent-skills-manager`   | Manage AI skills via corvus CLI — install, update, search, and configure.     | —       |
+| Skill | Description |
+|-------|-------------|
+| `promptify` | Transform user requests into detailed, precise prompts for AI models. |
+| `agent-add-rule` | Add rules, conventions, or instructions to the project's agent configuration. |
+| `agent-init-deep` | Initialize or migrate to nested CLAUDE.md structure for progressive disclosure. |
+| `agent-skill-creator` | Guide for creating effective, portable skills that extend Claude's capabilities. |
+| `agent-pr-creator` | Analyzes git diffs and commit history to create pull requests via gh CLI. |
+| `rewrite-commit-history` | Rewrite a feature branch's commit history into clean conventional commits. |
+| `eval-agent-md` | Behavioral compliance testing for CLAUDE.md or agent definition files. |
+| `parallel` | Run a task in a background sub-agent so you can continue working on other things. |
+| `grill-me` | Interview the user relentlessly about a plan or design until reaching shared understanding. |
+| `pr-comments-address` | Reads open review comments from a GitHub PR, triages them, applies code fixes. |
+| `transcript-notes` | Process meeting transcripts into structured notes with metadata, TL;DR, and action items. |
+| `type-system-audit` | Audit type-system weaknesses using bug-fix commits as evidence. |
+| `agent-skills-manager` | Manage AI skills via corvus CLI — install, update, search, and configure. |
 
 ## Team Sync
 
@@ -276,7 +285,7 @@ skills/[category]/[name]/
 └── assets/               # Templates, images, fonts (optional)
 ```
 
-Categories: `universal`, `platform`, `framework`, `design`, `assistant`. Work-in-progress skills live in `skills/_drafts/`.
+Categories: `universal`, `frontend`, `backend`, `database`, `mobile`, `testing`, `cli`, `assistant`.
 
 ### Local Validation
 
@@ -310,7 +319,3 @@ Tips, guides, and deep dives on AI-assisted development — visit the [Ravn AI T
 - Top 10 Claude Code Tips for Newcomers
 - Making Claude Code Yours
 - Context Switching Done Right
-
-## In Development
-
-Eight draft skills are under active development in `skills/_drafts/`: `platform-mobile`, `tech-ios`, `tech-react-native`, `tech-prisma`, `tech-tanstack-router`, `tech-tanstack-form`, `design`, and `design-mobile`. These are scaffolds and not yet production-ready.

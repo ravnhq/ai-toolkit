@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "No actual code provided \u2014 retry logic is described in a plan but never implemented",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    4
+  ]
+}

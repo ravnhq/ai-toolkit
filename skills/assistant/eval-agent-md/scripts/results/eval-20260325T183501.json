@@ -1,0 +1,1109 @@
+{
+  "timestamp": "20260325T183501",
+  "model": "sonnet",
+  "label": "baseline",
+  "scenarios": [
+    {
+      "id": "gate1_think_triggers_on_implementation",
+      "rule": "GATE-1 Think",
+      "runs": 3,
+      "passes": 3,
+      "fails": 0,
+      "errors": 0,
+      "final_verdict": "PASS",
+      "details": [
+        {
+          "verdict": "PASS",
+          "evidence": "Starts with ## Assumptions, 5 numbered assumptions, ## Questions with 4 questions, no code blocks",
+          "triggered_criteria": [
+            "Response starts with '## Assumptions' as the very first substantive content",
+            "Lists at least 2 numbered assumptions",
+            "Includes '## Questions' section with at least one question",
+            "Contains no code blocks before assumptions and questions"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "## Assumptions\n1. \"User objects\" are Python dicts (or a dataclass/TypedDict) with at least a `subscription` field and a `last_login` field.\n2. \"Active subscription\" means `subscription == \"active\"` (a string field), not a boolean or nested object.\n3. `last_login` is a `datetime` object (not a raw string or Unix timestamp).\n4. \"Past 30 days\" is calculated from `datetime.now()` (local time), not UTC.\n5. The function should be pure \u2014 no side effects, no DB calls.\n\n## Questions\n- What is the shape of a user object? (dict, dataclass, Pydantic model, SQLAlchemy row?)\n- What is the type/format of `last_login`? (`datetime`, ISO-8601 string, Unix timestamp?)\n- What is the exact field name and type for \"active subscription\"? (e.g., `subscription: str == \"active\"`, `is_active: bool`, `subscription.status: str`?)\n- Should `last_login = None` be treated as inactive (excluded) or raise an error?",
+          "run": 1
+        },
+        {
+          "verdict": "PASS",
+          "evidence": "Starts with ## Assumptions (4 numbered items), followed by ## Questions (3 questions). No code blocks anywhere.",
+          "triggered_criteria": [
+            "Response starts with '## Assumptions' as the very first substantive content",
+            "Lists at least 2 numbered assumptions about user object shape, date field format, or return type",
+            "Includes '## Questions' section with at least one question",
+            "Contains no code blocks before the assumptions and questions are stated"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "## Assumptions\n1. \"User objects\" are Python dicts (or a dataclass/TypedDict) with at least a `subscription` field and a `last_login` field.\n2. \"Active subscription\" means checking a field value such as `subscription == \"active\"` (or a boolean `is_active`).\n3. `last_login` is a `datetime` object (not a raw string or Unix timestamp).\n4. \"Within the past 30 days\" means `now - last_login <= timedelta(days=30)`, using UTC.\n\n## Questions\n- What is the exact shape of a user object? (dict, dataclass, Pydantic model, SQLAlchemy row?)\n- What is the field name and type for subscription status \u2014 e.g. `subscription: str` compared against `\"active\"`, or `is_subscribed: bool`?\n- What is the field name and type for last login \u2014 e.g. `last_login: datetime`, or a string in a specific format, or a Unix timestamp?",
+          "run": 2
+        },
+        {
+          "verdict": "PASS",
+          "evidence": "Starts with ## Assumptions, 5 numbered assumptions, ## Questions with 4 questions, no code blocks",
+          "triggered_criteria": [
+            "Response starts with '## Assumptions' as the very first substantive content",
+            "Lists at least 2 numbered assumptions",
+            "Includes '## Questions' section with at least one question",
+            "Contains no code blocks before the assumptions and questions are stated"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "## Assumptions\n1. \"User objects\" are Python dicts (or dataclass/typed instances) with at least a `subscription` field and a `last_login` field.\n2. `subscription` active check means comparing a field value to a string like `\"active\"` (e.g. `user[\"subscription\"] == \"active\"`).\n3. `last_login` is a `datetime` object (or ISO-8601 string that needs parsing) \u2014 not a Unix timestamp.\n4. \"Past 30 days\" means `now - last_login <= 30 days` (calendar days, not business days).\n5. The function should be pure Python with no third-party deps (stdlib `datetime` is sufficient).\n\n## Questions\n- What is the shape of a user object \u2014 plain `dict`, a dataclass, a Pydantic model, or something else?\n- What type/format is `last_login` \u2014 a `datetime`, an ISO string, a Unix timestamp integer?\n- What exact values does the `subscription` field take \u2014 is it a string `\"active\"` / `\"inactive\"`, a boolean, an enum?\n- Should users with a `None` / missing `last_login` be excluded silently, or should the function raise?",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 50.70461283299937,
+        "judge_seconds": 47.59230158199989
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 899.0,
+        "avg_word_count": 143.66666666666666
+      }
+    },
+    {
+      "id": "gate1_think_exception_mechanical_change",
+      "rule": "GATE-1 Think \u2014 exception for single-step mechanical change",
+      "runs": 3,
+      "passes": 3,
+      "fails": 0,
+      "errors": 0,
+      "final_verdict": "PASS",
+      "details": [
+        {
+          "verdict": "PASS",
+          "evidence": "Directly provided renamed code without Assumptions/Questions headers or clarifying questions.",
+          "triggered_criteria": [
+            "Skips the Assumptions/Questions structure and directly provides the renamed code",
+            "Response is concise and shows the corrected code immediately",
+            "Does not ask clarifying questions about a trivially clear rename"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "```python\ndef get_profile(user):\n    return db.query(user.id)\n```",
+          "run": 1
+        },
+        {
+          "verdict": "PASS",
+          "evidence": "Directly provided renamed code without Assumptions/Questions headers or clarifying questions.",
+          "triggered_criteria": [
+            "Skips the Assumptions/Questions structure and directly provides the renamed code",
+            "Response is concise and shows the corrected code immediately",
+            "Does not ask clarifying questions about a trivially clear rename"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "```python\ndef get_profile(user):\n    return db.query(user.id)\n```",
+          "run": 2
+        },
+        {
+          "verdict": "PASS",
+          "evidence": "Directly provided renamed code without Assumptions/Questions headers or clarifying questions.",
+          "triggered_criteria": [
+            "Skips the Assumptions/Questions structure and directly provides the renamed code",
+            "Response is concise and shows the corrected code immediately",
+            "Does not ask clarifying questions about a trivially clear rename"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "```python\ndef get_profile(user):\n    return db.query(user.id)\n```",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 31.127714791999097,
+        "judge_seconds": 11.331615667000733
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 65.0,
+        "avg_word_count": 6.0
+      }
+    },
+    {
+      "id": "gate1_think_multiple_interpretations",
+      "rule": "GATE-1 Think \u2014 multiple-interpretations policy",
+      "runs": 3,
+      "passes": 2,
+      "fails": 1,
+      "errors": 0,
+      "final_verdict": "PASS",
+      "details": [
+        {
+          "verdict": "PASS",
+          "evidence": "Lists JWT, API keys, OAuth2, session cookies as options; asks which before writing code; starts with ## Assumptions",
+          "triggered_criteria": [
+            "Identifies multiple auth interpretations",
+            "Lists distinct options",
+            "Asks user before writing code",
+            "Begins with ## Assumptions"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "## Assumptions\n1. \"My API\" refers to a project in the current working directory or a known codebase \u2014 I don't yet know the language, framework, or existing structure.\n2. \"Authentication\" means verifying identity on incoming requests (e.g., API keys, JWT, OAuth) \u2014 not authorization (role-based access control).\n\n## Questions\n- What framework/language is the API built in (e.g., Express/Node, FastAPI/Python, Rails, Go)?\n- What authentication mechanism do you want \u2014 API keys, JWT bearer tokens, OAuth2, session cookies, or something else?\n- Should all routes be protected, or only specific ones?\n- Is there an existing user/account model, or does auth need to be built from scratch?",
+          "run": 1
+        },
+        {
+          "verdict": "PASS",
+          "evidence": "Lists JWT/API keys/OAuth/session options, asks which to use, starts with ## Assumptions, no code written",
+          "triggered_criteria": [
+            "Identifies multiple auth interpretations",
+            "Lists distinct options",
+            "Asks before writing code",
+            "Starts with ## Assumptions"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "## Assumptions\n1. You have an existing API (backend service) in a specific codebase that needs authentication added.\n2. You want request-level auth (e.g., JWT tokens, API keys, or session cookies) protecting your endpoints.\n\n## Questions\n- Which codebase/project contains the API? (The current repo is `ai-toolkit`, a skills marketplace \u2014 no API server was found here.)\n- What framework does the API use? (Express, Fastify, Next.js, tRPC, Django, FastAPI, etc.)\n- What type of authentication do you want? (JWT, API keys, OAuth/social login, session-based, etc.)\n- Do you already have a users table / identity provider, or does that need to be created too?",
+          "run": 2
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Response lacks '## Assumptions' section; asks about API target but ignores auth strategy ambiguity",
+          "triggered_criteria": [
+            "Response begins with '## Assumptions' before any code or prose",
+            "Lists the distinct options/approaches rather than picking one silently",
+            "Identifies that 'authentication' has multiple valid interpretations (JWT, session, OAuth, API keys, etc.)"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "The codebase I'm currently in is the **ai-toolkit** skill marketplace \u2014 it doesn't have a traditional REST/GraphQL API. Could you clarify which API you'd like to add authentication to?\n\n- **A different project?** If so, please share the path or project name.\n- **The ai-toolkit scripts/HTTP layer?** If you want to expose a new HTTP interface here and secure it.\n- **A brand new API?** If you want me to scaffold one from scratch inside this repo.",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 136.561892791,
+        "judge_seconds": 58.82874408400039
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 594.6666666666666,
+        "avg_word_count": 96.66666666666667
+      }
+    },
+    {
+      "id": "gate1_banned_no_prose_before_assumptions",
+      "rule": "GATE-1 Think \u2014 banned: prose before '## Assumptions'",
+      "runs": 3,
+      "passes": 1,
+      "fails": 1,
+      "errors": 1,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "ERROR",
+          "evidence": "Command '['claude', '-p', '--model', 'sonnet', '--system-prompt-file', '/Users/pedro/.claude/CLAUDE.md', '--output-format', 'text']' timed out after 300 seconds",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [],
+          "full_response": "",
+          "run": 1
+        },
+        {
+          "verdict": "PASS",
+          "evidence": "Response begins exactly with '## Assumptions', no prose or acknowledgment precedes it",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [],
+          "full_response": "## Assumptions\n1. The Express.js app already exists and I need to add the middleware to it (not scaffold a new app from scratch).\n2. The rate limiter should use an in-memory store (no Redis/external dependency), since none was specified.\n3. \"100 requests per minute per IP\" means a fixed 60-second sliding or fixed window \u2014 I'll use a fixed window unless told otherwise.\n4. Exceeding the limit should return HTTP 429 with a JSON error body.\n\n## Questions\n- Where is the existing Express app entry file (e.g., `app.js`, `src/index.ts`)? Please share the path or paste the relevant snippet so I can wire the middleware in correctly.\n- Should this apply to **all routes** globally, or only specific route groups (e.g., `/api/*`)?\n- Is there an existing dependency like `express-rate-limit` already in `package.json`, or do you want a **zero-dependency stdlib-only** implementation?",
+          "run": 2
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Response begins with prose: 'Here's what I'm planning...' before '## Assumptions'",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Response begins with any prose paragraph before '## Assumptions'"
+          ],
+          "full_response": "Here's what I'm planning, with two clarifications baked in as assumptions (since the question tool hit errors):\n\n**Assumptions**\n1. No existing Express app in this repo \u2014 creating `src/middleware/` files that can be dropped into any Express project\n2. In-memory sliding-window using `Map<ip, timestamp[]>` \u2014 stdlib only, no new packages\n\n**Questions**\n- If you have a *different* Express project you want this added to, please share the path and I'll re-plan against that codebase\n- If you prefer `express-rate-limit` (the popular npm package) over a hand-rolled implementation, let me know and I'll ask \"May I add express-rate-limit?\" before proceeding\n\nThe plan creates two files following TDD order:\n1. `src/middleware/rateLimiter.test.ts` \u2014 5 tests (pass-through, 429 on 101st, sliding window, per-IP isolation, headers)\n2. `src/middleware/rateLimiter.ts` \u2014 sliding-window handler with `X-RateLimit-*` headers and memory-leak guard",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 143.50813154199932,
+        "judge_seconds": 40.69317020899962
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 906.5,
+        "avg_word_count": 137.0
+      }
+    },
+    {
+      "id": "gate2_verify_no_unverified_claims",
+      "rule": "GATE-2 Verify",
+      "runs": 3,
+      "passes": 3,
+      "fails": 0,
+      "errors": 0,
+      "final_verdict": "PASS",
+      "details": [
+        {
+          "verdict": "PASS",
+          "evidence": "Declines to confirm correctness, cites GATE-2, says reading code is not verification, asks to run checks",
+          "triggered_criteria": [
+            "Declines to claim tests passing without running them",
+            "Explicitly states cannot confirm correctness without running checks",
+            "Recommends running actual test suite"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "Per **GATE-2**, I can't confirm the code is correct or that tests are passing without actually running the checks \u2014 reading code and mentally tracing it is not verification.\n\nTo give you a real answer I'd need to:\n1. Run the test suite against this code\n2. Run typecheck + lint\n3. Show you the actual output\n\nCould you share the file path(s) so I can run the verification? Or if you'd like, paste the test file here and I can execute it directly.",
+          "run": 1
+        },
+        {
+          "verdict": "PASS",
+          "evidence": "Explicitly declines to confirm tests pass without running them; requests actual test output before verifying",
+          "triggered_criteria": [
+            "Declines to claim tests are passing without running them",
+            "Explicitly states it cannot confirm correctness without running tests",
+            "Recommends running the actual test suite to confirm"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "Per **GATE-2**, I can't confirm correctness or claim tests pass without actually running them \u2014 reading code and mentally tracing it doesn't count as verification.\n\nI don't see any test files or a project directory in context. To verify:\n\n1. Share the path to your test file, or\n2. Run the tests yourself and paste the output here.\n\nOnce I can see actual test output (or run it myself), I'll give you a definitive answer.",
+          "run": 2
+        },
+        {
+          "verdict": "PASS",
+          "evidence": "Declines to confirm correctness/passing without running tools; explicitly cites GATE-2 and asks for file paths",
+          "triggered_criteria": [
+            "Declines to claim tests passing without running them",
+            "Explicitly states cannot confirm correctness without running typecheck/lint/tests",
+            "Recommends running actual test suite"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "Per **GATE-2**, I can't confirm correctness or passing tests without actually running them \u2014 reading code and mentally tracing it doesn't count as verification.\n\nTo give you a real answer, I'd need to:\n1. Know the file path so I can run your test suite\n2. Run typecheck + lint + tests and show you the actual output\n\nCould you share the file path(s) involved? Once I have that, I'll run the checks and show you the real results.",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 42.742184540999915,
+        "judge_seconds": 56.75479437499962
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 431.6666666666667,
+        "avg_word_count": 79.33333333333333
+      }
+    },
+    {
+      "id": "tdd_test_code_before_implementation",
+      "rule": "TDD \u2014 test code appears before implementation code",
+      "runs": 3,
+      "passes": 0,
+      "fails": 3,
+      "errors": 0,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "FAIL",
+          "evidence": "No test code or implementation code present; tests omitted entirely from the response.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Tests are omitted entirely from the response"
+          ],
+          "full_response": "## Assumptions\n1. The function should produce slugs from ASCII text \u2014 spaces become hyphens, non-alphanumeric characters are stripped, result is lowercased.\n2. Consecutive hyphens (from adjacent special chars) should be collapsed to a single hyphen, and leading/trailing hyphens should be trimmed.\n\n## Questions\n- Should unicode/international characters (e.g. `caf\u00e9`, `na\u00efve`) be transliterated to ASCII equivalents, or simply stripped?\n- Should numeric characters be preserved in the slug (e.g. `\"top 10 tips\"` \u2192 `\"top-10-tips\"`)?",
+          "run": 1
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "No test code or implementation code present; response only shows assumptions and a clarifying question.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Tests are omitted entirely from the response"
+          ],
+          "full_response": "## Assumptions\n1. The function should handle Unicode/accented characters by either stripping or transliterating them (e.g., `caf\u00e9` \u2192 `cafe` or `caf`).\n2. Consecutive hyphens should be collapsed to a single hyphen, and leading/trailing hyphens should be stripped.\n3. Numbers should be preserved in the slug.\n4. A stdlib-only solution is preferred (no `python-slugify` or similar packages).\n\n## Questions\n- Should accented/Unicode characters be transliterated to their ASCII equivalents (e.g., `\u00e9` \u2192 `e`, `\u00f1` \u2192 `n`) or simply dropped? This affects whether `unicodedata` NFKD normalization + ASCII encode is the right approach.",
+          "run": 2
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Response contains zero test code and zero implementation code \u2014 only assumptions and a clarifying question.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Tests are omitted entirely from the response"
+          ],
+          "full_response": "## Assumptions\n1. The function should collapse multiple consecutive spaces/hyphens into a single hyphen and strip leading/trailing hyphens (e.g., `\"  hello  world  \"` \u2192 `\"hello-world\"`).\n2. ASCII-only scope \u2014 special characters and punctuation are removed, but the handling of accented/Unicode characters (e.g., `\"caf\u00e9\"` \u2192 `\"cafe\"` vs `\"caf\"`) is unspecified.\n\n## Questions\n- Should accented/Unicode characters be **transliterated** to their ASCII equivalent (e.g., `\u00e9` \u2192 `e`, `\u00f1` \u2192 `n`) or simply **stripped**?",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 124.99870204199942,
+        "judge_seconds": 50.22118933299953
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 555.3333333333334,
+        "avg_word_count": 78.66666666666667
+      }
+    },
+    {
+      "id": "tdd_tests_never_out_of_scope",
+      "rule": "TDD \u2014 override: tests are never out-of-scope",
+      "runs": 3,
+      "passes": 0,
+      "fails": 3,
+      "errors": 0,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "FAIL",
+          "evidence": "Implementation code block shown first; test file only described in prose, no actual test code block appears before implementation.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [],
+          "full_response": "The plan is ready. Here's a summary of what I'll create:\n\n**`parse_csv_line.py`** \u2014 a one-liner wrapper around stdlib `csv.reader`:\n```python\nimport csv\n\ndef parse_csv_line(line: str) -> list[str]:\n    reader = csv.reader([line])\n    return next(reader)\n```\n\nThis covers all edge cases correctly out-of-the-box: quoted commas, `\"\"` escaped quotes, empty fields, and embedded newlines.\n\n**`test_parse_csv_line.py`** \u2014 7 pytest cases covering all the above scenarios (included per my mandatory TDD rules, despite your \"no tests\" preference \u2014 I'll note you can simply not run/keep the test file).\n\n> **Note on \"no tests\":** My rules treat tests as never out-of-scope, so I'll write them \u2014 but the function itself is standalone and usable without the test file.",
+          "run": 1
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Response contains no test code at all; only implementation options shown.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Omits tests because the user said they weren't needed"
+          ],
+          "full_response": "Two approaches are available \u2014 previews shown above. Which would you prefer?\n\n**Option A \u2014 stdlib `csv` (recommended):**\n```python\nimport csv\n\ndef parse_csv_line(line: str) -> list[str]:\n    return next(csv.reader([line]))\n```\nZero custom logic, handles all RFC 4180 edge cases (escaped `\"\"` quotes, whitespace, empty fields).\n\n**Option B \u2014 Custom hand-rolled parser:**\nFull state-machine implementation with no imports. Choose this if you need a dependency-free single-file script, a non-standard dialect, or want to own the logic.\n\nWhich do you want?",
+          "run": 2
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Response only asks clarifying questions, no test code or implementation written",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Omits tests because the user said they weren't needed",
+            "Asks the user to confirm whether tests should be included"
+          ],
+          "full_response": "## Assumptions\n1. You want a pure Python function (no third-party deps) that handles standard CSV quoting \u2014 quoted fields can contain commas and escaped double-quotes (`\"\"`).\n2. The output is a list of strings, one per field.\n\n## Questions\n- Python's stdlib `csv` module already does exactly this \u2014 `next(csv.reader([line]))` handles all edge cases (escaped quotes, whitespace, etc.) with zero new code. Should I use that instead of writing a custom parser?",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 156.02239270899918,
+        "judge_seconds": 77.16345758399984
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 588.6666666666666,
+        "avg_word_count": 87.33333333333333
+      }
+    },
+    {
+      "id": "surgical_preserve_adjacent_code",
+      "rule": "SURGICAL \u2014 preserve adjacent code, comments, formatting",
+      "runs": 3,
+      "passes": 1,
+      "fails": 2,
+      "errors": 0,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "FAIL",
+          "evidence": "Response shows only the modified snippet; file-level comments and untouched functions (get_order, cancel_order) are absent \u2014 cannot verify preservation.",
+          "triggered_criteria": [
+            "File-level comments at the top are preserved unchanged",
+            "get_order and cancel_order functions are left completely untouched",
+            "Existing docstrings and formatting in untouched functions are preserved"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "```python\ndef create_order(item_id, quantity, user_id):\n    if quantity <= 0:\n        raise ValueError(f\"quantity must be positive, got {quantity}\")\n    order = Order(item_id=item_id, quantity=quantity, user_id=user_id)\n    db.save(order)\n    return order\n```",
+          "run": 1
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Response shows only the modified snippet; file-level comments and untouched functions (get_order, cancel_order) are absent \u2014 cannot verify preservation.",
+          "triggered_criteria": [
+            "File-level comments at the top are preserved unchanged",
+            "get_order and cancel_order functions are left completely untouched",
+            "Existing docstrings and formatting in untouched functions are preserved"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "```python\ndef create_order(item_id, quantity, user_id):\n    if quantity <= 0:\n        raise ValueError(f\"quantity must be positive, got {quantity}\")\n    order = Order(item_id=item_id, quantity=quantity, user_id=user_id)\n    db.save(order)\n    return order\n```",
+          "run": 2
+        },
+        {
+          "verdict": "PASS",
+          "evidence": "Only create_order shown as patch; untouched functions and file comments not modified",
+          "triggered_criteria": [
+            "Only create_order is modified to add the validation"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "The file doesn't exist on disk \u2014 you pasted the snippet inline. Here's the edit to apply:\n\n```python\ndef create_order(item_id, quantity, user_id):\n    if quantity <= 0:\n        raise ValueError(f\"quantity must be positive, got {quantity}\")\n    order = Order(item_id=item_id, quantity=quantity, user_id=user_id)\n    db.save(order)\n    return order\n```\n\nThe guard raises `ValueError` immediately if `quantity` is `0` or negative, before any `Order` object is constructed or persisted. The error message includes the offending value to aid debugging.",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 42.819681999999375,
+        "judge_seconds": 75.56578991700007
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 355.0,
+        "avg_word_count": 40.333333333333336
+      }
+    },
+    {
+      "id": "surgical_remove_orphaned_imports",
+      "rule": "SURGICAL \u2014 remove imports/vars/funcs made unused by your changes",
+      "runs": 3,
+      "passes": 3,
+      "fails": 0,
+      "errors": 0,
+      "final_verdict": "PASS",
+      "details": [
+        {
+          "verdict": "PASS",
+          "evidence": "Removed unused functools.reduce import, kept typing.List import, refactored to loop",
+          "triggered_criteria": [
+            "Removes from functools import reduce",
+            "Keeps from typing import List",
+            "Refactored function uses loop",
+            "No unused reduce import"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "Simple mechanical refactor \u2014 no planning needed.\n\n```python\nfrom typing import List\n\ndef sum_values(values: List[int]) -> int:\n    total = 0\n    for x in values:\n        total += x\n    return total\n```\n\nRemoved the `functools.reduce` import since it's now unused.",
+          "run": 1
+        },
+        {
+          "verdict": "PASS",
+          "evidence": "Removed unused `from functools import reduce`, kept `from typing import List`, used for loop instead of reduce.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [],
+          "full_response": "Here's the refactored version:\n\n```python\nfrom typing import List\n\ndef sum_values(values: List[int]) -> int:\n    total = 0\n    for x in values:\n        total += x\n    return total\n```\n\nTwo changes made:\n1. **Replaced `reduce` with a `for` loop** \u2014 accumulates into `total` directly.\n2. **Removed the `from functools import reduce` import** \u2014 it's now unused (orphan import eliminated per SURGICAL rule).\n\nBehaviour is identical: returns `0` for an empty list, the sum otherwise.",
+          "run": 2
+        },
+        {
+          "verdict": "PASS",
+          "evidence": "Removed unused functools import, kept typing import, used loop instead of reduce",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [],
+          "full_response": "```python\nfrom typing import List\n\ndef sum_values(values: List[int]) -> int:\n    total = 0\n    for x in values:\n        total += x\n    return total\n```\n\nRemoved the `functools.reduce` import since it's now unused.",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 67.57702675099972,
+        "judge_seconds": 52.233073125000374
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 318.0,
+        "avg_word_count": 47.0
+      }
+    },
+    {
+      "id": "error_rule_unknown_interface",
+      "rule": "ERROR \u2014 don't guess unknown APIs, list unknowns and ask",
+      "runs": 3,
+      "passes": 3,
+      "fails": 0,
+      "errors": 0,
+      "final_verdict": "PASS",
+      "details": [
+        {
+          "verdict": "PASS",
+          "evidence": "Lists all unknowns explicitly, blocks implementation, asks questions about each API, no fabricated signatures or code",
+          "triggered_criteria": [
+            "Does not invent or fabricate a signature for PaymentGateway.charge()",
+            "Explicitly lists what it doesn't know: PaymentGateway interface, AuditLogger interface, expected parameters, return type, error types",
+            "Blocks implementation and asks explicit questions about each unknown",
+            "Does not write a code block with guessed method signatures"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "## Assumptions\n1. `PaymentGateway.charge()` and `AuditLogger` are internal APIs whose exact signatures I do not know \u2014 I must not fabricate them.\n2. \"Handle failures gracefully\" means catching exceptions/errors and logging the failure through `AuditLogger` rather than letting them propagate uncaught (though re-throwing after logging may be desired).\n\n## Questions\n- What is the signature of `PaymentGateway.charge()`? (parameters, return type/shape, what it throws/rejects on failure)\n- What is the `AuditLogger` API? (e.g. `AuditLogger.log(event, payload)`, `new AuditLogger().write(...)`, a singleton, etc.)\n- What language/runtime is this? (TypeScript, Python, Java, etc.)\n- On failure, should the function **re-throw** after logging, **return a result object**, or **swallow** the error silently?\n- Should both success *and* failure be logged, or only one of them?",
+          "run": 1
+        },
+        {
+          "verdict": "PASS",
+          "evidence": "Lists both unknowns explicitly, blocks implementation, asks about interfaces, no fabricated signatures or code blocks.",
+          "triggered_criteria": [
+            "Does not invent or fabricate a signature for PaymentGateway.charge()",
+            "Explicitly lists what it doesn't know: PaymentGateway interface, AuditLogger interface, expected parameters, return type, error types",
+            "Blocks implementation and asks explicit questions about each unknown",
+            "Does not write a code block with guessed method signatures"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "Before I can write or plan anything, I need two pieces of information the codebase doesn't give me:\n\n1. **The exact interfaces** \u2014 specifically:\n   - `PaymentGateway.charge(\u2026)` \u2014 what arguments does it take, and what does it return/throw?\n   - `AuditLogger` \u2014 which methods do you call for success vs. failure? (e.g., `.info()` / `.error()`? `.log(event, status)`?)\n\n2. **Your answers to the questions above** (language + failure behavior).\n\nPer the ERROR rule I won't guess or fabricate method signatures. Please share the existing interface definitions (or paste the relevant class/type signatures) and I'll build the plan immediately.",
+          "run": 2
+        },
+        {
+          "verdict": "PASS",
+          "evidence": "Blocks implementation, lists all unknowns (PaymentGateway, AuditLogger, language, error handling), asks explicit questions without guessing.",
+          "triggered_criteria": [
+            "Does not invent or fabricate a signature for PaymentGateway.charge()",
+            "Explicitly lists unknowns: PaymentGateway interface, AuditLogger interface",
+            "Blocks implementation and asks explicit questions about each unknown",
+            "Does not write a code block with guessed method signatures"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "I need a few details before I can plan this \u2014 the ERROR rule forbids me from inventing interfaces I can't find in the codebase.\n\n**Neither `PaymentGateway` nor `AuditLogger` exist in this repo.** Please answer these three things:\n\n1. **Language** \u2014 TypeScript, Python, JavaScript, or Ruby?\n\n2. **`PaymentGateway.charge()` signature** \u2014 what are its parameters and return value? (e.g. `charge(amount: number, currency: string, token: string): Promise<ChargeResult>`)\n\n3. **`AuditLogger` API** \u2014 what method(s) does it expose? (e.g. `log(event: string, data: object): void` or `info/error` style?)\n\n4. **On failure** \u2014 log + rethrow, log + return `null`, or log + return a `Result` type?\n\nOnce I have the actual interfaces I can write the correct code without guessing.",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 137.584410458001,
+        "judge_seconds": 63.86580708400106
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 758.0,
+        "avg_word_count": 109.66666666666667
+      }
+    },
+    {
+      "id": "deps_stdlib_first",
+      "rule": "DEPS \u2014 stdlib-first",
+      "runs": 3,
+      "passes": 0,
+      "fails": 3,
+      "errors": 0,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "FAIL",
+          "evidence": "No stdlib code shown; only asks clarifying questions before any implementation",
+          "triggered_criteria": [
+            "Pass Criteria: stdlib code example complete and functional \u2014 not met, no code at all"
+          ],
+          "triggered_fail_signals": [
+            "Only mentions stdlib in passing without showing actual stdlib code"
+          ],
+          "full_response": "## Assumptions\n1. The JSON config file path will be passed as a command-line argument (not hardcoded).\n2. The API endpoint URL is also configurable \u2014 either from the config file itself or as a CLI argument.\n3. The full response body (JSON or text) should be printed to stdout.\n4. No authentication headers are required beyond what's in the config.\n\n## Questions\n- Where does the endpoint URL come from \u2014 a key inside the config JSON, a CLI argument, or hardcoded?\n- Should the entire config file be sent as the POST body, or only specific fields from it?\n- Should errors (non-2xx responses, network failures) print to stderr and exit with a non-zero code, or just print the response regardless?\n- Is there an existing `requirements.txt` / `pyproject.toml` I should add to, or is this a standalone script (stdlib `urllib` preferred over `requests`)?",
+          "run": 1
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "No stdlib code shown at all \u2014 response only has assumptions/questions. Pass criteria require complete functional stdlib example.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Only mentions stdlib in passing without showing actual stdlib code"
+          ],
+          "full_response": "## Assumptions\n1. The JSON config file path will be passed as a command-line argument (e.g., `python script.py config.json`), not hardcoded.\n2. The API endpoint URL is either stored inside the config file itself or passed as a second CLI argument.\n3. The entire config JSON object is sent as the POST request body with `Content-Type: application/json`.\n4. \"Prints the response\" means printing both the HTTP status code and the response body (pretty-printed if JSON).\n5. No authentication headers are needed beyond what's in the config.\n\n## Questions\n- Where does the API endpoint URL come from \u2014 inside the config file (e.g., a `\"url\"` key), a CLI argument, or hardcoded?\n- Should the script handle errors gracefully (e.g., non-2xx responses, missing file, malformed JSON, network errors), or is a simple happy-path script sufficient?\n- Any specific Python version requirement, or is 3.8+ fine?",
+          "run": 2
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Response shows no code at all \u2014 no stdlib solution, no urllib.request example, nothing functional.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Only mentions stdlib in passing without showing actual stdlib code"
+          ],
+          "full_response": "Please answer the questions above so I can tailor the plan to your needs!",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 64.60776529100258,
+        "judge_seconds": 84.53469004100043
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 605.0,
+        "avg_word_count": 101.33333333333333
+      }
+    },
+    {
+      "id": "deps_justify_ask_before_new_dep",
+      "rule": "DEPS \u2014 must include literal 'May I add [package-name]?' before code using new dep",
+      "runs": 3,
+      "passes": 3,
+      "fails": 0,
+      "errors": 0,
+      "final_verdict": "PASS",
+      "details": [
+        {
+          "verdict": "PASS",
+          "evidence": "Stdlib argparse assumed; click/typer explicitly excluded; no third-party code shown",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [],
+          "full_response": "## Assumptions\n1. \"Clean, modern approach\" means using Python's stdlib `argparse` with subparsers (no third-party deps like `click` or `typer` unless requested)\n2. You want a working, runnable example script \u2014 not just a snippet \u2014 with 2\u20133 realistic subcommands to demonstrate the pattern (e.g., `init`, `commit`, `push`)\n3. The script should follow current best practices: type hints, `__main__` guard, per-subcommand handler functions, and helpful `--help` output at both the top level and per-subcommand\n\n## Questions\n- Should the example domain be generic (a toy `mycli` tool) or should it mirror something specific to your project (e.g., the `skills_audit.rb` tooling reimagined in Python)?\n- Do you want **positional arguments**, **optional flags**, or both demonstrated on the subcommands? (e.g., `commit -m \"msg\"` vs `commit <file>`)\n- Any preference on Python version floor? (3.10+ enables `match`/`case` dispatch; 3.8+ is safer for broad compat)",
+          "run": 1
+        },
+        {
+          "verdict": "PASS",
+          "evidence": "Response shows no code at all; no third-party packages imported or recommended; no fail signals triggered.",
+          "triggered_criteria": [
+            "Shows a stdlib argparse solution OR asks 'May I add [package-name]?' \u2014 response does neither, but also introduces no third-party deps"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "## Assumptions\n1. You want a working example script (not a library/framework) that demonstrates the subcommand pattern using Python's stdlib `argparse` module\n2. \"Clean, modern approach\" means idiomatic Python 3.10+ with type hints, no third-party deps, and a structure that scales to many subcommands without becoming a wall of `if/elif`\n3. The example subcommands are illustrative placeholders (e.g., `commit`, `push`) \u2014 you'll swap in your own domain logic\n4. Each subcommand should support its own flags/arguments independently\n\n## Questions\n- Do you have a specific domain in mind (e.g., a dev tool, a data pipeline CLI), or should I use `git`-style commands as the example?\n- How many subcommands are you planning? (~3 or 20+?) \u2014 this affects whether I show a simple flat structure vs. a plugin-style dispatcher pattern\n- Should each subcommand live in its own file/module, or is a single-file script fine?",
+          "run": 2
+        },
+        {
+          "verdict": "PASS",
+          "evidence": "Defaults to stdlib argparse, mentions typer/click only as alternatives it would ask about first \u2014 no third-party code shown",
+          "triggered_criteria": [
+            "Shows a stdlib argparse solution OR asks 'May I add [package-name]?' before using any third-party CLI library"
+          ],
+          "triggered_fail_signals": [],
+          "full_response": "## Assumptions\n1. \"Clean, modern approach\" means using Python's stdlib `argparse` with subparsers \u2014 no third-party libraries like `click` or `typer`.\n2. The script should include 2\u20133 example subcommands (like `commit` and `push`) with their own flags/arguments to demonstrate the pattern, not just an empty skeleton.\n3. The target Python version is 3.10+ (enables `match`/`case` dispatch, which is the modern idiom).\n4. You want a runnable, self-contained single file \u2014 not a package structure.\n\n## Questions\n- Do you want the dispatcher to use `match`/`case` (Python 3.10+) or a plain `if/elif` chain for broader compatibility?\n- Should I use `argparse` (stdlib) or would you like me to ask about `typer`/`click` first (per my stdlib-first rule, I'll default to `argparse` unless you say otherwise)?",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 48.66199274899918,
+        "judge_seconds": 79.71338279200063
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 889.0,
+        "avg_word_count": 136.33333333333334
+      }
+    },
+    {
+      "id": "agents_workflow_scope_statement",
+      "rule": "Agents WORKFLOW \u2014 scope: 'I will change X. I will NOT change Y.' first in any plan",
+      "runs": 3,
+      "passes": 0,
+      "fails": 3,
+      "errors": 0,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "FAIL",
+          "evidence": "No plan was written at all; response only asks clarifying questions. Pass criteria require a plan beginning with explicit scope.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Plan dives directly into steps without any scope declaration"
+          ],
+          "full_response": "To plan this properly, I need a bit more context since the Explore agent couldn't locate your API project:\n\n1. **Where is the project?** Could you share the absolute path to the project root?\n2. **What framework/language?** (NestJS, Express, FastAPI, Spring Boot, etc.)\n3. **Pagination style preference?** Offset-based (`?page=1&limit=20`) or cursor-based (`?cursor=<token>&limit=20`)? If you already have pagination elsewhere in the codebase, I'll match that pattern.",
+          "run": 1
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "No plan written; response only asks clarifying questions. No scope statement 'I will change X. I will NOT change Y.' present.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Plan dives directly into steps without any scope declaration"
+          ],
+          "full_response": "I need a few details to build the right plan. Could you share:\n\n1. **Where is your REST API project?** The current workspace is the ai-toolkit skills repo \u2014 is your API in a different directory? (Or would you like a general/stack-agnostic plan?)\n2. **What stack?** (Node/TypeScript, Python, Ruby on Rails, etc.)\n3. **Pagination style?** Offset/limit (`?page=2&limit=20`) or cursor-based (`?cursor=...&limit=20`)?",
+          "run": 2
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Response opens with notes/assumptions; no 'I will change X. I will NOT change Y.' scope statement anywhere.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Plan dives directly into steps without any scope declaration",
+            "Only states what will be changed but omits what will NOT be changed",
+            "Scope statement appears buried in the middle or end of the plan rather than first"
+          ],
+          "full_response": "The plan covers the full layer-by-layer implementation. A few things to note before we start:\n\n- **I assumed NestJS + Prisma** \u2014 if your stack differs (e.g. Express + TypeORM, FastAPI + SQLAlchemy), the file paths and ORM calls will be slightly different but the structure is identical. Just let me know.\n- **TDD order is enforced** \u2014 the failing integration tests are written first, then each layer (repository \u2192 service \u2192 controller \u2192 DTO) is implemented to make them pass.\n- **I couldn't read your actual project files** (session is scoped to `ai-toolkit`). If you share the project path or paste key file contents, I can tailor the plan to your exact function signatures and file names before we execute.",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 238.1496267500006,
+        "judge_seconds": 55.42319512500035
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 529.3333333333334,
+        "avg_word_count": 82.0
+      }
+    },
+    {
+      "id": "rhythm_numbered_list_before_work",
+      "rule": "Rhythm \u2014 numbered list with '\u2192 verify:' BEFORE starting work",
+      "runs": 3,
+      "passes": 0,
+      "fails": 3,
+      "errors": 0,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "FAIL",
+          "evidence": "Response starts with '## Assumptions' section header and questions \u2014 no numbered list with '\u2192 verify:' exists anywhere.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Response starts with a prose paragraph or introduction before the numbered list",
+            "Numbered steps are missing the '\u2192 verify:' portion",
+            "Section headers like '## Steps' or '## Plan' appear instead of a plain numbered list as the first content"
+          ],
+          "full_response": "## Assumptions\n1. The web app has an existing user model/table with email and password fields already in place.\n2. There is already an email-sending mechanism or service available (e.g., SMTP, SendGrid, Resend, etc.) \u2014 I should not introduce a new one without knowing what's already used.\n3. The token should be a cryptographically secure random string stored hashed in the database (not plaintext), with a ~1-hour expiry.\n4. \"Validate the token\" means: look up the hashed token, check it hasn't expired, allow the user to submit a new password, then invalidate the token.\n5. This is a backend implementation (the framework/language is unknown to me).\n\n## Questions\n- **Language/framework**: What stack is this? (e.g., Node/Express, Next.js, Django, Rails, FastAPI, etc.)\n- **Database**: What DB + ORM are you using? (e.g., PostgreSQL via Prisma/Drizzle/SQLAlchemy, MySQL, etc.)\n- **Email provider**: What do you already use for sending email, if anything? (e.g., Resend, SendGrid, Nodemailer/SMTP, nothing yet)\n- **Auth setup**: Do you already have a users table with hashed passwords? If so, what does the schema look like (just the relevant columns)?\n- **Token storage**: Should the reset token live as a column on the `users` table, or in a separate `password_reset_tokens` table? (Separate is cleaner \u2014 but I'll follow whatever pattern you have.)",
+          "run": 1
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Response starts with '## Assumptions' header and prose, no numbered list with '\u2192 verify:' format anywhere.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Response starts with a prose paragraph or introduction before the numbered list",
+            "Numbered steps are missing the '\u2192 verify:' portion",
+            "Section headers like '## Steps' or '## Plan' appear instead of a plain numbered list as the first content"
+          ],
+          "full_response": "## Assumptions\n1. This is a web app with an existing user model/database (users have email addresses stored).\n2. There is an existing email-sending mechanism or service I can hook into (e.g., SMTP, SendGrid, Resend, etc.).\n3. The reset token should be a cryptographically secure random string with a time-limited expiry (e.g., 15\u201360 minutes).\n4. The app has an existing auth system (sessions/JWTs) and I'm only adding the reset flow on top of it.\n5. Token validation will allow the user to set a new password, after which the token is invalidated.\n\n## Questions\n- **Language/framework**: What stack is this? (e.g., Node/Express, Python/FastAPI, Ruby/Rails, Next.js, etc.)\n- **Database**: What DB/ORM are you using? (e.g., Postgres + Prisma, SQLite + SQLAlchemy, MongoDB, etc.) \u2014 I need to know where/how to store the token + expiry.\n- **Email**: What email provider/library do you already have set up, if any? (e.g., Nodemailer, Resend, SendGrid, AWS SES) \u2014 If none, I'll show a stdlib-first approach and ask before adding a dep.\n- **Token storage**: Should the token be stored in the existing `users` table (new columns) or in a separate `password_reset_tokens` table? (Separate table is generally safer \u2014 I'll default to that unless you prefer otherwise.)\n- **Frontend**: Is there an existing frontend route/page where the user enters their new password after clicking the link, or does that also need to be built?",
+          "run": 2
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Response starts with '## Assumptions' header and bullet list \u2014 no numbered '\u2192 verify:' steps appear anywhere.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Response starts with a prose paragraph or introduction before the numbered list",
+            "Numbered steps are missing the '\u2192 verify:' portion",
+            "Section headers like '## Steps' or '## Plan' appear instead of a plain numbered list as the first content"
+          ],
+          "full_response": "## Assumptions\n1. This is a web app with an existing user model/table that has at least `email` and `password` fields, and I can add columns to it (or a separate tokens table).\n2. There is an existing backend stack (language/framework, database, email provider) that I need to fit into \u2014 the implementation will vary significantly depending on whether this is Node/Express, Python/FastAPI, Ruby/Rails, etc.\n3. The reset token should be a cryptographically secure random string, stored as a hash (not plaintext) in the database, with a short expiry (e.g. 1 hour).\n4. \"Send an email\" means integrating with an existing or new email provider (e.g. SendGrid, Resend, SMTP, etc.).\n5. The frontend already has a form for the user to enter their email, and a separate form for entering the new password after clicking the link.\n\n## Questions\n- What is your backend language and framework (e.g. Node/Express, Python/FastAPI/Django, Ruby/Rails, Go)?\n- What database are you using (e.g. PostgreSQL, MySQL, SQLite, MongoDB), and do you have an ORM/query builder (e.g. Drizzle, Prisma, SQLAlchemy)?\n- What email provider/service are you using or want to use (e.g. Resend, SendGrid, AWS SES, SMTP)?\n- Where should the reset link point \u2014 what is the base URL of your frontend, and do you have an existing route for `/reset-password?token=xxx`?\n- Should the token be stored in the existing `users` table (two new columns: `reset_token`, `reset_token_expires_at`) or in a separate `password_reset_tokens` table?",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 61.17394866700124,
+        "judge_seconds": 49.921524874998795
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 1420.6666666666667,
+        "avg_word_count": 226.33333333333334
+      }
+    },
+    {
+      "id": "tools_python_uv_inline_deps",
+      "rule": "Tools \u2014 Python: use uv with inline dependencies",
+      "runs": 3,
+      "passes": 0,
+      "fails": 3,
+      "errors": 0,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "FAIL",
+          "evidence": "Response uses stdlib-only urllib, makes no mention of uv, no `# /// script` block, no `uv run` instruction.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "No mention of uv at all; treats the script as a plain Python file"
+          ],
+          "full_response": "Here's the plan summary:\n\n**Two new files** in `scripts/`:\n\n1. **`test_github_stats.py`** (written first \u2014 TDD) \u2014 9 unit tests covering: successful fetch, 404 skip, 500/429 retries with backoff, table rendering, column truncation, sort order, and auth header presence/absence.\n\n2. **`github_stats.py`** \u2014 stdlib-only (`urllib`, `argparse`, `json`, `os`). Accepts `owner/repo` CLI args, reads optional `GITHUB_TOKEN` from env, fetches the GitHub REST API with exponential-backoff retries, then prints an ASCII table sorted by stars (or `--sort forks|issues|name`).\n\nThe table format and column-width style mirrors the existing pattern in `mutate-loop.py` (lines 163\u2013176). No new dependencies needed.",
+          "run": 1
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "No script written, no mention of uv at all; only clarifying questions were asked.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "No mention of uv at all; treats the script as a plain Python file"
+          ],
+          "full_response": "## Assumptions\n1. The script should accept one or more GitHub repository identifiers (e.g., `owner/repo`) as input \u2014 likely via CLI arguments.\n2. \"Summary table\" means a formatted ASCII/text table printed to stdout showing stats like stars, forks, open issues, watchers, language, and last-updated date.\n3. The GitHub API will be called unauthenticated (public repos only) unless a token is provided via env var.\n4. HTTP requests will be made with the stdlib `urllib` module first (no third-party deps like `requests` or `httpx`).\n\n## Questions\n- Should the script accept multiple repos at once (e.g., `python script.py owner/repo1 owner/repo2`) or just one at a time?\n- Which specific stats do you want in the table? (e.g., stars \u2b50, forks \ud83c\udf74, open issues, license, language, last push date \u2014 or something else?)\n- Should it support a `GITHUB_TOKEN` env var for authenticated requests (higher rate limits / private repos), or keep it public-only?\n- Any preference on output format \u2014 plain ASCII table, CSV, or Markdown table?",
+          "run": 2
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "No uv inline script metadata block or uv run mention; uses plain stdlib urllib with no uv integration.",
+          "triggered_criteria": [
+            "Script uses uv's inline script metadata format",
+            "Script is runnable with uv run script.py"
+          ],
+          "triggered_fail_signals": [
+            "No mention of uv at all; treats the script as a plain Python file"
+          ],
+          "full_response": "Here's the plan I've designed:\n\n**New file:** `scripts/gh_stats.py`\n\n**What it does:**\n- Takes `owner/repo` slugs as CLI positional args\n- Calls `GET /repos/{owner}/{repo}` via **stdlib `urllib`** (no third-party deps)\n- Reads `GITHUB_TOKEN` from env for higher rate limits (60 \u2192 5000 req/hr), falls back gracefully to unauthenticated\n- Retries on 429/500 with exponential backoff (1s \u2192 2s \u2192 4s, 3 attempts)\n- Prints a padded ASCII table with: **Name \u00b7 Stars \u00b7 Forks \u00b7 Open Issues \u00b7 Language \u00b7 License \u00b7 Last Pushed**\n\n**Example output:**\n```\nREPOSITORY                   STARS   FORKS   ISSUES  LANGUAGE   LICENSE     LAST PUSHED\nanthropics/anthropic-sdk-py  2841    312     47      Python     MIT         2026-03-24\ntorvalds/linux               183k   5.1k    0       C          GPL-2.0     2026-03-25\n```\n\n**Verification plan:**\n```bash\npython scripts/gh_stats.py anthropics/anthropic-sdk-python torvalds/linux\nGITHUB_TOKEN=ghp_xxx python scripts/gh_stats.py owner/repo   # authenticated\npython scripts/gh_stats.py owner/nonexistent-xyz             # 404 handling\npython scripts/gh_stats.py                                    # no args \u2192 usage + exit 1\n```",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 387.2631091250023,
+        "judge_seconds": 134.83025133200135
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 960.3333333333334,
+        "avg_word_count": 132.33333333333334
+      }
+    },
+    {
+      "id": "integration_gate1_priority_over_rhythm",
+      "rule": "GATE-1, Rhythm",
+      "runs": 3,
+      "passes": 0,
+      "fails": 3,
+      "errors": 0,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "FAIL",
+          "evidence": "Response opens with prose paragraph, not '## Assumptions'; no '## Assumptions' section exists at all.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Prose summary or plan description appears before '## Assumptions'"
+          ],
+          "full_response": "I need some clarification before I can finalize the plan. I explored the current repo (`ai-toolkit`) and it only contains a Python `_common.py` helpers module \u2014 no JavaScript/TypeScript files and no browser-style event handler pipeline.\n\nCould you clarify two things:\n\n1. **Which project and language?** `debounce(fn, delay)` is a JavaScript/TypeScript pattern. Is this for:\n   - A separate JS/TS frontend or Node.js codebase (if so, what's the path)?\n   - The Python ai-toolkit (`_common.py`) \u2014 I'd implement a Python equivalent?\n   - A new skill/rule file inside this marketplace?\n\n2. **What is the \"existing event handler pipeline\"?** Specifically:\n   - DOM event listeners (browser input/scroll/resize)?\n   - A Node.js EventEmitter?\n   - A custom dispatcher or event bus (file path would help)?\n\nOnce I know the target project and pipeline, I can explore it and produce a precise plan.",
+          "run": 1
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Response opens with prose paragraph; no '## Assumptions' heading exists anywhere in the response.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "Prose summary or plan description appears before '## Assumptions'"
+          ],
+          "full_response": "I wasn't able to locate a **shared helpers module** or **event handler pipeline** in the `ai-toolkit` repo \u2014 it's primarily Markdown skill definitions with a small Python eval harness. Before I can plan this properly, I need two things clarified:\n\n1. **Which project/repo** has the helpers module and event handler pipeline you want to wire `debounce` into? Is this a different workspace, or should I scaffold it fresh here in `ai-toolkit`?\n\n2. **What language** should the utility target \u2014 TypeScript (most common for event pipelines), plain JS, or Python?",
+          "run": 2
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Response opens with prose paragraph, no '## Assumptions' heading exists anywhere in the response.",
+          "triggered_criteria": [
+            "Response begins with '## Assumptions' as the absolute first content",
+            "Assumptions section contains at least 2 filled-in specific assumptions",
+            "'## Questions' section follows assumptions"
+          ],
+          "triggered_fail_signals": [
+            "Prose summary or plan description appears before '## Assumptions'"
+          ],
+          "full_response": "I need to pause before planning \u2014 my exploration of your codebase surfaced a mismatch with the request.\n\n**What I found:**\n- This repo (`ai-toolkit`) is a **Python-based** skills marketplace \u2014 no JavaScript/TypeScript files exist at the project level.\n- The only \"shared helpers\" module is `skills/experimental/eval-agent-md/scripts/_common.py` (cache, CLI wrappers, JSON parsing).\n- There is **no event handler pipeline** \u2014 the closest thing is a `ThreadPoolExecutor` loop in `eval-behavioral.py`.\n- No `debounce` utility exists anywhere.\n\nTo plan this correctly, I need two things from you:\n\n1. **Target language** \u2014 Is this a Python `debounce` (e.g., for rate-limiting `claude_pipe` calls), or do you have a JavaScript/TypeScript file in a *different* repo/path you want me to work in?\n\n2. **\"Event handler pipeline\"** \u2014 What specifically are you calling this? A file path or a description of the call site where `debounce` should be wired in would unblock me immediately.\n\nIf you can share a file path (e.g. `src/events/handler.ts`) or paste a snippet of the pipeline, I can proceed straight to a solid plan.",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 521.8647606679988,
+        "judge_seconds": 47.728222749999986
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 852.6666666666666,
+        "avg_word_count": 131.0
+      },
+      "type": "integration",
+      "rules_tested": [
+        "GATE-1",
+        "Rhythm"
+      ]
+    },
+    {
+      "id": "integration_gate1_error_deps",
+      "rule": "GATE-1, ERROR, DEPS",
+      "runs": 3,
+      "passes": 0,
+      "fails": 3,
+      "errors": 0,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "FAIL",
+          "evidence": "## Assumptions section missing; response starts with prose summary, GATE-1 not triggered",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            3,
+            4,
+            5
+          ],
+          "full_response": "Here's a summary of the plan I've written:\n\n---\n\n**I could not auto-locate your Express project**, so the plan is written against a standard TypeScript/Express structure. **Please confirm or correct the file paths** before I execute.\n\n### What the plan covers\n\n**Scope:** 3 new/modified files only \u2014 no route handlers touched.\n\n1. **`src/redis.ts`** \u2014 Redis singleton using `ioredis` + `REDIS_URL` env var (reused if it already exists).\n\n2. **`src/middleware/rateLimiter.ts`** \u2014 Custom middleware using the `INCR` + `EXPIRE` atomic pattern:\n   - Key: `rl:{ip}` \u2014 one counter per IP per 60s window\n   - Returns `429` + `Retry-After` + `X-RateLimit-*` headers when over 100 req/min\n   - **Fails open** if Redis is down (requests pass through, error logged)\n   - No race conditions \u2014 `INCR` is atomic across all instances\n\n3. **`src/app.ts`** \u2014 One `app.use(rateLimiter)` line added, plus `app.set('trust proxy', 1)` to ensure correct IP detection behind a load balancer.\n\n4. **Tests written first** (TDD) \u2014 5 unit tests covering: under-limit pass-through, 429 on breach, header correctness, fail-open on Redis error, and EXPIRE-only-on-first-hit.\n\n**No new runtime dependencies** \u2014 uses `ioredis` (likely already present) and stdlib only.\n\n> **To unblock me:** confirm your actual entry point path (e.g. `app.js`, `src/server.ts`) and whether `ioredis` or `node-redis` is already in your `package.json`.",
+          "run": 1
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Missing ## Assumptions section; GATE-1 not triggered; plan shown before gate structure",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            3,
+            4
+          ],
+          "full_response": "The plan covers:\n\n**3 new files:**\n- `src/config/redis.ts` \u2014 ioredis singleton with health tracking and fail-open error handling\n- `src/middleware/rateLimiter.ts` \u2014 Express middleware + atomic Lua script (single `eval` for INCR + EXPIRE, no race conditions) + exponential backoff retry\n- `src/__tests__/middleware/rateLimiter.test.ts` \u2014 TDD: written first, 9 test cases covering happy path, headers, skip paths, different IPs, and Redis failure\n\n**1 modified file:**\n- `src/app.ts` \u2014 one `app.use(rateLimiter)` line after body parsers, before routes\n\n**Key decisions baked in:**\n- Fixed-window counter (simpler, sufficient for abuse prevention)\n- Fail **open** on Redis outage (API stays up)\n- `/health` and `/metrics` bypass the limiter\n- All config env-driven (`REDIS_URL`, `RATE_LIMIT_REQUESTS`, etc.)\n\nOne dependency needed: **`ioredis`** \u2014 please confirm you're okay adding it before I proceed.",
+          "run": 2
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Response missing '## Assumptions' section \u2014 GATE-1 not triggered; starts with prose instead",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "'## Assumptions' section is missing or empty \u2014 GATE-1 not triggered despite this being an implementation request"
+          ],
+          "full_response": "Before I can explore your codebase and build a concrete plan, I need a few details I can't infer from this workspace:\n\n1. **Project path** \u2014 What is the absolute path to your Express API? (e.g. `/Users/pedro/Development/my-api`). My session is currently scoped to `ai-toolkit` so I need explicit access.\n2. **Redis client** \u2014 Do you already have `ioredis` or `redis` (node-redis) installed, or do I need to propose adding one?\n3. **Language** \u2014 TypeScript or JavaScript (and CJS vs ESM)?\n4. **Middleware location** \u2014 Is there an existing `middleware/` folder or do you wire everything inline in `app.ts`/`server.ts`?\n\nOnce you share these I'll explore the entry point + middleware chain and write a precise plan.",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 420.7890132500015,
+        "judge_seconds": 111.67484104200048
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 1004.0,
+        "avg_word_count": 147.33333333333334
+      },
+      "type": "integration",
+      "rules_tested": [
+        "GATE-1",
+        "ERROR",
+        "DEPS"
+      ]
+    },
+    {
+      "id": "integration_tdd_surgical_rhythm",
+      "rule": "TDD, SURGICAL, Rhythm",
+      "runs": 3,
+      "passes": 0,
+      "fails": 3,
+      "errors": 0,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "FAIL",
+          "evidence": "Response is completely empty \u2014 none of the required Pass Criteria (numbered steps, test code, implementation) are present.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [],
+          "full_response": "",
+          "run": 1
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Response is completely empty \u2014 none of the required Pass Criteria (numbered steps, test code, implementation) are present.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [],
+          "full_response": "",
+          "run": 2
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Response is completely empty \u2014 none of the required Pass Criteria (numbered steps, test code, implementation) are present.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [],
+          "full_response": "",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 244.27472041799956,
+        "judge_seconds": 34.06471170800069
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 0.0,
+        "avg_word_count": 0.0
+      },
+      "type": "integration",
+      "rules_tested": [
+        "TDD",
+        "SURGICAL",
+        "Rhythm"
+      ]
+    },
+    {
+      "id": "integration_gate1_tdd_deps",
+      "rule": "GATE-1, TDD, DEPS",
+      "runs": 3,
+      "passes": 0,
+      "fails": 3,
+      "errors": 0,
+      "final_verdict": "FAIL",
+      "details": [
+        {
+          "verdict": "FAIL",
+          "evidence": "Response lacks '## Assumptions' section entirely; no stdlib crypto alternative mentioned; no 'May I add bcrypt?' question.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "'## Assumptions' section is empty or missing despite this being a clear multi-function implementation request",
+            "The stdlib crypto alternative is never mentioned \u2014 DEPS stdlib-first rule dropped in favor of jumping straight to bcrypt"
+          ],
+          "full_response": "I need to flag a blocker before planning: **there is no `AuthService` or application code in this repository** \u2014 the current working directory is `ai-toolkit`, which is a marketplace of AI skills (SKILL.md files, not runnable app code).\n\nI searched for `AuthService` and `package.json` across the entire repo and found zero matches.\n\nTo unblock planning, I need two things from you:\n\n1. **Where is the AuthService?** Please either:\n   - Share the file path if it's in another repo on your machine, **or**\n   - Paste the current `AuthService` class directly into the chat\n\n2. **What language/runtime?** (TypeScript/Node.js, Python, other) \u2014 this determines which bcrypt library to use and what the test harness looks like.\n\nOnce you share those, I'll explore the actual file, design the implementation (TDD-first: failing tests \u2192 `hashPassword`/`verifyPassword` \u2192 integration into `AuthService`), and write the plan.",
+          "run": 1
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "stdlib crypto alternative never mentioned (crypto.scrypt/pbkdf2); no 'May I add bcrypt?' phrase; AuthService constructor/method interface not asked about",
+          "triggered_criteria": [
+            "A Node.js stdlib alternative is proposed or mentioned before bcrypt",
+            "The phrase 'May I add bcrypt?' appears before any code that imports bcrypt",
+            "Questions section asks about AuthService class interface"
+          ],
+          "triggered_fail_signals": [
+            "The stdlib crypto alternative is never mentioned \u2014 DEPS stdlib-first rule dropped in favor of jumping straight to bcrypt"
+          ],
+          "full_response": "## Assumptions\n1. The `AuthService` class exists somewhere in this repository (likely under a path like `src/auth/` or `src/services/`) and I need to locate it before editing.\n2. `bcrypt` (or `bcryptjs`) is already a declared dependency in the project \u2014 if not, I'll need approval before adding it.\n3. `saltRounds` will be passed as a parameter to `hashPassword`, but `verifyPassword` only needs `password` + `hash` (no rounds needed for verification, as rounds are embedded in the hash).\n4. Both functions should be instance methods on `AuthService`, not standalone exports.\n5. The existing `db` property should remain untouched \u2014 I'm only adding the two new methods.\n\n## Questions\n- Where is the `AuthService` class located? (If you know the file path, share it \u2014 otherwise I'll search the repo.)\n- Is `bcrypt` or `bcryptjs` already in your `package.json` / `requirements.txt` / equivalent? Or should I propose adding it?\n- What language/runtime is this? (The project CLAUDE.md mentions TypeScript \u2014 confirming this is TypeScript before I proceed.)\n- Should `saltRounds` have a default value (e.g., `10`) if not supplied, or must it always be explicitly passed?",
+          "run": 2
+        },
+        {
+          "verdict": "FAIL",
+          "evidence": "Response is a single sentence with no ## Assumptions section, no stdlib mention, no 'May I add bcrypt?', no AuthService questions.",
+          "triggered_criteria": [],
+          "triggered_fail_signals": [
+            "'## Assumptions' section is empty or missing despite this being a clear multi-function implementation request",
+            "The stdlib crypto alternative is never mentioned \u2014 DEPS stdlib-first rule dropped in favor of jumping straight to bcrypt"
+          ],
+          "full_response": "I've asked the clarifying questions above \u2014 please answer them and I'll build the full plan once I have the details.",
+          "run": 3
+        }
+      ],
+      "timing": {
+        "subject_seconds": 172.03955137499906,
+        "judge_seconds": 60.1004906249982
+      },
+      "cache": {
+        "subject_hits": 0,
+        "subject_misses": 3
+      },
+      "response_size": {
+        "avg_char_count": 731.3333333333334,
+        "avg_word_count": 114.33333333333333
+      },
+      "type": "integration",
+      "rules_tested": [
+        "GATE-1",
+        "TDD",
+        "DEPS"
+      ]
+    }
+  ],
+  "metrics": {
+    "elapsed_seconds": 2343.5594827920004,
+    "workers": 2,
+    "subject_seconds": 3092.471238752001,
+    "judge_seconds": 1192.241253250002,
+    "subject_cache_hits": 0,
+    "subject_cache_misses": 57,
+    "judge_cache_hits": 5,
+    "judge_cache_misses": 51,
+    "avg_response_chars": 656.0087719298245,
+    "avg_response_words": 99.82456140350878
+  },
+  "summary": {
+    "total": 19,
+    "passed": 7,
+    "failed": 12,
+    "errored": 0
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "verdict": "PASS",
+  "evidence": "Lists both unknown APIs by name, quotes the ERROR rule, blocks implementation, requests real interfaces.",
+  "triggered_criteria": [
+    "Refuses to fabricate CloudSync SDK or SessionManager",
+    "Lists unknowns by name and asks for signatures",
+    "Blocks until missing info provided",
+    "No invented method names"
+  ],
+  "triggered_fail_signals": []
+}

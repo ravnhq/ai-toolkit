@@ -3,6 +3,14 @@ name: lang-typescript
 description: TypeScript language patterns and type safety rules — strict mode, no
   any, discriminated unions. Use when writing TypeScript code, reviewing types, or
   enforcing type safety.
+allowed-tools:
+- Bash
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Agent
 metadata:
   category: universal
   extends: core-coding-standards
@@ -11,7 +19,7 @@ metadata:
   - type-safety
   - language
   status: ready
-  version: 3
+  version: 4
 ---
 
 # Principles

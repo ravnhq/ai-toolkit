@@ -1,0 +1,6 @@
+{
+  "verdict": "PASS",
+  "evidence": "Response begins exactly with '## Assumptions', no prose or acknowledgment precedes it",
+  "triggered_criteria": [],
+  "triggered_fail_signals": []
+}

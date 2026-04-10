@@ -1,0 +1,3 @@
+{
+  "response": "## Assumptions\n1. The function should handle Unicode/accented characters by either stripping or transliterating them (e.g., `caf\u00e9` \u2192 `cafe` or `caf`).\n2. Consecutive hyphens should be collapsed to a single hyphen, and leading/trailing hyphens should be stripped.\n3. Numbers should be preserved in the slug.\n4. A stdlib-only solution is preferred (no `python-slugify` or similar packages).\n\n## Questions\n- Should accented/Unicode characters be transliterated to their ASCII equivalents (e.g., `\u00e9` \u2192 `e`, `\u00f1` \u2192 `n`) or simply dropped? This affects whether `unicodedata` NFKD normalization + ASCII encode is the right approach."
+}

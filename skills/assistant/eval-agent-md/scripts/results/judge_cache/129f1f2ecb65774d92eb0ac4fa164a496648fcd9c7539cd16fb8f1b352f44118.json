@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "No plan was written at all; response only asks clarifying questions. Pass criteria require a plan beginning with explicit scope.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Plan dives directly into steps without any scope declaration"
+  ]
+}

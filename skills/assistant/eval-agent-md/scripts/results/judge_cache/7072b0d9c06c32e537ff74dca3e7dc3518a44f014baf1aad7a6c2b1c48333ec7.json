@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response is completely empty \u2014 no test code or implementation code appears at all.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "No test code appears anywhere \u2014 only the implementation"
+  ]
+}

@@ -1,0 +1,3 @@
+{
+  "response": "Here's the plan summary:\n\n**Two new files** in `scripts/`:\n\n1. **`test_github_stats.py`** (written first \u2014 TDD) \u2014 9 unit tests covering: successful fetch, 404 skip, 500/429 retries with backoff, table rendering, column truncation, sort order, and auth header presence/absence.\n\n2. **`github_stats.py`** \u2014 stdlib-only (`urllib`, `argparse`, `json`, `os`). Accepts `owner/repo` CLI args, reads optional `GITHUB_TOKEN` from env, fetches the GitHub REST API with exponential-backoff retries, then prints an ASCII table sorted by stars (or `--sort forks|issues|name`).\n\nThe table format and column-width style mirrors the existing pattern in `mutate-loop.py` (lines 163\u2013176). No new dependencies needed."
+}

@@ -1,0 +1,10 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response starts with prose ('The plan is ready...'), no ## Assumptions section, no ## Questions section, jumps straight to plan.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Response starts with prose, a heading other than '## Assumptions', or a plan summary",
+    "Assumptions section is empty or skipped entirely",
+    "AI proceeds directly to implementation without listing assumptions"
+  ]
+}

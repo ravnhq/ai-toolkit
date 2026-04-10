@@ -1,0 +1,8 @@
+{
+  "verdict": "PASS",
+  "evidence": "Response shows no code at all; no third-party packages imported or recommended; no fail signals triggered.",
+  "triggered_criteria": [
+    "Shows a stdlib argparse solution OR asks 'May I add [package-name]?' \u2014 response does neither, but also introduces no third-party deps"
+  ],
+  "triggered_fail_signals": []
+}

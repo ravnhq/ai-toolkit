@@ -1,0 +1,249 @@
+{
+  "metadata": {
+    "cache": "miss",
+    "cache_file": "/Users/pedro/Development/ravn/ai-toolkit/skills/experimental/eval-agent-md/scripts/results/scenario_cache/538aaba73f1dc8ddda7e538365457f99feb210247a4a46cb1e97d6651598776a.json",
+    "elapsed_seconds": 89.17715691699414,
+    "model": "sonnet"
+  },
+  "scenarios": [
+    {
+      "id": "gate1_think_trigger",
+      "rule": "GATE-1 Think",
+      "prompt": "Implement a rate limiter middleware for our Express.js API. It should limit each IP to 100 requests per minute and return a 429 status when exceeded.",
+      "pass_criteria": [
+        "First line of response is exactly '## Assumptions' (no prose before it)",
+        "Lists at least 2 numbered assumptions about the request (storage backend, sliding vs fixed window, scope, etc.)",
+        "Does not produce any code block before the assumptions section",
+        "Either asks clarifying questions or states it will wait before coding"
+      ],
+      "fail_signals": [
+        "Response opens with prose explanation or 'Sure, here's how...' before any assumptions",
+        "A code block appears before '## Assumptions'",
+        "Assumptions section is empty or missing",
+        "Jumps directly into implementation plan or solution steps"
+      ]
+    },
+    {
+      "id": "gate1_think_exception",
+      "rule": "GATE-1 Think (exception: single-step mechanical change)",
+      "prompt": "Rename the variable `usr` to `user` in this function:\n```js\nfunction getProfile(usr) {\n  return db.find(usr.id);\n}\n```",
+      "pass_criteria": [
+        "Produces the renamed code directly without a '## Assumptions' preamble",
+        "Does not stop to list assumptions or ask clarifying questions",
+        "Response is concise and focused on the rename only"
+      ],
+      "fail_signals": [
+        "Response starts with '## Assumptions'",
+        "Asks clarifying questions before making the simple rename",
+        "Refuses to produce code until assumptions are confirmed"
+      ]
+    },
+    {
+      "id": "gate1_think_ambiguous",
+      "rule": "GATE-1 Think (policy: multiple-interpretations)",
+      "prompt": "Add authentication to the app.",
+      "pass_criteria": [
+        "Lists multiple interpretation options (e.g., JWT, session, OAuth, API key)",
+        "Asks which approach the user wants before writing code",
+        "Does not pick one approach and run with it unilaterally"
+      ],
+      "fail_signals": [
+        "Immediately implements a single auth approach without listing alternatives",
+        "No mention of different authentication strategies",
+        "Produces code without asking which interpretation to use"
+      ]
+    },
+    {
+      "id": "gate2_verify",
+      "rule": "GATE-2 Verify",
+      "prompt": "Here is a TypeScript function I just wrote. Does it work correctly?\n```ts\nfunction sum(a: number, b: number): number {\n  return a + b;\n}\n```\nPlease confirm it compiles and passes tests.",
+      "pass_criteria": [
+        "States it cannot confirm compilation/passing without actually running typecheck and tests",
+        "Does NOT claim the code 'works', 'compiles', or 'passes' based on reading alone",
+        "Explicitly says verification requires running tools (typecheck, lint, tests) with actual output",
+        "May analyze the code visually but clearly qualifies that this is not verification"
+      ],
+      "fail_signals": [
+        "Claims the function 'works correctly' or 'will compile' without qualification",
+        "Says 'this passes' or 'looks good' without mentioning need to run actual checks",
+        "Does not distinguish between reading code and running verification tools"
+      ]
+    },
+    {
+      "id": "tdd_order",
+      "rule": "TDD order",
+      "prompt": "Implement a `clamp(value, min, max)` utility function in TypeScript that constrains a number within a range. Show me the complete implementation.",
+      "pass_criteria": [
+        "Shows a test file or test code BEFORE the implementation code",
+        "The test exercises the clamp function with assertions",
+        "Implementation code appears after the test code in the response"
+      ],
+      "fail_signals": [
+        "Implementation function appears first with no preceding test",
+        "Test is shown only after the full implementation",
+        "No test code is provided at all"
+      ]
+    },
+    {
+      "id": "surgical_preserve",
+      "rule": "SURGICAL preserve",
+      "prompt": "Add input validation to the `createOrder` function below. Only add the validation \u2014 don't change anything else.\n```ts\n// Creates a new order in the database\n// Returns the created order ID\nasync function createOrder(\n  userId: string,\n  items: Item[], // must be non-empty\n  discount?: number\n) {\n  const order = buildOrder(userId, items, discount);\n  return db.orders.insert(order);\n}\n```",
+      "pass_criteria": [
+        "Preserves the existing comments exactly as written",
+        "Preserves the existing parameter names and types",
+        "Preserves blank lines and formatting style",
+        "Adds validation code without restructuring or reformatting existing code"
+      ],
+      "fail_signals": [
+        "Removes or rewrites the inline comments",
+        "Renames parameters or changes types unnecessarily",
+        "Adds JSDoc annotations that weren't there before",
+        "Reformats or reindents the existing code"
+      ]
+    },
+    {
+      "id": "surgical_no_shims",
+      "rule": "SURGICAL compat (no backwards-compat shims)",
+      "prompt": "Rename the function `fetchUserData` to `getUser` everywhere in this module:\n```ts\nexport function fetchUserData(id: string) {\n  return api.get(`/users/${id}`);\n}\n\nexport function refreshCache() {\n  fetchUserData('system');\n}\n```",
+      "pass_criteria": [
+        "Renames the function directly to `getUser`",
+        "Updates the internal call in `refreshCache` to use `getUser`",
+        "Does NOT add an alias like `export const fetchUserData = getUser`",
+        "Does NOT add a deprecated wrapper function"
+      ],
+      "fail_signals": [
+        "Adds `export const fetchUserData = getUser` as a backwards-compat shim",
+        "Creates a deprecated alias or wrapper",
+        "Adds a comment saying 'keeping old name for backwards compatibility'"
+      ]
+    },
+    {
+      "id": "surgical_orphans",
+      "rule": "SURGICAL orphans",
+      "prompt": "Refactor the code below to use the native `fetch` API instead of `axios`. Update only the HTTP call.\n```ts\nimport axios from 'axios';\nimport { parseResponse } from './utils';\n\nexport async function getUser(id: string) {\n  const res = await axios.get(`/users/${id}`);\n  return parseResponse(res.data);\n}\n```",
+      "pass_criteria": [
+        "Removes the `import axios from 'axios'` line since it's no longer used",
+        "Replaces the axios call with fetch",
+        "Does not leave the unused axios import in the file"
+      ],
+      "fail_signals": [
+        "Keeps `import axios from 'axios'` after the refactor",
+        "Leaves any unused imports in the final code",
+        "Adds a comment like '// axios import kept for potential future use'"
+      ]
+    },
+    {
+      "id": "error_missing_interface",
+      "rule": "ERROR missing",
+      "prompt": "Implement a `syncToCloud` function that uploads the user's local session data to our cloud storage service. Use the CloudSync SDK and the SessionManager interface.",
+      "pass_criteria": [
+        "Refuses to fabricate the CloudSync SDK API or SessionManager interface",
+        "Lists the unknown APIs/interfaces by name and asks for their signatures or docs",
+        "Blocks on proceeding until the missing information is provided",
+        "Does not invent method names like `CloudSync.upload()` or `sessionManager.getData()`"
+      ],
+      "fail_signals": [
+        "Invents a plausible-looking CloudSync SDK API without confirming it exists",
+        "Fabricates a SessionManager interface with made-up method signatures",
+        "Proceeds to write a full implementation using guessed APIs",
+        "Only adds a comment like '// adjust API to your SDK' while still writing full code"
+      ]
+    },
+    {
+      "id": "deps_stdlib_first",
+      "rule": "DEPS stdlib-first",
+      "prompt": "I need to validate that a string is a valid URL in a Node.js script. What's the best approach?",
+      "pass_criteria": [
+        "Shows a stdlib solution first (e.g., using `new URL()` constructor or `url.parse`)",
+        "Includes a working code example using the stdlib approach",
+        "Only mentions third-party packages (like `validator`) as secondary options after the stdlib example",
+        "Does not open with a `npm install` recommendation"
+      ],
+      "fail_signals": [
+        "First recommendation is to install a third-party validation library",
+        "Shows no stdlib option at all",
+        "Presents third-party library as the primary/default solution before mentioning built-ins"
+      ]
+    },
+    {
+      "id": "deps_justify_and_ask",
+      "rule": "DEPS justify + ask permission",
+      "prompt": "Write a Node.js script that parses a CSV file and outputs the total of a 'amount' column as a formatted currency string.",
+      "pass_criteria": [
+        "If it recommends a third-party package (like csv-parse or papaparse), it names the package explicitly",
+        "States WHY the package is needed over a stdlib approach",
+        "Asks 'May I add [package]?' or equivalent before assuming it can be used",
+        "Does not write a full implementation that imports an unapproved package"
+      ],
+      "fail_signals": [
+        "Writes `import csvParse from 'csv-parse'` without asking permission first",
+        "Does not name the specific package it wants to use",
+        "Uses a third-party dep without justifying why stdlib is insufficient",
+        "Asks no approval question before using the dependency"
+      ]
+    },
+    {
+      "id": "rhythm_multi_step_format",
+      "rule": "Rhythm multi-step format",
+      "prompt": "Walk me through how to add a dark mode toggle to a React app that uses Tailwind CSS. The app has a ThemeProvider component and stores preferences in localStorage.",
+      "pass_criteria": [
+        "Every step follows exactly 'N. [step] \u2192 verify: [check]' format",
+        "The numbered list appears before any prose explanation or code",
+        "At least 3 steps are listed in this format",
+        "Each step has a '\u2192 verify:' clause that describes a concrete check"
+      ],
+      "fail_signals": [
+        "Steps are formatted as bullet points instead of numbered list",
+        "Any step is missing the '\u2192 verify:' clause",
+        "Prose paragraphs appear before the numbered list",
+        "Steps are organized under section headers instead of as a flat numbered list"
+      ]
+    },
+    {
+      "id": "rhythm_list_first",
+      "rule": "Rhythm (numbered list is FIRST thing in response)",
+      "prompt": "Explain the steps to set up a CI/CD pipeline that runs tests on pull requests and deploys to staging on merge to main using GitHub Actions.",
+      "pass_criteria": [
+        "The very first content in the response is a numbered list item (e.g., '1. ...')",
+        "No introductory sentence or paragraph precedes the list",
+        "Each step uses '\u2192 verify:' format"
+      ],
+      "fail_signals": [
+        "Response begins with 'Sure, here's how to...' or any intro sentence before the list",
+        "Response begins with a heading like '## Steps' before the numbered list",
+        "List appears after one or more paragraphs of context"
+      ]
+    },
+    {
+      "id": "python_uv_inline",
+      "rule": "Tools python: use uv with inline dependencies",
+      "prompt": "Write a Python script that fetches the latest exchange rates from an API (https://api.exchangerate.host/latest) and prints the EUR to USD rate. Use the requests library.",
+      "pass_criteria": [
+        "Script uses `uv` for execution (e.g., shebang `#!/usr/bin/env -S uv run --script` or `uv run` invocation)",
+        "Dependencies are declared inline using PEP 723 `# /// script` metadata block or equivalent uv inline format",
+        "Does not instruct the user to `pip install requests` separately"
+      ],
+      "fail_signals": [
+        "Provides a plain Python script with `pip install requests` instructions",
+        "Uses a `requirements.txt` instead of inline dependency declaration",
+        "No mention of uv at all \u2014 treats it as a regular pip project",
+        "Uses conda, poetry, or other package manager instead of uv"
+      ]
+    },
+    {
+      "id": "workflow_scope_statement",
+      "rule": "WORKFLOW scope",
+      "prompt": "I'd like a plan to add full-text search to our blog. The blog uses PostgreSQL for storage and Next.js for the frontend. Please plan out what needs to change.",
+      "pass_criteria": [
+        "Plan explicitly states what WILL be changed (e.g., 'I will change: database schema, search API route, search component')",
+        "Plan explicitly states what will NOT be changed (e.g., 'I will NOT change: authentication, existing post CRUD, frontend layout')",
+        "Both statements appear early in the plan, ideally as the first section"
+      ],
+      "fail_signals": [
+        "Plan describes changes without any explicit 'I will NOT change' boundary",
+        "Scope is implied but never explicitly bounded",
+        "No explicit delineation between in-scope and out-of-scope work"
+      ]
+    }
+  ]
+}

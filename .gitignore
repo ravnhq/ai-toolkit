@@ -3,4 +3,8 @@ docs/_site/
 docs/.jekyll-cache/
 docs/Gemfile.lock
 __pycache__/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+tmp/
 skills/experimental/eval-agent-md/scripts/results/

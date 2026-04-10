@@ -1,0 +1,10 @@
+{
+  "verdict": "PASS",
+  "evidence": "Test file shown first with assertions, implementation follows after",
+  "triggered_criteria": [
+    "Shows test code before implementation",
+    "Test exercises clamp with assertions",
+    "Implementation appears after test code"
+  ],
+  "triggered_fail_signals": []
+}

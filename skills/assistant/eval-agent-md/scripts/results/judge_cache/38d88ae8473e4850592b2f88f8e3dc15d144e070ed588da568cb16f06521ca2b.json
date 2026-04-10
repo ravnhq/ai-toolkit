@@ -1,0 +1,11 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response starts with prose, not '## Assumptions'. No structured assumptions section exists at all.",
+  "triggered_criteria": [
+    "Response starts with '## Assumptions' listing what is ambiguous or assumed"
+  ],
+  "triggered_fail_signals": [
+    "Skips '## Assumptions' and jumps into a plan or code",
+    "Lists approaches inline in prose without structured assumptions format"
+  ]
+}

@@ -5,7 +5,15 @@ require "yaml"
 require "pathname"
 
 ROOT = Pathname.new(__dir__).join("..").expand_path
-ACTIVE_SKILL_FILES = Dir.glob(ROOT.join("skills/*/*/SKILL.md").to_s).sort
+ALL_SKILL_FILES = Dir.glob(ROOT.join("skills/*/*/SKILL.md").to_s).sort
+ACTIVE_SKILL_FILES = ALL_SKILL_FILES.select do |path|
+  text = File.read(path)
+  lines = text.lines
+  end_idx = lines[1..]&.find_index { |line| line.strip == "---" }
+  fm = end_idx ? (YAML.safe_load(lines[1..end_idx].join, permitted_classes: [], aliases: false) || {}) : {}
+  status = fm.dig("metadata", "status").to_s
+  status != "draft" && status != "scaffold"
+end
 
 STOPWORDS = %w[
   the and for with from this that these those use when users say your about into over under

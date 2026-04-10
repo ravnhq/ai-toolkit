@@ -8,6 +8,14 @@ description: 'Rewrite a feature branch''s commit history into clean conventional
   "squash and rewrite", "reorganize commits".
 
   '
+allowed-tools:
+- Bash
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Agent
 metadata:
   category: assistant
   tags:
@@ -17,7 +25,7 @@ metadata:
   - conventional-commits
   - rewrite
   status: ready
-  version: 2
+  version: 3
 ---
 
 # Rewrite Commit History

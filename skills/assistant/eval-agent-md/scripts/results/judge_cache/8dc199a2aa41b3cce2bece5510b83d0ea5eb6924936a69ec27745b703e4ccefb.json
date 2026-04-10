@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "'Not touched: admin.py, models/user.py' appears at end after 5 steps, not at beginning of plan",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Scope statement appears buried at the end of the plan rather than first"
+  ]
+}

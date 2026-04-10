@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-04-07
+
+- Added background sub-agent skill for dispatching tasks. (#22)
+- Added qa skills. (#23)
+- Improved behavioral compliance to v11. (#19)
+- Added rewrite barebones skills with structured rules and best practices. (#24)
+## 2026-04-02
+
+- Improved Turborepo support — pnpm -w flag, turbo typecheck, tsconfig guidance.
+## 2026-04-01
+
+- Fixed address 18 review findings from dual-reviewer audit.
+- Enforced immutable rules, add baseline and before/after summary.
+- Added ESLint skill for TypeScript projects.
+## 2026-03-27
+
+- Added grill-me skill. (#17)
+- Added upgrade to v4 with 5 new rules, references, and self-check workflow. (#20)
+## 2026-03-25
+
+- Refactored flatten skill hierarchy from 6 tiers to 8 role-based dirs. (#18)
+- Added --holistic integration scenarios for multi-rule testing.
 ## 2026-03-23
 
 - Improved skill quality with progressive disclosure and convention fixes.

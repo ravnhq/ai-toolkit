@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response skips '## Assumptions' header entirely, jumping straight to clarifying questions in prose",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Skips '## Assumptions' and jumps into a plan or code"
+  ]
+}

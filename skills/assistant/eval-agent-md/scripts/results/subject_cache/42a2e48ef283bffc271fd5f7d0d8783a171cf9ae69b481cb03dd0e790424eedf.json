@@ -1,0 +1,3 @@
+{
+  "response": "I need a bit more context before I can plan this out properly. Could you clarify:\n\n1. **Which app?** \u2014 The current working directory (`ai-toolkit`) is a skills marketplace of Markdown/YAML files with Ruby tooling, not a traditional web app. Did you mean a different project, or is there a web UI / API layer I should know about?\n\n2. **Auth type?** \u2014 Username/password, OAuth (Google, GitHub\u2026), API keys, or something else?\n\n3. **Stack?** \u2014 What language/framework is the app built with (e.g., Next.js, Rails, FastAPI, Express)?"
+}

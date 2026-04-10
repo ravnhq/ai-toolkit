@@ -8,6 +8,14 @@ description: 'Initialize or migrate to nested CLAUDE.md structure for progressiv
   claude.md'', ''split claude.md'', ''claude.md is too big''.
 
   '
+allowed-tools:
+- Bash
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Agent
 metadata:
   category: assistant
   tags:
@@ -16,7 +24,7 @@ metadata:
   - progressive-disclosure
   - setup
   status: ready
-  version: 3
+  version: 4
 ---
 
 # Init Deep — Progressive Disclosure CLAUDE.md

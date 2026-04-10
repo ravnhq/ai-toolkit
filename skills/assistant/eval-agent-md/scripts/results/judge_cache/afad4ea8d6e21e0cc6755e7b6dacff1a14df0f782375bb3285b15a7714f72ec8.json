@@ -1,0 +1,11 @@
+{
+  "verdict": "PASS",
+  "evidence": "Lists JWT/API keys/OAuth/session options, asks which to use, starts with ## Assumptions, no code written",
+  "triggered_criteria": [
+    "Identifies multiple auth interpretations",
+    "Lists distinct options",
+    "Asks before writing code",
+    "Starts with ## Assumptions"
+  ],
+  "triggered_fail_signals": []
+}

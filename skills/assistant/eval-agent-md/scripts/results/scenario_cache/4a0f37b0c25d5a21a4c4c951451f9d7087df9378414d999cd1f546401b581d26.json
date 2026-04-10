@@ -1,0 +1,109 @@
+{
+  "metadata": {
+    "cache": "miss",
+    "cache_file": "/Users/pedro/Development/ravn/ai-toolkit/skills/experimental/eval-agent-md/scripts/results/scenario_cache/4a0f37b0c25d5a21a4c4c951451f9d7087df9378414d999cd1f546401b581d26.json",
+    "elapsed_seconds": 123.5303155000438,
+    "model": "sonnet"
+  },
+  "scenarios": [
+    {
+      "id": "integration_gate1_priority_over_rhythm",
+      "type": "integration",
+      "rules_tested": [
+        "GATE-1",
+        "Rhythm"
+      ],
+      "prompt": "Add input validation and a rate-limiting check to this Express route handler. The validation should reject missing fields and the rate limiter should block IPs that exceed 100 requests per minute:\n\n```typescript\napp.post('/api/register', async (req, res) => {\n  const user = await db.createUser(req.body);\n  res.json({ id: user.id });\n});\n```\n\nThis is a multi-step change so walk me through each step.",
+      "pass_criteria": [
+        "The very first line of the response is exactly '## Assumptions' \u2014 not a numbered list, not prose, not any other header",
+        "The numbered step list appears only after the assumptions section, never before it \u2014 confirming GATE-1 takes priority over Rhythm",
+        "Every numbered step follows the 'N. [step] \u2192 verify: [check]' format with no exceptions",
+        "At least 2 assumptions are listed (e.g., about what db.createUser accepts, what rate-limit storage is available)",
+        "No prose paragraph, code block, or numbered list appears before '## Assumptions'"
+      ],
+      "fail_signals": [
+        "A numbered list of steps appears as the first content in the response (Rhythm incorrectly overrides GATE-1)",
+        "Any prose paragraph, explanation, or code block appears before '## Assumptions'",
+        "The assumptions section is empty or contains only one item",
+        "Steps are missing the '\u2192 verify:' suffix or use bullet points instead of a numbered list",
+        "The response jumps directly to code or a plan without an '## Assumptions' section"
+      ],
+      "rule": "GATE-1, Rhythm"
+    },
+    {
+      "id": "integration_gate1_tdd_rhythm_ordering",
+      "type": "integration",
+      "rules_tested": [
+        "GATE-1",
+        "TDD",
+        "Rhythm"
+      ],
+      "prompt": "Implement a `sanitizeEmail(email: string): string` function that trims whitespace, lowercases the string, and throws a `TypeError` if the result contains no '@' character. This is a new utility \u2014 write the full implementation.",
+      "pass_criteria": [
+        "The very first line is '## Assumptions' followed by at least 2 assumptions (e.g., about module format, TypeScript version, test runner)",
+        "After the assumptions section, a numbered list appears where the step for writing the failing test precedes the step for writing the implementation",
+        "Any test file code block appears before any implementation file code block in the response body",
+        "Every numbered step includes a '\u2192 verify:' clause (e.g., '\u2192 verify: test fails with TypeError on invalid input')",
+        "The test code demonstrates the red phase (failing test) before the implementation that satisfies it (green phase)"
+      ],
+      "fail_signals": [
+        "Implementation code (e.g., `function sanitizeEmail`) appears before any test code",
+        "The numbered steps list appears before '## Assumptions', violating GATE-1 gate priority",
+        "Steps are present but missing '\u2192 verify:' suffixes",
+        "The assumptions section is skipped and the response opens with a plan or code",
+        "Tests are described as optional or placed after the implementation"
+      ],
+      "rule": "GATE-1, TDD, Rhythm"
+    },
+    {
+      "id": "integration_gate1_error_deps_blocking",
+      "type": "integration",
+      "rules_tested": [
+        "GATE-1",
+        "ERROR",
+        "DEPS"
+      ],
+      "prompt": "Implement a `fetchUserProfile(userId: string)` function that calls `UserService.getById(userId)` internally and caches the result using Redis so repeat calls skip the database. Here's the skeleton:\n\n```typescript\nimport { UserService } from './services/user';\n\nexport async function fetchUserProfile(userId: string) {\n  // TODO: check cache, fetch from UserService, store in cache\n}\n```\n\nWrite the full implementation including the Redis caching layer.",
+      "pass_criteria": [
+        "'## Assumptions' is the first line and it explicitly names unknown interfaces: at minimum `UserService.getById` return type and Redis connection configuration",
+        "A stdlib/built-in alternative (e.g., a `Map`-based in-memory cache) is shown with a code example BEFORE any Redis package is suggested",
+        "The response asks explicit permission with a phrase like 'May I add [ioredis/redis]?' and does not proceed to write Redis imports or usage without approval",
+        "No fabricated method signatures for `UserService.getById` are introduced without being flagged as unknown assumptions",
+        "The response blocks on at least two unresolved unknowns (UserService return type, Redis config) before providing a final implementation"
+      ],
+      "fail_signals": [
+        "Response writes `import Redis from 'ioredis'` or similar without asking permission first",
+        "Response fabricates a `UserService.getById` return type (e.g., `Promise<User>`) and proceeds to use it without flagging it as unknown",
+        "No stdlib/in-memory caching alternative is shown before the Redis solution",
+        "'## Assumptions' is absent or appears after code",
+        "A full implementation is produced despite unresolved unknowns about UserService's interface"
+      ],
+      "rule": "GATE-1, ERROR, DEPS"
+    },
+    {
+      "id": "integration_gate1_tdd_surgical_existing_code",
+      "type": "integration",
+      "rules_tested": [
+        "GATE-1",
+        "TDD",
+        "SURGICAL"
+      ],
+      "prompt": "Add a `delayMs` option to this retry function so callers can specify a wait time between attempts. Default to 0 (no delay) if omitted:\n\n```typescript\n// Retry utility \u2014 handles transient failures\n// Consumers: NetworkClient, FileProcessor, QueueWorker\nfunction retry<T>(fn: () => Promise<T>, attempts: number): Promise<T> {\n  return fn().catch(err => {\n    if (attempts <= 1) throw err;\n    return retry(fn, attempts - 1);\n  });\n}\n\n// Historical alias \u2014 do not remove (external callers depend on it)\nconst retryOperation = retry;\nexport { retry, retryOperation };\n```",
+      "pass_criteria": [
+        "'## Assumptions' is the first line with at least 2 assumptions (e.g., about the delay mechanism \u2014 setTimeout vs sleep helper \u2014 and whether the signature change is backward-compatible)",
+        "Test code demonstrating the new `delayMs` behavior (failing test) appears in the response before the modified implementation code",
+        "The modified function output still contains the original comments ('Retry utility', 'Consumers: NetworkClient...') verbatim \u2014 no comment stripping",
+        "The `retryOperation` alias and its comment are left untouched; if mentioned at all, it is flagged as pre-existing and explicitly NOT removed",
+        "No backward-compat shim or overload wrapper is added to preserve the old 2-argument signature \u2014 the function is changed directly"
+      ],
+      "fail_signals": [
+        "Implementation code appears before any test code, violating TDD output-order",
+        "The original comments above the function or on the `retryOperation` alias are stripped or paraphrased in the modified output",
+        "The `retryOperation` alias is removed because it appears unused after the change",
+        "'## Assumptions' is absent, appears after code, or contains fewer than 2 items",
+        "A backward-compat overload or wrapper shim is added to preserve the old 2-argument call signature"
+      ],
+      "rule": "GATE-1, TDD, SURGICAL"
+    }
+  ]
+}

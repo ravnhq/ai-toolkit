@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Judge Validation Review</title>
+<style>
+  :root {
+    --bg: #1a1a2e; --surface: #16213e; --card: #0f3460;
+    --text: #e0e0e0; --muted: #8892a4; --accent: #53a8b6;
+    --pass: #2ecc71; --fail: #e74c3c; --agree: #27ae60; --disagree: #c0392b;
+    --border: #2a3a5c; --code-bg: #0a1628;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* Drop zone */
+  .drop-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; gap: 16px; }
+  .drop-zone h1 { font-size: 24px; color: var(--accent); font-weight: 600; }
+  .drop-zone p { color: var(--muted); font-size: 14px; }
+  .drop-area { border: 2px dashed var(--border); border-radius: 12px; padding: 48px 64px; cursor: pointer; transition: border-color 0.2s; }
+  .drop-area:hover, .drop-area.dragover { border-color: var(--accent); }
+  .drop-area input { display: none; }
+
+  /* Layout */
+  .app { display: none; max-width: 900px; margin: 0 auto; padding: 24px 16px; }
+  .app.active { display: block; }
+
+  /* Header */
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .header h2 { font-size: 16px; color: var(--accent); }
+  .progress { font-size: 13px; color: var(--muted); }
+  .progress-bar { width: 200px; height: 4px; background: var(--border); border-radius: 2px; margin-top: 4px; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
+
+  /* Card */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .card-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: var(--card); }
+  .card-header .id { font-size: 14px; font-weight: 600; }
+  .badges { display: flex; gap: 8px; }
+  .badge { font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
+  .badge-rule { background: #1a3a5c; color: var(--accent); }
+  .badge-pass { background: #1a3c2a; color: var(--pass); }
+  .badge-fail { background: #3c1a1a; color: var(--fail); }
+
+  .section { padding: 14px 18px; border-top: 1px solid var(--border); }
+  .section-label { font-size: 11px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.5px; }
+  .section-content { font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+  .section-content code { background: var(--code-bg); padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+  pre.code-block { background: var(--code-bg); padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 12px; line-height: 1.5; margin: 8px 0; }
+
+  .evidence { font-style: italic; color: var(--accent); }
+
+  .criteria-list { list-style: none; font-size: 13px; }
+  .criteria-list li { padding: 3px 0; }
+  .criteria-list li::before { margin-right: 6px; }
+  .criteria-list.pass li::before { content: "\2713"; color: var(--pass); }
+  .criteria-list.fail li::before { content: "\2717"; color: var(--fail); }
+  .criteria-list.neutral li::before { content: "\25CB"; color: var(--muted); }
+
+  /* Actions */
+  .actions { padding: 18px; border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .btn { padding: 10px 24px; border: none; border-radius: 6px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+  .btn:hover { opacity: 0.85; }
+  .btn-agree { background: var(--agree); color: #fff; }
+  .btn-disagree { background: var(--disagree); color: #fff; }
+  .btn-skip { background: var(--border); color: var(--muted); }
+  .btn-nav { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 8px 16px; font-size: 12px; }
+  .btn-export { background: var(--accent); color: #fff; }
+  .notes { flex: 1; min-width: 200px; }
+  .notes textarea { width: 100%; background: var(--code-bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 8px; font-family: inherit; font-size: 12px; resize: vertical; min-height: 36px; }
+  .reviewed-badge { font-size: 11px; color: var(--pass); margin-left: 8px; }
+
+  /* Navigation */
+  .nav { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
+  .nav-info { font-size: 12px; color: var(--muted); }
+  .keyboard-hint { font-size: 11px; color: var(--muted); text-align: center; margin-top: 8px; }
+
+  /* Summary */
+  .summary { display: none; }
+  .summary.active { display: block; }
+  .summary h2 { font-size: 18px; color: var(--accent); margin-bottom: 16px; }
+  .summary table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .summary th, .summary td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  .summary th { color: var(--muted); font-weight: 600; }
+  .summary .metric-val { font-size: 20px; font-weight: 700; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+  .metric-label { font-size: 11px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<div class="drop-zone" id="dropZone">
+  <h1>Judge Validation Review</h1>
+  <p>Drop an eval JSON file or click to select</p>
+  <div class="drop-area" id="dropArea">
+    <p>eval-*.json</p>
+    <input type="file" id="fileInput" accept=".json">
+  </div>
+  <p style="font-size:12px; color:var(--muted); margin-top:8px">Keyboard: A = agree, D = disagree, S = skip, arrows = navigate</p>
+</div>
+
+<div class="app" id="app">
+  <div class="header">
+    <h2 id="evalLabel">Review</h2>
+    <div style="text-align:right">
+      <div class="progress" id="progressText">0 / 0</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+  </div>
+
+  <div id="cardView">
+    <div class="card">
+      <div class="card-header">
+        <span class="id" id="scenarioId"></span>
+        <div class="badges">
+          <span class="badge badge-rule" id="ruleBadge"></span>
+          <span class="badge" id="verdictBadge"></span>
+          <span class="reviewed-badge" id="reviewedBadge" style="display:none">reviewed</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Prompt</div>
+        <div class="section-content" id="promptContent"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Response</div>
+        <div class="section-content" id="responseContent"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Judge Evidence</div>
+        <div class="section-content evidence" id="evidenceContent"></div>
+      </div>
+
+      <div class="section" id="criteriaSection">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
+          <div>
+            <div class="section-label">Pass Criteria</div>
+            <ul class="criteria-list" id="passCriteria"></ul>
+          </div>
+          <div>
+            <div class="section-label">Fail Signals</div>
+            <ul class="criteria-list" id="failSignals"></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-agree" onclick="review('agree')">Agree (A)</button>
+        <button class="btn btn-disagree" onclick="review('disagree')">Disagree (D)</button>
+        <button class="btn btn-skip" onclick="review('skip')">Skip (S)</button>
+        <div class="notes">
+          <textarea id="notesInput" placeholder="Notes (optional)" rows="1"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-nav" onclick="go(-1)">&larr; Prev</button>
+      <div class="nav-info" id="navInfo"></div>
+      <button class="btn btn-nav" onclick="go(1)">Next &rarr;</button>
+    </div>
+    <div class="keyboard-hint">A = agree &middot; D = disagree &middot; S = skip &middot; &larr;&rarr; = navigate &middot; Enter = finish</div>
+  </div>
+
+  <div class="summary" id="summaryView">
+    <h2>Validation Summary</h2>
+    <div class="metrics-grid" id="metricsGrid"></div>
+    <table id="summaryTable">
+      <thead><tr><th>Scenario</th><th>Rule</th><th>Judge</th><th>Your Call</th><th>Notes</th></tr></thead>
+      <tbody id="summaryBody"></tbody>
+    </table>
+    <div style="margin-top:20px; display:flex; gap:12px">
+      <button class="btn btn-export" onclick="exportResults()">Export JSON</button>
+      <button class="btn btn-nav" onclick="showCards()">Back to Cards</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let data = null;
+let scenarios = [];
+let reviews = {};
+let currentIdx = 0;
+
+// File handling
+const dropArea = document.getElementById('dropArea');
+const fileInput = document.getElementById('fileInput');
+dropArea.addEventListener('click', () => fileInput.click());
+dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.classList.add('dragover'); });
+dropArea.addEventListener('dragleave', () => dropArea.classList.remove('dragover'));
+dropArea.addEventListener('drop', e => { e.preventDefault(); dropArea.classList.remove('dragover'); loadFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fileInput.files[0]); });
+
+function loadFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      data = JSON.parse(e.target.result);
+      scenarios = data.scenarios || [];
+      if (!scenarios.length) { alert('No scenarios found in JSON'); return; }
+      document.getElementById('dropZone').style.display = 'none';
+      document.getElementById('app').classList.add('active');
+      document.getElementById('evalLabel').textContent =
+        `${data.label || 'eval'} - ${data.model || '?'} - ${data.timestamp || ''}`;
+      render();
+    } catch (err) { alert('Invalid JSON: ' + err.message); }
+  };
+  reader.readAsText(file);
+}
+
+function renderMarkdown(text) {
+  if (!text) return '';
+  // Escape HTML
+  let html = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  // Code blocks
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) =>
+    `<pre class="code-block">${code.trim()}</pre>`);
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // Bold
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  return html;
+}
+
+function render() {
+  const s = scenarios[currentIdx];
+  if (!s) return;
+  const d = s.details?.[0] || {};
+  const r = reviews[s.id];
+
+  document.getElementById('scenarioId').textContent = s.id;
+  document.getElementById('ruleBadge').textContent = s.rule;
+
+  const vb = document.getElementById('verdictBadge');
+  vb.textContent = s.final_verdict;
+  vb.className = `badge badge-${s.final_verdict === 'PASS' ? 'pass' : 'fail'}`;
+
+  const rb = document.getElementById('reviewedBadge');
+  rb.style.display = r ? 'inline' : 'none';
+
+  // Prompt
+  const prompt = s.prompt || d.prompt || '(prompt not available - run eval with updated script)';
+  document.getElementById('promptContent').innerHTML = renderMarkdown(prompt);
+
+  // Response
+  const response = d.full_response || '(no response captured)';
+  document.getElementById('responseContent').innerHTML = renderMarkdown(response);
+
+  // Evidence
+  document.getElementById('evidenceContent').textContent = d.evidence || '';
+
+  // Criteria
+  const passCriteria = s.pass_criteria || [];
+  const failSignals = s.fail_signals || [];
+  const triggeredCriteria = new Set(d.triggered_criteria || []);
+  const triggeredFails = new Set(d.triggered_fail_signals || []);
+
+  const pcList = document.getElementById('passCriteria');
+  pcList.innerHTML = '';
+  if (passCriteria.length) {
+    pcList.className = 'criteria-list neutral';
+    passCriteria.forEach(c => {
+      const li = document.createElement('li');
+      li.textContent = c;
+      if (triggeredCriteria.has(c)) li.style.color = 'var(--pass)';
+      pcList.appendChild(li);
+    });
+  } else {
+    // Fallback: show triggered only
+    pcList.className = 'criteria-list pass';
+    (d.triggered_criteria || []).forEach(c => {
+      const li = document.createElement('li');
+      li.textContent = c;
+      pcList.appendChild(li);
+    });
+  }
+
+  const fsList = document.getElementById('failSignals');
+  fsList.innerHTML = '';
+  if (failSignals.length) {
+    fsList.className = 'criteria-list neutral';
+    failSignals.forEach(c => {
+      const li = document.createElement('li');
+      li.textContent = c;
+      if (triggeredFails.has(c)) li.style.color = 'var(--fail)';
+      fsList.appendChild(li);
+    });
+  } else {
+    fsList.className = 'criteria-list fail';
+    (d.triggered_fail_signals || []).forEach(c => {
+      const li = document.createElement('li');
+      li.textContent = c;
+      fsList.appendChild(li);
+    });
+  }
+
+  // Notes
+  document.getElementById('notesInput').value = r?.notes || '';
+
+  // Progress
+  const reviewed = Object.keys(reviews).length;
+  document.getElementById('progressText').textContent = `${reviewed} / ${scenarios.length} reviewed`;
+  document.getElementById('progressFill').style.width = `${(reviewed / scenarios.length) * 100}%`;
+  document.getElementById('navInfo').textContent = `${currentIdx + 1} of ${scenarios.length}`;
+}
+
+function review(decision) {
+  const s = scenarios[currentIdx];
+  reviews[s.id] = {
+    scenario_id: s.id,
+    judge_verdict: s.final_verdict,
+    decision,
+    notes: document.getElementById('notesInput').value.trim(),
+  };
+  if (currentIdx < scenarios.length - 1) {
+    currentIdx++;
+    render();
+  } else {
+    showSummary();
+  }
+}
+
+function go(delta) {
+  const next = currentIdx + delta;
+  if (next >= 0 && next < scenarios.length) {
+    currentIdx = next;
+    render();
+  }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'TEXTAREA') return;
+  if (document.getElementById('summaryView').classList.contains('active')) {
+    if (e.key === 'Escape') showCards();
+    return;
+  }
+  switch (e.key) {
+    case 'a': case 'A': review('agree'); break;
+    case 'd': case 'D': review('disagree'); break;
+    case 's': case 'S': review('skip'); break;
+    case 'ArrowLeft': go(-1); break;
+    case 'ArrowRight': go(1); break;
+    case 'Enter': if (Object.keys(reviews).length > 0) showSummary(); break;
+  }
+});
+
+function showSummary() {
+  document.getElementById('cardView').style.display = 'none';
+  const sv = document.getElementById('summaryView');
+  sv.classList.add('active');
+
+  const entries = Object.values(reviews).filter(r => r.decision !== 'skip');
+  const agreed = entries.filter(r => r.decision === 'agree');
+  const disagreed = entries.filter(r => r.decision === 'disagree');
+  const falsePass = disagreed.filter(r => r.judge_verdict === 'PASS');
+  const falseFail = disagreed.filter(r => r.judge_verdict === 'FAIL');
+
+  // TPR = agreed passes / (agreed passes + false passes)
+  const truePositives = agreed.filter(r => r.judge_verdict === 'PASS').length;
+  const falseNegatives = falseFail.length;
+  const trueNegatives = agreed.filter(r => r.judge_verdict === 'FAIL').length;
+  const falsePositives = falsePass.length;
+
+  const tpr = truePositives + falseNegatives > 0
+    ? (truePositives / (truePositives + falseNegatives)).toFixed(2) : '-';
+  const tnr = trueNegatives + falsePositives > 0
+    ? (trueNegatives / (trueNegatives + falsePositives)).toFixed(2) : '-';
+  const agreement = entries.length > 0
+    ? ((agreed.length / entries.length) * 100).toFixed(0) + '%' : '-';
+
+  const metrics = [
+    { label: 'Reviewed', value: entries.length },
+    { label: 'Agreed', value: agreed.length },
+    { label: 'Disagreed', value: disagreed.length },
+    { label: 'Agreement', value: agreement },
+    { label: 'TPR', value: tpr },
+    { label: 'TNR', value: tnr },
+  ];
+
+  const mg = document.getElementById('metricsGrid');
+  mg.innerHTML = metrics.map(m =>
+    `<div class="metric-card"><div class="metric-label">${m.label}</div><div class="metric-val">${m.value}</div></div>`
+  ).join('');
+
+  const tbody = document.getElementById('summaryBody');
+  tbody.innerHTML = '';
+  scenarios.forEach(s => {
+    const r = reviews[s.id];
+    const tr = document.createElement('tr');
+    const dec = r ? r.decision : '-';
+    const color = dec === 'agree' ? 'var(--pass)' : dec === 'disagree' ? 'var(--fail)' : 'var(--muted)';
+    tr.innerHTML = `
+      <td>${s.id}</td>
+      <td>${s.rule}</td>
+      <td><span class="badge badge-${s.final_verdict === 'PASS' ? 'pass' : 'fail'}">${s.final_verdict}</span></td>
+      <td style="color:${color}">${dec}</td>
+      <td style="color:var(--muted);font-size:12px">${r?.notes || ''}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function showCards() {
+  document.getElementById('cardView').style.display = 'block';
+  document.getElementById('summaryView').classList.remove('active');
+  render();
+}
+
+function exportResults() {
+  const entries = Object.values(reviews).filter(r => r.decision !== 'skip');
+  const agreed = entries.filter(r => r.decision === 'agree');
+  const disagreed = entries.filter(r => r.decision === 'disagree');
+  const falsePass = disagreed.filter(r => r.judge_verdict === 'PASS').length;
+  const falseFail = disagreed.filter(r => r.judge_verdict === 'FAIL').length;
+  const truePos = agreed.filter(r => r.judge_verdict === 'PASS').length;
+  const trueNeg = agreed.filter(r => r.judge_verdict === 'FAIL').length;
+
+  const output = {
+    eval_file: data.timestamp,
+    model: data.model,
+    reviewed_at: new Date().toISOString(),
+    metrics: {
+      total_reviewed: entries.length,
+      agreed: agreed.length,
+      disagreed: disagreed.length,
+      agreement_rate: entries.length > 0 ? +(agreed.length / entries.length).toFixed(3) : null,
+      tpr: (truePos + falseFail) > 0 ? +(truePos / (truePos + falseFail)).toFixed(3) : null,
+      tnr: (trueNeg + falsePass) > 0 ? +(trueNeg / (trueNeg + falsePass)).toFixed(3) : null,
+    },
+    reviews: Object.values(reviews),
+  };
+
+  const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `validation-${data.timestamp || 'review'}.json`;
+  a.click();
+}
+</script>
+</body>
+</html>

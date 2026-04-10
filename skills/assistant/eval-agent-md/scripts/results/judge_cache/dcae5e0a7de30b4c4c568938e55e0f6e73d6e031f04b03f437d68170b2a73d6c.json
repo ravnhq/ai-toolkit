@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "No test code or implementation code present; response only shows assumptions and a clarifying question.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Tests are omitted entirely from the response"
+  ]
+}

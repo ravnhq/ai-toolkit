@@ -6,6 +6,12 @@ baseurl: "/ai-toolkit"
 markdown: kramdown
 highlighter: rouge
 permalink: /blog/:title/
+plugins:
+  - jekyll-feed
+
+feed:
+  path: feed.xml
+  posts_limit: 20
 
 defaults:
   - scope:

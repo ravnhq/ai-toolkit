@@ -1,0 +1,3 @@
+{
+  "response": "I need a few details to build the right plan. Could you share:\n\n1. **Where is your REST API project?** The current workspace is the ai-toolkit skills repo \u2014 is your API in a different directory? (Or would you like a general/stack-agnostic plan?)\n2. **What stack?** (Node/TypeScript, Python, Ruby on Rails, etc.)\n3. **Pagination style?** Offset/limit (`?page=2&limit=20`) or cursor-based (`?cursor=...&limit=20`)?"
+}

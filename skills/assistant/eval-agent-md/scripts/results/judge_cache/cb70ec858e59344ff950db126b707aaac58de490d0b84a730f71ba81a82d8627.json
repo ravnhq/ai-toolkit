@@ -1,0 +1,9 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Missing ## Assumptions section; GATE-1 not triggered; plan shown before gate structure",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    3,
+    4
+  ]
+}
