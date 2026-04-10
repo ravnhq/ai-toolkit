@@ -208,36 +208,21 @@ Reports are saved to `.qa/reports/YYYY-MM-DD-HHmmss-qa-report.md` with:
 
 ## CI integration
 
-Use the orchestrator in CI to gate PRs on QA results. Example GitHub Actions workflow:
+Use the orchestrator in CI to gate PRs on QA results. A ready-to-use workflow is included at `skills/qa/qa-orchestrator/assets/qa-gate.yml`.
 
-```yaml
-name: QA Gate
-on:
-  pull_request:
-    types: [opened, synchronize]
+**Setup:**
 
-jobs:
-  qa:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Claude Code
-        run: curl -fsSL https://claude.ai/install.sh | bash
-      - name: Run QA
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: claude --command "/qa-orchestrator --pr ${{ github.event.pull_request.number }} --non-interactive --report-only"
-      - name: Upload report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: qa-report
-          path: .qa/reports/*.md
-      - name: Check verdict
-        run: |
-          REPORT=$(ls -t .qa/reports/*.md | head -1)
-          grep -qi "FAIL" <(grep -A1 "## Verdict" "$REPORT") && exit 1 || echo "QA passed"
-```
+1. Copy it to your project:
+   ```bash
+   cp .claude/skills/qa-orchestrator/assets/qa-gate.yml .github/workflows/qa-gate.yml
+   ```
+2. Add these secrets to your GitHub repo (`Settings → Secrets → Actions`):
+   - `ANTHROPIC_API_KEY`
+   - `QA_PORTAL_URL`, `QA_API_URL`
+   - `QA_ADMIN_EMAIL`, `QA_ADMIN_PASSWORD`
+   - `QA_TEST_USER_EMAIL`, `QA_TEST_USER_PASSWORD`
+
+The workflow runs `/qa-orchestrator` in non-interactive mode on every PR, uploads the report as an artifact, and fails the check if the verdict is `FAIL`.
 
 ## Custom personalities
 

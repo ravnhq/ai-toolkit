@@ -1,0 +1,86 @@
+# QA Gate — GitHub Actions workflow
+#
+# Runs QA agents on every PR and fails the check if bugs remain unfixed.
+#
+# Setup:
+#   1. Copy this file to your project at .github/workflows/qa-gate.yml
+#   2. Add ANTHROPIC_API_KEY to your repo secrets
+#   3. Install QA skills in your project (see docs/qa-agents.md)
+#   4. Fill in .qa/test-plan.md and .env.qa (via repository secrets or env vars)
+#
+# The workflow:
+#   - Checks out the repo
+#   - Installs Claude Code
+#   - Runs /qa-orchestrator in non-interactive mode
+#   - Uploads the QA report as an artifact (always, even on failure)
+#   - Fails the check if the report verdict is FAIL
+
+name: QA Gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  qa:
+    name: QA agents
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Write .env.qa
+        env:
+          QA_PORTAL_URL:        ${{ secrets.QA_PORTAL_URL }}
+          QA_API_URL:           ${{ secrets.QA_API_URL }}
+          QA_ADMIN_EMAIL:       ${{ secrets.QA_ADMIN_EMAIL }}
+          QA_ADMIN_PASSWORD:    ${{ secrets.QA_ADMIN_PASSWORD }}
+          QA_TEST_USER_EMAIL:   ${{ secrets.QA_TEST_USER_EMAIL }}
+          QA_TEST_USER_PASSWORD: ${{ secrets.QA_TEST_USER_PASSWORD }}
+        run: |
+          cat > .env.qa <<EOF
+          QA_PORTAL_URL=${QA_PORTAL_URL}
+          QA_API_URL=${QA_API_URL}
+          QA_API_BASE_PATH=/api/v1
+          QA_ADMIN_EMAIL=${QA_ADMIN_EMAIL}
+          QA_ADMIN_PASSWORD=${QA_ADMIN_PASSWORD}
+          QA_TEST_USER_EMAIL=${QA_TEST_USER_EMAIL}
+          QA_TEST_USER_PASSWORD=${QA_TEST_USER_PASSWORD}
+          QA_AUTH_METHOD=bearer
+          QA_AUTO_CREATE_ISSUES=false
+          EOF
+
+      - name: Run QA orchestrator
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          claude --print "/qa-orchestrator --pr ${{ github.event.pull_request.number }} --non-interactive --report-only"
+
+      - name: Upload QA report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-report-pr-${{ github.event.pull_request.number }}
+          path: .qa/reports/*.md
+          retention-days: 30
+
+      - name: Check verdict
+        run: |
+          REPORT=$(ls -t .qa/reports/*.md 2>/dev/null | head -1)
+          if [ -z "$REPORT" ]; then
+            echo "No QA report found — orchestrator may have failed to run."
+            exit 1
+          fi
+          echo "Report: $REPORT"
+          if grep -q "^## Verdict" "$REPORT"; then
+            VERDICT=$(grep -A1 "^## Verdict" "$REPORT" | tail -1)
+            echo "Verdict: $VERDICT"
+            echo "$VERDICT" | grep -qi "FAIL" && exit 1 || echo "QA passed."
+          else
+            echo "No Verdict section found in report."
+            exit 1
+          fi
