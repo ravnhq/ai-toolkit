@@ -414,6 +414,22 @@
       "version": 6
     },
     {
+      "name": "agent-skills-manager",
+      "source": "./skills/assistant/agent-skills-manager",
+      "description": "Manage AI skills from the Ravn AI Toolkit via corvus CLI — install, update, remove, search, and configure skills for any project. Use when installing AI skills, updating skills, browsing available skills, configuring skill sets, or troubleshooting corvus setup.",
+      "category": "assistant",
+      "tags": [
+        "agent",
+        "skills",
+        "cli",
+        "corvus",
+        "installation",
+        "configuration"
+      ],
+      "status": "ready",
+      "version": 2
+    },
+    {
       "name": "type-system-audit",
       "source": "skills/assistant/type-system-audit",
       "description": "Audit type-system weaknesses using bug-fix commits as evidence",

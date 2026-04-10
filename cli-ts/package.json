@@ -1,0 +1,40 @@
+{
+  "name": "corvus",
+  "version": "0.1.1",
+  "description": "AI Skills Manager — install, update, and manage modular AI skills for LLM-assisted development.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "corvus": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:bin": "bash scripts/build.sh",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "ai",
+    "skills",
+    "cli",
+    "llm",
+    "developer-tools"
+  ],
+  "author": "Ravn",
+  "license": "MIT",
+  "dependencies": {
+    "@inquirer/prompts": "^7.0.0",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

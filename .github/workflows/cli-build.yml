@@ -1,0 +1,52 @@
+name: CLI Build
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "cli-ts/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        working-directory: cli-ts
+        run: bun install --frozen-lockfile
+
+      - name: Build binaries
+        working-directory: cli-ts
+        run: bash scripts/build.sh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: corvus-binaries
+          path: cli-ts/dist-bin/corvus-*
+          retention-days: 30
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete cli-latest --yes 2>/dev/null || true
+          git tag -f cli-latest
+          git push -f origin cli-latest
+          gh release create cli-latest cli-ts/dist-bin/corvus-* \
+            --title "corvus latest" \
+            --notes "Latest build from main" \
+            --latest

@@ -1,13 +1,100 @@
 # Ravn AI Toolkit
 
+<p align="center">
+  <img src="docs/assets/images/corvus.png" alt="Corvus" width="200" />
+</p>
+
 [![Skills Quality](https://github.com/ravnhq/ai-toolkit/actions/workflows/skills-quality.yml/badge.svg)](https://github.com/ravnhq/ai-toolkit/actions/workflows/skills-quality.yml)
 
 Modular "skills" — portable rule packs that teach AI coding agents (Claude Code, Cursor, etc.) best practices for specific technologies — so every project gets consistent, expert-level guidance without copy-pasting prompts. **30 ready skills** organized by role.
 
 ## Quick Start
 
+### Using corvus CLI
+
+#### Option 1 — curl installer (recommended, macOS/Linux)
+
+No git, no Node.js required. Just run this in your terminal:
+
 ```bash
-# Install a skill into your project (grabs the latest version by default)
+curl -fsSL https://raw.githubusercontent.com/ravnhq/ai-toolkit/main/install.sh | bash
+```
+
+#### Option 2 — Install from source
+
+Requirements: [git](https://git-scm.com/), [Node.js ≥18](https://nodejs.org/), and npm.
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/ravnhq/ai-toolkit.git
+
+# 2. Go into the CLI folder, install deps, build, and link globally
+cd ai-toolkit/cli-ts && npm install && npm run build && npm install -g .
+```
+
+#### Verify and uninstall
+
+```bash
+# Confirm it's working
+corvus --version
+
+# Uninstall
+sudo rm /usr/local/bin/corvus
+```
+
+<details>
+<summary>How the binary is built (click to read more)</summary>
+
+`bun build --compile` bundles the entire app — TypeScript source, all npm dependencies, and the Bun runtime — into a single self-contained executable. No Node.js, no npm, no `node_modules` needed on the target machine.
+
+**Why not `npm install -g`?** That approach requires Node.js ≥18 to be installed, downloads dependencies at install time, and can break if Node.js is upgraded or `node_modules` are corrupted. The compiled binary has zero runtime dependencies.
+
+**Same model as Claude Code.** Anthropic's official CLI (`@anthropic-ai/claude-code`) is also distributed as a pre-built native binary — `npm install -g` downloads it rather than compiling from source. corvus follows the same pattern: `install.sh` downloads a pre-built binary from the `cli-latest` GitHub Release.
+
+To build binaries locally: `cd cli-ts && npm run build:bin`
+</details>
+
+#### Available commands
+
+```bash
+# Browse all skills interactively (TUI)
+corvus install
+
+# Install skills directly
+corvus install tech-react tech-drizzle
+
+# Install a full stack recipe in one command
+corvus install --recipe fullstack-ts
+
+# Install with explicit target flags (ordered by user base)
+corvus install --claude tech-react              # project-level → .claude/rules
+corvus install --cursor tech-react              # project-level → .cursor/rules
+corvus install --opencode tech-react            # project-level → .opencode/rules
+corvus install --codex tech-react               # project-level → .codex/rules
+corvus install --global-claude lang-typescript  # global → ~/.claude/rules
+corvus install --global-cursor lang-typescript  # global → ~/.cursor/rules
+corvus install --global-opencode lang-typescript # global → ~/.config/opencode/rules
+corvus install --global-codex lang-typescript   # global → ~/.codex/rules
+
+# Search, preview, and manage
+corvus search testing
+corvus list                    # browse available skills by category
+corvus info tech-vitest
+corvus status
+corvus update
+corvus remove tech-vitest
+corvus gitignore               # add .corvusrc and skill paths to .gitignore
+corvus doctor                  # health check for orphaned skills, missing deps
+corvus shower-thought          # random shower thought from Dave
+
+# Shell completions (zsh, bash, and fish supported)
+corvus completions --shell fish
+```
+
+### Using npx
+
+```bash
+# Install a skill into your project
 npx skills add ravnhq/ai-toolkit -s core-coding-standards
 
 # See every skill available in the toolkit
@@ -37,6 +124,17 @@ skills/
 
 ### Stack Recipes
 
+With corvus, install entire stacks in one command. Dependencies are resolved automatically.
+
+| Recipe                    | Skills                                                                             | Command                                   |
+|---------------------------|------------------------------------------------------------------------------------|-------------------------------------------|
+| **Full-stack TypeScript** | lang-typescript, tech-react, tech-trpc, tech-drizzle, tech-vitest, design-frontend | `corvus install --recipe fullstack-ts` |
+| **iOS / Swift**           | swift-concurrency, liquid-glass-ios                                                | `corvus install --recipe ios-swift`    |
+| **Backend API**           | lang-typescript, tech-trpc, tech-drizzle, platform-testing                         | `corvus install --recipe backend-api`  |
+
+<details>
+<summary>Using npx instead</summary>
+
 **Full-stack TypeScript (React + tRPC + Drizzle)**
 ```bash
 npx skills add ravnhq/ai-toolkit -s lang-typescript
@@ -60,6 +158,7 @@ npx skills add ravnhq/ai-toolkit -s tech-trpc
 npx skills add ravnhq/ai-toolkit -s tech-drizzle
 npx skills add ravnhq/ai-toolkit -s platform-testing
 ```
+</details>
 
 ## Available Skills
 
@@ -133,6 +232,29 @@ npx skills add ravnhq/ai-toolkit -s platform-testing
 | `pr-comments-address` | Reads open review comments from a GitHub PR, triages them, applies code fixes. |
 | `transcript-notes` | Process meeting transcripts into structured notes with metadata, TL;DR, and action items. |
 | `type-system-audit` | Audit type-system weaknesses using bug-fix commits as evidence. |
+| `agent-skills-manager` | Manage AI skills via corvus CLI — install, update, search, and configure. |
+
+## Team Sync
+
+When using corvus, skill choices are tracked in a `.corvusrc` file you can commit to git:
+
+```bash
+# One dev installs skills
+corvus install tech-react tech-drizzle
+
+# Keep .corvusrc and skill folders out of git
+corvus gitignore
+
+# Or commit .corvusrc so teammates can sync your exact setup
+git add .corvusrc && git commit -m "add AI skills config"
+
+# Teammates clone and sync
+corvus sync
+```
+
+**Project vs global:** `.corvusrc` is only created for project-level installs. Global installs (`--global`, `--global-claude`, etc.) are tracked in `~/.corvus/config` and apply to every project on your machine without touching your repo.
+
+Run `corvus doctor` to check for orphaned skills, missing deps, or version mismatches.
 
 ## Versioning
 
@@ -179,6 +301,8 @@ PRs trigger skill quality checks automatically. On merge to `main`:
 1. CI validates all skills and syncs `marketplace.json`
 2. Build numbers are bumped for changed skills
 3. Release tags are created and GitHub Releases published
+
+Changes to `cli-ts/**` also trigger a separate binary build workflow that compiles corvus for all platforms (darwin-arm64, darwin-x64, linux-x64, linux-arm64) using Bun and publishes them to the `cli-latest` GitHub Release.
 
 ### Workflow
 
