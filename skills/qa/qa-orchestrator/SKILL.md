@@ -4,9 +4,9 @@ description: |-
   Orchestrate QA agent workflows — spawn test agents in parallel, collect results,
   triage bugs, trigger the bug fixer, and generate QA reports. The main entry point
   for running a QA session.
-  Trigger on "run QA", "start QA session", "qa-run", "test the PR", "orchestrate
+  Trigger on "run QA", "start QA session", "test the PR", "orchestrate
   QA agents", or when the user wants to run multiple QA agents together.
-  Also triggered by /qa-run.
+  Also triggered by /qa-orchestrator.
 user-invocable: true
 argument-hint: "[PR number or scope description]"
 allowed-tools: Read Glob Grep Agent Bash WebFetch
@@ -35,6 +35,17 @@ You coordinate QA agent workflows — spawning specialized test agents, collecti
 | Re-run only the failing tests from a previous run | **C — Re-test Failures** |
 
 If ambiguous, ask: "Are you looking to (A) run a full QA session, (B) view existing reports, or (C) re-test previous failures?"
+
+## CI vs Interactive
+
+Detect non-interactive mode before executing any phase:
+
+- **Non-interactive** if `--non-interactive` flag is present OR the `CI` environment variable is set (`$CI=true`)
+- **Interactive** otherwise (default — local Claude Code session)
+
+Non-interactive mode changes two things:
+1. **Phase 2** — skip confirmation, auto-select all available agents
+2. **Phase 5** — skip triage prompt, auto-file HIGH+ bugs as GitHub issues assigned to the PR author, never spawn qa-bug-fixer
 
 ## Shared Standards
 
@@ -68,10 +79,12 @@ Follow these phases IN SEQUENCE:
    See references/test-plan.md for the template, or describe what to test and I'll help fill it in.
    ```
 3. Read `.env.qa` for app URLs and credentials. Warn if `QA_PORTAL_URL` or `QA_API_URL` are missing.
-4. Determine scope:
-   - If user provided a PR number/URL: fetch the PR diff as scope context
-   - If user provided a feature description: use as scope
-   - If neither: ask what to test
+4. Determine scope — if a PR number/URL was provided:
+   - Fetch PR via `mcp__github__get_pull_request`: extract **author login**, **branch name**, **title**, **body**
+   - Parse branch name and title for a ticket ID pattern (e.g. `MINT-1221`, `LINEAR-42`, `PROJ-99`)
+   - If ticket ID found AND Linear MCP available: fetch the full ticket with `mcp__linear__get_issue` and include its description as additional scope context for the agents
+   - Store the PR author login — used in Phase 5 to assign bug issues
+   - If no PR provided: ask what to test (interactive) or use full test plan (non-interactive)
 
 ### Phase 2: Select Agents
 
@@ -80,7 +93,7 @@ Based on configuration and test plan content:
 - **qa-chaos-monkey**: include if test plan has `## API Endpoints` with content
 - **Custom personalities**: include all from `.qa/config.yml → personalities.custom`
 
-Present selection and WAIT for confirmation:
+**Interactive:** present selection and WAIT for confirmation:
 ```
 QA agents for this run:
   1. qa-happy-path (UI flows via Playwright)
@@ -92,12 +105,18 @@ Scope: [PR #N / feature description / full test plan]
 Proceed with all agents? (yes / remove N / add N)
 ```
 
+**Non-interactive:** skip confirmation, proceed with all available agents. Print selection to log:
+```
+[CI] Auto-selected agents: qa-happy-path, qa-chaos-monkey
+[CI] Scope: PR #N — <title>
+```
+
 ### Phase 3: Spawn QA Agents
 
 Provide each agent with:
 - Relevant section of `.qa/test-plan.md`
 - The `.env.qa` values they need
-- QA scope context
+- QA scope context (PR diff, ticket description if fetched)
 - Instructions to produce structured output and file bugs per their rules
 
 **Parallelism strategy** — use the best available option (see `rules/orch-spawn.md`):
@@ -120,7 +139,7 @@ Do NOT spawn qa-bug-fixer in this phase.
 ═══════════════════════════════════════
   QA Results Summary
 ═══════════════════════════════════════
-  qa-happy-path:    N/M flows passed [⚠️ STOPPED EARLY — 1 blocker]
+  qa-happy-path:    N/M flows passed [STOPPED EARLY — 1 blocker]
   qa-chaos-monkey:  N/M tests passed [, K bugs]
   [custom-agent]:   N/M flows passed [, K bugs]
 
@@ -130,9 +149,11 @@ Do NOT spawn qa-bug-fixer in this phase.
 
 ### Phase 5: Bug Triage
 
-**If blocking bugs exist**, surface them first and WAIT before triaging anything else:
+#### Interactive mode
+
+**If blocking bugs exist**, surface them first and WAIT:
 ```
-⚠️  BLOCKING BUG — stopped [agent-name] early
+BLOCKING BUG — stopped [agent-name] early
     [BLOCKER] <description> — <N> flows/tests skipped
 
     Fix this before QA can complete.
@@ -163,6 +184,23 @@ If option 1:
 4. After fixes: re-run ONLY failing scenarios to verify
 5. If still broken: ask user for another iteration or proceed to report
 
+#### Non-interactive mode (CI)
+
+Never spawn qa-bug-fixer. Never prompt. For every HIGH or BLOCKER bug:
+
+1. File a GitHub issue via `mcp__github__create_issue`:
+   - **Title**: `[QA] <severity>: <short description>`
+   - **Body**: full reproduction details (input, response, steps, expected vs actual)
+   - **Labels**: `["bug", "qa"]` + `"security"` for auth/injection bugs
+   - **Assignees**: PR author login fetched in Phase 1
+2. Add the issue URL to the report bugs table
+3. MEDIUM and LOW bugs are included in the report inline only — no issue created
+
+For BLOCKER bugs that stopped an agent early, add a note to the report:
+```
+[CI] BLOCKER detected — testing incomplete. N scenarios skipped. See issue #N.
+```
+
 ### Phase 6: Generate Report
 
 Write to `.qa/reports/YYYY-MM-DD-HHmmss-qa-report.md` (see `rules/orch-report.md` for format).
@@ -176,7 +214,7 @@ Verdict: PASS / FAIL
 ## Mode B — View Reports
 
 1. List `.qa/reports/` sorted by date (newest first)
-2. If no reports: "No QA reports found. Run /qa-run to generate one."
+2. If no reports: "No QA reports found. Run /qa-orchestrator to generate one."
 3. Show list with verdict and scope per report
 4. Read selected report and display
 
@@ -197,15 +235,19 @@ Read `.qa/config.yml → issue_tracker`:
 | GitHub | `detected: github` | `mcp__github__create_issue` | `mcp__github__add_issue_comment` |
 | None | `detected: none` | Inline in report | Inline in report |
 
+In non-interactive CI mode, GitHub issue creation is always attempted for HIGH+ bugs regardless of `issue_tracker.detected`, as long as `mcp__github__create_issue` is available.
+
 ## Workflow
 
-1. **Detect mode** — match to A/B/C; ask if ambiguous
-2. **Execute mode** — follow the phase sequence for the selected mode
-3. **Generate output** — report file for Mode A/C, inline display for Mode B
+1. **Detect CI vs interactive** — check `--non-interactive` flag or `$CI` env var
+2. **Detect mode** — match to A/B/C; ask if ambiguous (interactive only)
+3. **Execute mode** — follow the phase sequence for the selected mode
+4. **Generate output** — report file for Mode A/C, inline display for Mode B
 
 ## Examples
 
-- **Full run:** "Run QA on PR #42" → Mode A gathers context from PR diff, selects agents, spawns in parallel, collects results, offers triage.
+- **Full run (interactive):** "Run QA on PR #42" → fetches PR, extracts ticket context, selects agents, waits for confirmation, spawns in parallel, collects results, offers triage.
+- **Full run (CI):** `--non-interactive --pr 42` → fetches PR author, extracts ticket, auto-selects agents, runs, files HIGH+ bugs as GitHub issues assigned to PR author, writes report.
 - **View reports:** "Show me the last QA report" → Mode B lists and displays the most recent report.
 - **Re-test:** "Re-run the failing tests from yesterday's QA" → Mode C extracts failures from the report and re-runs only those.
 
@@ -243,3 +285,8 @@ User: "Write a unit test for the login function"
 - Cause: No CLAUDE.md or README.md in the project
 - Solution: Add project documentation or tell the bug fixer what tech stack to expect
 - Expected behavior: Bug fixer adapts its approach to the project's conventions
+
+- Error: GitHub issue creation fails in CI
+- Cause: `mcp__github__create_issue` not available or GITHUB_TOKEN not set
+- Solution: Ensure GitHub MCP is configured in the CI environment
+- Expected behavior: HIGH+ bugs filed as GitHub issues assigned to PR author
