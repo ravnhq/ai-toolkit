@@ -21,6 +21,14 @@ TMP=$(mktemp)
 curl -fsSL "$URL" -o "$TMP"
 chmod +x "$TMP"
 
+# macOS Gatekeeper kills unsigned binaries downloaded from the internet.
+# Strip the quarantine attribute and ad-hoc sign so it runs without an
+# Apple Developer account.
+if [ "$(uname -s)" = "Darwin" ]; then
+  xattr -d com.apple.quarantine "$TMP" 2>/dev/null || true
+  codesign --sign - "$TMP" 2>/dev/null || true
+fi
+
 if [ -w "$INSTALL_DIR" ]; then
   mv "$TMP" "${INSTALL_DIR}/corvus"
 elif command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
