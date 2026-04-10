@@ -128,7 +128,7 @@ After all questions answered:
    Custom QA personality created!
      Skill: .claude/skills/qa-<name>/SKILL.md
      Registered in: .qa/config.yml
-   
+
    It will be included in future /qa-run sessions.
    Edit the SKILL.md directly to refine test scenarios.
    ```
