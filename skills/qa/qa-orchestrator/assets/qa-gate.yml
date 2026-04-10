@@ -35,11 +35,11 @@ jobs:
 
       - name: Write .env.qa
         env:
-          QA_PORTAL_URL:        ${{ secrets.QA_PORTAL_URL }}
-          QA_API_URL:           ${{ secrets.QA_API_URL }}
-          QA_ADMIN_EMAIL:       ${{ secrets.QA_ADMIN_EMAIL }}
-          QA_ADMIN_PASSWORD:    ${{ secrets.QA_ADMIN_PASSWORD }}
-          QA_TEST_USER_EMAIL:   ${{ secrets.QA_TEST_USER_EMAIL }}
+          QA_PORTAL_URL: ${{ secrets.QA_PORTAL_URL }}
+          QA_API_URL: ${{ secrets.QA_API_URL }}
+          QA_ADMIN_EMAIL: ${{ secrets.QA_ADMIN_EMAIL }}
+          QA_ADMIN_PASSWORD: ${{ secrets.QA_ADMIN_PASSWORD }}
+          QA_TEST_USER_EMAIL: ${{ secrets.QA_TEST_USER_EMAIL }}
           QA_TEST_USER_PASSWORD: ${{ secrets.QA_TEST_USER_PASSWORD }}
         run: |
           cat > .env.qa <<EOF
