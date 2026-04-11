@@ -6,7 +6,7 @@
 
 [![Skills Quality](https://github.com/ravnhq/ai-toolkit/actions/workflows/skills-quality.yml/badge.svg)](https://github.com/ravnhq/ai-toolkit/actions/workflows/skills-quality.yml)
 
-Modular "skills" — portable rule packs that teach AI coding agents (Claude Code, Cursor, etc.) best practices for specific technologies — so every project gets consistent, expert-level guidance without copy-pasting prompts. **30 ready skills** organized by role.
+Rule packs that teach AI coding agents (Claude Code, Cursor, etc.) how to write React, TypeScript, tRPC, Drizzle, and more. Install once, reuse across projects. **30 skills** organized by role.
 
 ## Quick Start
 
@@ -108,11 +108,11 @@ npx skills update
 
 ### Skill Organization
 
-Skills are grouped by role — everything for a domain lives in one directory. Install what you need.
+Skills are grouped by role. Everything for a domain lives in one directory. Install what you need.
 
 ```
 skills/
-├── universal/     # Global standards — apply to all code
+├── universal/     # Global standards, apply to all code
 ├── frontend/      # Web UI: architecture, components, design, accessibility
 ├── backend/       # Server-side: APIs, services, architecture
 ├── database/      # Data layer: ORMs, schemas, queries
@@ -166,73 +166,73 @@ npx skills add ravnhq/ai-toolkit -s platform-testing
 
 | Skill | Description |
 |-------|-------------|
-| `core-coding-standards` | Universal code quality rules — KISS, DRY, clean code, code review. Base skill every project should include. |
-| `lang-typescript` | TypeScript language patterns and type safety rules — strict mode, no any, discriminated unions. |
-| `ts-linter` | Set up and enforce a strict, production-grade ESLint configuration for TypeScript projects. |
+| `core-coding-standards` | Code quality rules: KISS, DRY, clean code, code review. Install this first. |
+| `lang-typescript` | Strict TypeScript: no `any`, discriminated unions, type narrowing. |
+| `ts-linter` | Set up strict ESLint for TypeScript projects. |
 
 ### Frontend
 
 | Skill | Description |
 |-------|-------------|
-| `platform-frontend` | Framework-agnostic frontend architecture — state management, components, data fetching. |
-| `tech-react` | React-specific component, hook, and rendering patterns. |
-| `design-frontend` | Visual design system patterns for web UIs — layout, responsive, Tailwind tokens. |
-| `design-accessibility` | WCAG AA and ARIA best practices — screen readers, keyboard navigation, focus management. |
-| `figma-to-react-components` | Convert Figma component designs into production-ready React implementations with design token integration and accessibility. |
+| `platform-frontend` | Frontend architecture: state, components, data fetching. Framework-agnostic. |
+| `tech-react` | React components, hooks, and rendering. |
+| `design-frontend` | Visual design: layout, responsive, Tailwind tokens. |
+| `design-accessibility` | WCAG AA compliance: ARIA, keyboard nav, focus management. |
+| `figma-to-react-components` | Turn Figma designs into React components with design tokens and a11y. |
 
 ### Backend
 
 | Skill | Description |
 |-------|-------------|
-| `platform-backend` | Server-side architecture and security — API design, error handling, validation, logging. |
-| `tech-trpc` | tRPC router architecture, procedure design, and Vertical Slice Architecture patterns. |
+| `platform-backend` | Server architecture: API design, error handling, validation, logging. |
+| `tech-trpc` | tRPC routers, procedures, and Vertical Slice Architecture. |
 
 ### Database
 
 | Skill | Description |
 |-------|-------------|
-| `platform-database` | SQL database design, query optimization, and migration safety. |
-| `tech-drizzle` | Drizzle ORM schema design, relational queries, and migration patterns. |
+| `platform-database` | SQL design, query optimization, migration safety. |
+| `tech-drizzle` | Drizzle ORM: schemas, relations, migrations. |
 
 ### Mobile
 
 | Skill | Description |
 |-------|-------------|
-| `tech-android` | Android development patterns and best practices. |
-| `swift-concurrency` | Swift Concurrency patterns — async/await, actors, tasks, Sendable conformance. |
-| `localize-ios` | iOS localization patterns and best practices. |
-| `liquid-glass-ios` | Apple's Liquid Glass design system for iOS 26+ and iPadOS 26+. |
+| `tech-android` | Android: Kotlin, Jetpack Compose, architecture components. |
+| `swift-concurrency` | Swift async/await, actors, tasks, Sendable. |
+| `localize-ios` | iOS localization: strings, plurals, formatters. |
+| `liquid-glass-ios` | Apple's Liquid Glass design system for iOS 26+. |
 
 ### Testing
 
 | Skill | Description |
 |-------|-------------|
-| `platform-testing` | Framework-agnostic testing principles — test philosophy, structure, mocking boundaries. |
-| `tech-vitest` | Vitest-specific testing utilities — vi.mock, vi.fn, fake timers, MSW. |
+| `platform-testing` | Testing principles: structure, mocking boundaries, test doubles. |
+| `tech-vitest` | Vitest: vi.mock, vi.fn, fake timers, MSW. |
 
 ### CLI
 
 | Skill | Description |
 |-------|-------------|
-| `platform-cli` | Design and implementation patterns for building command-line tools with modern UX. |
+| `platform-cli` | CLI design: commands, flags, output formatting, help text. |
 
 ### Assistant
 
 | Skill | Description |
 |-------|-------------|
-| `promptify` | Transform user requests into detailed, precise prompts for AI models. |
-| `agent-add-rule` | Add rules, conventions, or instructions to the project's agent configuration. |
-| `agent-init-deep` | Initialize or migrate to nested CLAUDE.md structure for progressive disclosure. |
-| `agent-skill-creator` | Guide for creating effective, portable skills that extend Claude's capabilities. |
-| `agent-pr-creator` | Analyzes git diffs and commit history to create pull requests via gh CLI. |
-| `rewrite-commit-history` | Rewrite a feature branch's commit history into clean conventional commits. |
-| `eval-agent-md` | Behavioral compliance testing for CLAUDE.md or agent definition files. |
-| `parallel` | Run a task in a background sub-agent so you can continue working on other things. |
-| `grill-me` | Interview the user relentlessly about a plan or design until reaching shared understanding. |
-| `pr-comments-address` | Reads open review comments from a GitHub PR, triages them, applies code fixes. |
-| `transcript-notes` | Process meeting transcripts into structured notes with metadata, TL;DR, and action items. |
-| `type-system-audit` | Audit type-system weaknesses using bug-fix commits as evidence. |
-| `agent-skills-manager` | Manage AI skills via corvus CLI — install, update, search, and configure. |
+| `promptify` | Transform user requests into precise prompts for AI models. |
+| `agent-add-rule` | Add rules or conventions to project agent config. |
+| `agent-init-deep` | Set up nested CLAUDE.md for progressive disclosure. |
+| `agent-skill-creator` | Create new skills for this toolkit. |
+| `agent-pr-creator` | Create PRs from git diffs via gh CLI. |
+| `rewrite-commit-history` | Rewrite branch history into clean conventional commits. |
+| `eval-agent-md` | Behavioral compliance testing for CLAUDE.md files. |
+| `parallel` | Run a task in a background sub-agent. |
+| `grill-me` | Interview you about a plan until reaching shared understanding. |
+| `pr-comments-address` | Triage and fix PR review comments. |
+| `transcript-notes` | Turn meeting transcripts into structured notes with action items. |
+| `type-system-audit` | Find type-system weaknesses using bug-fix commits as evidence. |
+| `agent-skills-manager` | Manage skills via corvus CLI: install, update, search, configure. |
 
 ## Team Sync
 
@@ -299,8 +299,8 @@ ruby scripts/skills_harness.rb    # Run the full test harness
 PRs trigger skill quality checks automatically. On merge to `main`:
 
 1. CI validates all skills and syncs `marketplace.json`
-2. Build numbers are bumped for changed skills
-3. Release tags are created and GitHub Releases published
+2. CI bumps build numbers for changed skills
+3. CI creates release tags and publishes GitHub Releases
 
 Changes to `cli-ts/**` also trigger a separate binary build workflow that compiles corvus for all platforms (darwin-arm64, darwin-x64, linux-x64, linux-arm64) using Bun and publishes them to the `cli-latest` GitHub Release.
 
@@ -309,12 +309,12 @@ Changes to `cli-ts/**` also trigger a separate binary build workflow that compil
 1. Create or edit a skill in `skills/<category>/<name>/`.
 2. Run `ruby scripts/skills_audit.rb` to validate locally.
 3. Run `ruby scripts/skills_harness.rb` to confirm tests pass.
-4. Open a PR to `main` — CI handles the rest.
-5. On merge, versions bump and releases publish automatically.
+4. Open a PR to `main`. CI handles the rest.
+5. On merge, CI bumps versions and publishes releases.
 
 ## Blog
 
-Tips, guides, and deep dives on AI-assisted development — visit the [Ravn AI Toolkit Blog](https://ravnhq.github.io/ai-toolkit/).
+Tips, guides, and deep dives on AI-assisted development. Visit the [Ravn AI Toolkit Blog](https://ravnhq.github.io/ai-toolkit/).
 
 - Top 10 Claude Code Tips for Newcomers
 - Making Claude Code Yours
