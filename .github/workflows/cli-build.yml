@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  build-linux:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -28,16 +28,79 @@ jobs:
         working-directory: cli-ts
         run: bun install --frozen-lockfile
 
-      - name: Build binaries
+      - name: Build Linux binaries
         working-directory: cli-ts
-        run: bash scripts/build.sh
+        run: |
+          mkdir -p dist-bin
+          for target in bun-linux-x64 bun-linux-arm64; do
+            platform="${target#bun-}"
+            outfile="dist-bin/corvus-${platform}"
+            echo "  Building ${platform}..."
+            bun build src/index.ts --compile --target="$target" --outfile="$outfile"
+            echo "  ✓ ${outfile}"
+          done
 
-      - name: Upload artifacts
+      - name: Upload Linux artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: corvus-binaries
-          path: cli-ts/dist-bin/corvus-*
-          retention-days: 30
+          name: corvus-linux
+          path: cli-ts/dist-bin/corvus-linux-*
+          retention-days: 1
+
+  build-macos:
+    runs-on: macos-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        working-directory: cli-ts
+        run: bun install --frozen-lockfile
+
+      - name: Build macOS binaries
+        working-directory: cli-ts
+        run: |
+          mkdir -p dist-bin
+          for target in bun-darwin-arm64 bun-darwin-x64; do
+            platform="${target#bun-}"
+            outfile="dist-bin/corvus-${platform}"
+            echo "  Building ${platform}..."
+            bun build src/index.ts --compile --target="$target" --outfile="$outfile"
+            # Ad-hoc sign so macOS Gatekeeper accepts the binary without a
+            # Developer ID certificate. Quarantine xattr is added by the
+            # downloader (curl/browser), not by CI, so no need to strip it here.
+            codesign --sign - "$outfile"
+            echo "  ✓ ${outfile}"
+          done
+
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: corvus-macos
+          path: cli-ts/dist-bin/corvus-darwin-*
+          retention-days: 1
+
+  publish:
+    needs: [build-linux, build-macos]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist-bin
+          merge-multiple: true
 
       - name: Publish release
         env:
@@ -46,7 +109,7 @@ jobs:
           gh release delete cli-latest --yes 2>/dev/null || true
           git tag -f cli-latest
           git push -f origin cli-latest
-          gh release create cli-latest cli-ts/dist-bin/corvus-* \
+          gh release create cli-latest dist-bin/corvus-* \
             --title "corvus latest" \
             --notes "Latest build from main" \
             --latest
