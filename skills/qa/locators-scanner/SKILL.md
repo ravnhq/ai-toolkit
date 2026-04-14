@@ -11,6 +11,8 @@ description: Scan a website URL and extract the best locators for every visible 
   Also trigger when a user pastes a URL and asks to generate a page object, locator
   map, or selectors for Playwright, Cypress, or WebdriverIO. Also explicitly triggered
   by the /locators command.
+allowed-tools:
+- Bash
 metadata:
   version: 1
 ---

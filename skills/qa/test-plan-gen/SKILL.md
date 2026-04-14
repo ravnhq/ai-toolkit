@@ -4,6 +4,8 @@ description: Generate professional QA Test Plan documents (.docx or .pdf) from a
   interview. Trigger on "create/write a test plan", "I need a test plan", "prepare
   QA documentation", /testplan, or when a user uploads a PRD/requirements and wants
   a test plan generated.
+allowed-tools:
+- Bash
 metadata:
   version: 1
 ---

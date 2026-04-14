@@ -4,6 +4,8 @@ description: Draft, evaluate, enrich, and normalize QA bug reports to RAVN stand
   Trigger on "write/create a bug report", "I found a bug", "log this defect", "evaluate/score/review/improve
   my bug report", "normalize these bug reports", or when a user describes unexpected
   behavior. Also triggered by /bugreport.
+allowed-tools:
+- Bash
 metadata:
   version: 1
 ---

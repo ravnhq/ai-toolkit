@@ -6,6 +6,8 @@ description: 'Manage AI skills from the Ravn AI Toolkit via corvus CLI — insta
   Browsing or searching available skills, (4) Configuring global or per-project skill
   sets, (5) Troubleshooting corvus setup. Triggers on: "install skills", "add skills",
   "update skills", "corvus", "skill manager", "browse skills", "set up AI rules".'
+allowed-tools:
+- Bash
 license: Complete terms in LICENSE.txt
 metadata:
   category: assistant

@@ -4,6 +4,8 @@ description: Generate, evaluate, audit, and normalize QA test cases to RAVN stan
   Trigger on "generate/write/create test cases", "evaluate/score my test cases", "audit
   my test suite", "review test coverage", "normalize/reformat test cases", or when
   a user wants test design help. Also triggered by /testcases.
+allowed-tools:
+- Bash
 metadata:
   version: 1
 ---
