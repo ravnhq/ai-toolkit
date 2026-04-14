@@ -34,6 +34,12 @@ Before pushing, run `ruby scripts/markdown_lint.rb` — CI will reject markdown 
 
 Releases happen automatically via CI on merge to main. For manual releases outside the PR flow: `bash scripts/release.sh <skill-name>`
 
+## Skill Installation
+
+Install skills via corvus CLI: `corvus install <name>` or `corvus install --recipe fullstack-ts`
+
+See `skills/assistant/agent-skills-manager/SKILL.md` for full CLI reference.
+
 ## Skill Architecture
 
 Skills are organized **flat by role** — everything for a domain lives in one directory:
@@ -92,6 +98,18 @@ Optional (Claude Code extensions):
 Optional (project extension):
 - `extends` - parent skill name for rule inheritance (e.g., `tech-react` extends `platform-frontend`)
 
+### Metadata Patterns
+
+```yaml
+metadata:
+  triggers:
+    positive: ["create component", "add page"]  # Phrases that SHOULD trigger
+    negative: ["delete", "remove"]              # Phrases that should NOT trigger
+  disable-model-invocation: true  # Slash-command only (no auto-trigger)
+
+paths: ["src/components/**"]  # Limit auto-activation to these globs
+```
+
 ### Rule File Format
 
 Every rule MUST have:
@@ -118,8 +136,18 @@ Every rule MUST have:
 - NEVER create duplicate rules across skills — when creating a new rule, FIRST search `skills/` for existing rules that cover the same topic (check platform skills, not just the target skill), THEN proceed only if no duplicate exists
 - ALWAYS check if a rule already exists in another skill within the same role directory before creating a duplicate
 - ALWAYS reference existing skills as examples when extracting new rules — when creating a new skill, FIRST name 2-3 existing skills (e.g., `tech-react`, `platform-testing`) as structural models to follow, THEN build the new skill matching their pattern
-- ALWAYS update the matching entry in `marketplace.json` when bumping `version` in any SKILL.md frontmatter (same commit)
+- ALWAYS update `marketplace.json` version when bumping SKILL.md `metadata.version` (same commit, CI validates sync)
 - MUST use exact `- Error:` / `- Cause:` / `- Solution:` / `Expected behavior:` format in SKILL.md Troubleshooting and Examples sections (required by skills harness)
+
+## Troubleshooting
+
+| Issue | Fix |
+|-------|-----|
+| Skill doesn't trigger | Add trigger phrases to description; use `metadata.triggers.negative` to exclude false matches |
+| Triggers too often | Add negative triggers; use `paths` to limit scope |
+| Instructions ignored | Keep SKILL.md <5000 words; move long content to references/ |
+| Audit fails | Run `ruby scripts/skills_audit.rb` — check frontmatter syntax, marketplace.json sync |
+| Lint fails | Run `ruby scripts/markdown_lint.rb` before pushing |
 
 ## More Information
 
