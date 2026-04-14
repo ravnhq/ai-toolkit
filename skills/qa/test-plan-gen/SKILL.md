@@ -7,7 +7,7 @@ description: Generate professional QA Test Plan documents (.docx or .pdf) from a
 allowed-tools:
 - Bash
 metadata:
-  version: 1
+  version: 2
 ---
 
 # Test Plan Generator

@@ -19,7 +19,7 @@ metadata:
   - installation
   - configuration
   status: ready
-  version: 3
+  version: 4
 ---
 
 # AI Skills Manager (corvus)

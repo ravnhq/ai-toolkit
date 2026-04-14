@@ -427,7 +427,7 @@
         "configuration"
       ],
       "status": "ready",
-      "version": 3
+      "version": 4
     },
     {
       "name": "type-system-audit",
@@ -486,7 +486,7 @@
         "workflow"
       ],
       "status": "ready",
-      "version": 2
+      "version": 3
     },
     {
       "name": "ts-linter",
@@ -517,7 +517,7 @@
         "automation"
       ],
       "status": "ready",
-      "version": 1
+      "version": 2
     },
     {
       "name": "locators-scanner",
@@ -531,7 +531,7 @@
         "test-design"
       ],
       "status": "ready",
-      "version": 1
+      "version": 2
     },
     {
       "name": "test-case-gen",
@@ -545,7 +545,7 @@
         "quality"
       ],
       "status": "ready",
-      "version": 1
+      "version": 2
     },
     {
       "name": "test-plan-gen",
@@ -559,7 +559,7 @@
         "planning"
       ],
       "status": "ready",
-      "version": 1
+      "version": 2
     }
   ]
 }

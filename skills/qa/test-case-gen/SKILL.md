@@ -7,7 +7,7 @@ description: Generate, evaluate, audit, and normalize QA test cases to RAVN stan
 allowed-tools:
 - Bash
 metadata:
-  version: 1
+  version: 2
 ---
 
 # QA Test Cases Skill

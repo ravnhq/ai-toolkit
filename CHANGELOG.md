@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-04-14
+
+- Added allowed-tools field to 6 skills.
 ## 2026-04-10
 
 - Add corvus CLI for interactive skill management (#16).

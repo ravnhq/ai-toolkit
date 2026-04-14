@@ -14,7 +14,7 @@ description: Scan a website URL and extract the best locators for every visible 
 allowed-tools:
 - Bash
 metadata:
-  version: 1
+  version: 2
 ---
 
 # Locator Extractor Skill

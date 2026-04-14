@@ -15,7 +15,7 @@ metadata:
   - sub-agent
   - workflow
   status: ready
-  version: 2
+  version: 3
   triggers:
     positive:
     - "/parallel refactor the auth module"

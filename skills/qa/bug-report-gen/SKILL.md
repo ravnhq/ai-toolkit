@@ -7,7 +7,7 @@ description: Draft, evaluate, enrich, and normalize QA bug reports to RAVN stand
 allowed-tools:
 - Bash
 metadata:
-  version: 1
+  version: 2
 ---
 
 # Bug Report Skill
