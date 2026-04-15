@@ -39,7 +39,30 @@ npx skills update                      # upgrade installed skills
 
 </details>
 
-### Core Commands
+### Claude Code Native
+
+Install skills directly in Claude Code without corvus:
+
+```bash
+/plugin marketplace add ravnhq/ai-toolkit
+/plugin install tech-react
+/plugin install tech-drizzle design-frontend
+```
+
+<details>
+<summary>Local development</summary>
+
+```bash
+# Add local repo as marketplace
+/plugin marketplace add .
+
+# Install skills from local
+/plugin install core-coding-standards
+```
+
+</details>
+
+### Corvus CLI Commands
 
 ```bash
 corvus install                         # interactive skill browser

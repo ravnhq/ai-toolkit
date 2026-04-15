@@ -27,6 +27,8 @@ ruby scripts/skills_harness.rb                   # Run skill test harness
 ruby scripts/skill_version.rb <SKILL.md> [build] # Bump skill build number
 ruby scripts/skill_score.rb                      # Score skill quality
 ruby scripts/markdown_lint.rb                    # Lint markdown in skill files
+ruby scripts/generate_claude_plugin.rb          # Transform marketplace.json → .claude-plugin/marketplace.json
+ruby scripts/validate_claude_plugin.rb          # Validate Claude Code plugin structure
 bash scripts/changelog.sh                        # Generate changelog
 ```
 
@@ -36,9 +38,30 @@ Releases happen automatically via CI on merge to main. For manual releases outsi
 
 ## Skill Installation
 
-Install skills via corvus CLI: `corvus install <name>` or `corvus install --recipe fullstack-ts`
+**Corvus CLI** (recommended for multi-agent support):
+```bash
+corvus install <name>
+corvus install --recipe fullstack-ts
+```
 
-See `skills/assistant/agent-skills-manager/SKILL.md` for full CLI reference.
+**Claude Code native**:
+```bash
+/plugin marketplace add ravnhq/ai-toolkit
+/plugin install tech-react
+```
+
+See `skills/assistant/agent-skills-manager/SKILL.md` for full corvus CLI reference.
+
+## Distribution
+
+Dual distribution: both corvus CLI and Claude Code plugin. CI generates both formats on release.
+
+| Format | Location | Version Format |
+|--------|----------|----------------|
+| corvus | `marketplace.json` | Integer build number |
+| Claude Code | `.claude-plugin/marketplace.json` | Semver (1.0.0 baseline) |
+
+`agent-skills-manager` skill excluded from Claude Code (corvus-specific).
 
 ## Skill Architecture
 
@@ -137,6 +160,7 @@ Every rule MUST have:
 - ALWAYS check if a rule already exists in another skill within the same role directory before creating a duplicate
 - ALWAYS reference existing skills as examples when extracting new rules — when creating a new skill, FIRST name 2-3 existing skills (e.g., `tech-react`, `platform-testing`) as structural models to follow, THEN build the new skill matching their pattern
 - ALWAYS update `marketplace.json` version when bumping SKILL.md `metadata.version` (same commit, CI validates sync)
+- ALWAYS run `ruby scripts/generate_claude_plugin.rb` after modifying marketplace.json (CI runs automatically)
 - MUST use exact `- Error:` / `- Cause:` / `- Solution:` / `Expected behavior:` format in SKILL.md Troubleshooting and Examples sections (required by skills harness)
 
 ## Troubleshooting

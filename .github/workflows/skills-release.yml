@@ -114,11 +114,16 @@ jobs:
           echo "tags=${TAGS}" >> "$GITHUB_OUTPUT"
           echo "names=${NAMES}" >> "$GITHUB_OUTPUT"
 
+      - name: Generate Claude Code plugin
+        if: steps.detect.outputs.skills != ''
+        run: ruby scripts/generate_claude_plugin.rb
+
       - name: Validate
         if: steps.detect.outputs.skills != ''
         run: |
           ruby scripts/markdown_lint.rb
           ruby scripts/skills_audit.rb
+          ruby scripts/validate_claude_plugin.rb
 
       - name: Update changelog
         if: steps.detect.outputs.skills != ''
@@ -133,7 +138,7 @@ jobs:
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add skills/*/*/SKILL.md marketplace.json CHANGELOG.md
+          git add skills/*/*/SKILL.md marketplace.json .claude-plugin/marketplace.json CHANGELOG.md
           git commit -m "chore: release ${TRIMMED}"
 
           for TAG in $TAGS; do
