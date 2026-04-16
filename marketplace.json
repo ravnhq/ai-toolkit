@@ -560,6 +560,23 @@
       ],
       "status": "ready",
       "version": 2
+    },
+    {
+      "name": "design-variations",
+      "source": "skills/design/design-variations",
+      "description": "Generate a gallery of design variations for a UI component. Takes an existing component (by name, code, or screenshot) and produces N distinct rendered alternatives in a single HTML comparison page.",
+      "category": "design",
+      "tags": [
+        "design",
+        "variations",
+        "mockup",
+        "ui",
+        "components",
+        "exploration",
+        "gallery"
+      ],
+      "status": "ready",
+      "version": 1
     }
   ]
 }

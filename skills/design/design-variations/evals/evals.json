@@ -1,0 +1,23 @@
+{
+  "skill_name": "design-variations",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/design-variations 8 A pricing card with three tiers: Free, Pro ($12/mo), and Enterprise (contact us). Each tier has a feature list and a CTA button.",
+      "expected_output": "Single HTML file with 8 pricing card variations in a grid gallery, distributed across MIN/MID/BOLD/UNIQUE tiers, ordered conservative to experimental.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "/design-variations 4 The login form — email, password, \"remember me\" checkbox, submit button, \"forgot password\" link.",
+      "expected_output": "Single HTML file with 4 login form variations in a grid gallery, each with a distinct design thesis, covering at least MIN and MID tiers.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "/design-variations 12 A notification toast that appears top-right. Shows an icon, title, message, and a dismiss button. Currently uses a simple white card with a left color border.",
+      "expected_output": "Single HTML file with 12 toast notification variations in a grid gallery, distributed across all four tiers including at least one UNIQUE variation.",
+      "files": []
+    }
+  ]
+}
