@@ -31,7 +31,7 @@
         "decision-making"
       ],
       "status": "ready",
-      "version": 7
+      "version": 8
     },
     {
       "name": "lang-typescript",
@@ -288,7 +288,7 @@
       ],
       "status": "ready",
       "rules": 11,
-      "version": 7
+      "version": 8
     },
     {
       "name": "agent-add-rule",
@@ -302,7 +302,7 @@
         "configuration"
       ],
       "status": "ready",
-      "version": 5
+      "version": 6
     },
     {
       "name": "agent-init-deep",
@@ -316,7 +316,7 @@
         "setup"
       ],
       "status": "ready",
-      "version": 5
+      "version": 6
     },
     {
       "name": "agent-skill-creator",
@@ -330,7 +330,7 @@
         "templates"
       ],
       "status": "ready",
-      "version": 8
+      "version": 9
     },
     {
       "name": "agent-pr-creator",
@@ -471,7 +471,7 @@
         "quality"
       ],
       "status": "ready",
-      "version": 13
+      "version": 14
     },
     {
       "name": "parallel",

@@ -21,7 +21,7 @@ metadata:
   - decision-making
   - validation
   status: ready
-  version: 7
+  version: 8
   triggers:
     positive:
     - grill me on this plan

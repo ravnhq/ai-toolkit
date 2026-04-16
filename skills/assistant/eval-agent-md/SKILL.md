@@ -38,7 +38,7 @@ metadata:
   - meta
   - quality
   status: ready
-  version: 13
+  version: 14
 compatibility:
 - claude-code
 ---

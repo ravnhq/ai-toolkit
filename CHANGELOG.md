@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-04-16
+
+- Updated tighten skill prompts for literal interpretation.
 ## 2026-04-14
 
 - Added allowed-tools field to 6 skills.
