@@ -16,6 +16,30 @@ Before writing any CSS, answer three questions:
 
 Write these answers as a comment at the top of each variation's CSS block. If two variations share the same answers, one of them has no reason to exist.
 
+### Thesis before profile
+
+Every variation has a THESIS (the design problem it solves) and a PROFILE (the visual vocabulary that solves it). Thesis comes first. Profile is subordinate.
+
+**Wrong (profile-first):**
+- "V2 — Stripe variation" → nothing said about what problem it solves
+- "V5 — Cyberpunk toast" → aesthetic name, no design intent
+
+**Right (thesis-first, profile subordinate):**
+- **V2 Transience** (T5 · Wabi-Sabi profile) — *3-second auto-dismiss, no close button; treats notification as ephemeral context, not persistent UI*
+- **V5 Command-line acknowledgment** (T4 · Cyberpunk profile) — *toast is a shell line; user acks by typing or pressing Enter, keyboard-first*
+- **V3 Interruption urgency** (T2 · Government/GOV.UK profile) — *full-width bar at viewport top, high-contrast, dismiss requires explicit action*
+- **V7 Acknowledgment replaces dismissal** (T3 · Monzo profile) — *prominent Confirm button takes the place of an X; user can't close without acting*
+
+Each thesis names WHAT the variation solves. The profile names HOW it's styled. If you can't fill in both halves for every variation, the variation has no reason to exist.
+
+### Thesis library (examples by component type)
+
+**Toast**: Transience · Persistence · Interruption · Acknowledgment · Deniability (undo) · Batching · Categorization · Command-line · Status-line · Progress-linked
+**Pricing**: Comparison-first · Anchor-tier · Decision-forcing · Progressive-reveal · Matrix-scan · Narrative-flow · Social-proof-weighted · Value-density · Flexible-toggle · Full-commitment
+**Login**: Minimal-friction · Trust-signaling · Multi-path (social first) · Progressive (step-by-step) · Branded-context · Dense-horizontal · Immersive · Keyboard-first · Passwordless · Biometric-primary
+
+Pick one thesis per variation. Two variations with the same thesis means one should be cut.
+
 ---
 
 ## 1. Domain Exploration
@@ -31,75 +55,202 @@ For each component, identify:
 
 ---
 
-## 2. Design Directions
+## 2. Product Reference Profiles
 
-Each variation should map to a design direction — a coherent set of choices about density, color temperature, depth, and rhythm. Here are six directions with concrete token profiles. You don't have to use these exact names, but every variation needs a direction this specific.
+Each variation must be grounded in a real product's or design tradition's visual language. These profiles use actual values from shipping products. Pick a profile and follow its specific CSS values — this is what keeps output looking real.
 
-### Precision
-Cool neutrals, tight spacing, visible structure. Think Linear, Vercel, Raycast.
-```
-palette:    slate-50 through slate-900, blue-500 accent
-spacing:    compact (4/8/12/16px gaps)
-radius:     small (4-6px)
-depth:      borders only, no shadows
-typography: 13-14px base, medium weight, monospace for data
-feel:       "engineered tool"
-```
+### A. Product Profiles
 
-### Warmth
-Neutral-warm tones, generous whitespace, soft edges. Think Notion, Airbnb, Stripe.
-```
-palette:    stone-50 through stone-800, amber-600 or orange-500 accent
-spacing:    generous (16/24/32px gaps)
-radius:     medium-large (8-12px)
-depth:      subtle single-layer shadows
-typography: 15-16px base, regular weight, humanist sans
-feel:       "comfortable, approachable"
-```
+**Linear** — Dark-first, dense, engineered.
+`bg: #0F0F10 | surface: #151516 | text: #EEEFF1 | accent: #D25E65 | font: Inter 13px | radius: 12px cards, 8px buttons | depth: no card shadows, borders only | spacing: 8px grid`
 
-### Sophistication
-Muted palette, restrained typography, deliberate asymmetry. Think Aesop, Apple, Dieter Rams.
-```
-palette:    zinc-100 through zinc-900, single muted accent (slate-blue, sage, terracotta)
-spacing:    spacious with asymmetric margins
-radius:     minimal (2-4px) or none
-depth:      flat, separation through whitespace and color
-typography: elegant serif or thin sans, generous letter-spacing on headings
-feel:       "curated, premium"
-```
+**Stripe** — Polished, editorial, trust-heavy.
+`bg: #FFF | dark: #0A2540 | subtle: #F6F9FC | accent: #635BFF | text: #30313D | font: system 14px | radius: 4px | shadow: 0 1px 3px #e6ebf1 | input: 40px height, 10px 12px padding`
 
-### Boldness
-High contrast, oversized elements, confident color. Think Figma, Stripe Atlas, brutalist sites.
-```
-palette:    near-black backgrounds, white text, one vivid accent (violet-500, emerald-400)
-spacing:    dramatic (large padding, tight internal gaps)
-radius:     sharp (0-2px) or fully rounded (999px)
-depth:      hard shadows (4px 4px 0) or none
-typography: large headings (28-48px), heavy weight (700-900), tight line-height
-feel:       "loud, confident, unapologetic"
-```
+**Vercel/Geist** — Stark black-and-white, typographic.
+`bg: #FFF | text: #000 | secondary: #666 | border: #EAEAEA | font: Geist 14px | letter-spacing: -0.01em body, -0.04em headings | radius: 0-4px sharp | depth: minimal`
 
-### Utility
-Dense, information-first, minimal decoration. Think Bloomberg Terminal, Grafana, AWS Console.
-```
-palette:    white/gray-50 background, gray-700 text, status colors only (green/amber/red)
-spacing:    compact (4/8px gaps), maximize data density
-radius:     small (2-4px)
-depth:      1px borders, no shadows
-typography: 12-13px, tabular figures, monospace for numbers
-feel:       "dashboard, data-dense, professional"
-```
+**GitHub/Primer** — Functional, accessible, dev-familiar.
+`bg: #FFF | subtle: #F6F8FA | text: #1F2328 | accent: #0969DA | success: #238636 | danger: #DA3633 | border: #D0D7DE | font: system 14px | radius: 6px | button: 8px 16px | shadow: 0 1px 0 rgba(27,31,36,0.04)`
 
-### Expressive
-Gradient accents, layered depth, animated touches. Think Arc Browser, Lottie demos, creative tools.
-```
-palette:    light base with gradient accents (violet→blue, coral→amber)
-spacing:    medium (12/16/24px)
-radius:     large (12-16px)
-depth:      layered shadows + subtle backdrop-blur
-typography: rounded sans (Plus Jakarta, Nunito), medium weights
-feel:       "creative, energetic, modern"
-```
+**Notion** — Warm, content-first, document-like.
+`bg: #FFF | hover: #F7F6F3 | sidebar: #FBFBFA | text: #37352F | gray: #787774 | accent: #2383E2 | font: system 16px | radius: 4px | depth: bg-color separation only`
+
+**Apple/HIG** — Premium, translucent, generous.
+`bg: rgba(255,255,255,0.72) | secondary: #F5F5F7 | text: #1D1D1F | accent: #007AFF | font: SF Pro 17px | radius: 16-20px | backdrop-filter: blur(20px) | border: 1px solid rgba(255,255,255,0.18) | shadow: 0 2px 8px rgba(0,0,0,0.08) | padding: 20-24px | touch: 44px min`
+
+**Shopify/Polaris** — Merchant-friendly, green, systematic.
+`bg: #FFF | surface: #F1F1F1 | text: #303030 | accent: #006620 | border: #C9CCCF | font: system 14px | radius: 8px | spacing: 4px base`
+
+### B. Industry Profiles
+
+**Editorial/Magazine** (NYT, The Verge, Bloomberg)
+`font: 'Playfair Display' serif headlines, 'Source Serif 4' 18px body | line-height: 1.6 | letter-spacing: -0.02em heads | max-width: 65ch | color: #2C3E50 | bg: #F8F9FA | radius: 0 | depth: thin rules (1px solid #ddd)`
+
+**Luxury/Fashion** (Aesop, Hermès, Bottega Veneta)
+`font: 'Cormorant Garamond' 15px weight-300 | letter-spacing: 0.1em | line-height: 1.8 | color: #544D4B | accent: #760402 burgundy | padding: 48px | radius: 0 | depth: whitespace only | transition: 600ms ease`
+
+**Fintech/Banking** (Wise, Mercury)
+`accent: #9FE870 (Wise green) | dark: #163300 | font: system 14px | font-variant-numeric: tabular-nums | radius: 8px | shadow: 0 1px 3px rgba(0,0,0,0.06) | Mercury: bg #F0F0F0, text #141414`
+
+**Healthcare/Wellness** (Calm, One Medical)
+`text: #2C3E50 | bg: #F8F9FA | accent: #17A2B8 teal | font: 'Open Sans' 16px | line-height: 1.6 | radius: 8px | padding: 24px | shadow: 0 2px 8px rgba(0,0,0,0.06) | WCAG AAA required`
+
+**Government/Civic** (GOV.UK, USWDS)
+`text: #1B1B1B | accent: #0050D8 | font: 'Source Sans 3' 16px | radius: 0-4px | spacing: 8px base | GOV.UK text: #0B0C0C | max-accessibility focus`
+
+**Gaming/Entertainment** (Discord, Steam)
+`Discord: bg #313338, accent #5865F2, text #DBDEE1 | Steam: bg #171A21, surface #1B2838, accent #66C0F4, text #C7D5E0 | font: 'gg sans' 14px | radius: 8px | dense, vivid, dark`
+
+**Education/EdTech** (Duolingo, Khan Academy)
+`accent: #58CC02 green | font: 'Nunito' 16px weight-700 | radius: 16px | shadow: 0 4px 0 #E5E5E5 (3D button) | padding: 16px 24px | playful, rounded, progress-driven`
+
+### C. Design Movement Profiles
+
+**Swiss/International Typographic**
+`font: 'Helvetica Neue' 400 | grid: 12-column, gap 24px | color: #000 on #FFF | radius: 0 | depth: 1px rules only | asymmetric columns (5/12 + 7/12)`
+
+**Scandinavian/Nordic** (Klarna, Spotify, IKEA)
+`font: system sans | color: #1A1A1A | accent: #FF3D00 Klarna coral or #1DB954 Spotify green | radius: 8px | shadow: 0 2px 8px rgba(0,0,0,0.08) | border: 1px solid #EEE | padding: 20px`
+
+**Brutalist/Neubrutalist**
+`font: 'IBM Plex Mono' 12px | color: #000 on #FFF | border: 2px solid #000 | radius: 0 | shadow: 4px 4px 0 rgba(0,0,0,0.3) | no transitions`
+
+**Japanese Information Density** (Muji, Uniqlo)
+`font: 'Yu Gothic' 14px | line-height: 1.4 | color: #222 | gap: 12px | padding: 16px | border: 1px solid #E0E0E0 | radius: 0-4px | dense hierarchy, single accent`
+
+**Neomorphism/Soft UI**
+`bg: #E8F0F7 | raised: shadow 8px 8px 16px #B8BEC7, -8px -8px 16px #FFF | pressed: inset same | radius: 16px | border: none | bg must match parent`
+
+**Claymorphism/3D Pastel**
+`bg: linear-gradient(135deg, #F5D4E6, #FFE8D6) | radius: 40px | shadow: inset -2px -2px 5px rgba(255,255,255,0.7), inset 3px 3px 5px rgba(0,0,0,0.1), 0 8px 20px rgba(0,0,0,0.12)`
+
+**Data-Dense/Terminal**
+`font: 'Courier New' 11px | line-height: 1.4 | bg: #F5F5F5 | td: padding 2px 6px, border 1px solid #D0D0D0 | radius: 0 | status: green #4CAF50, amber #FF9800, red #F44336`
+
+**Retro/Nostalgic** (90s, vaporwave)
+`font: 'Courier New' | color: #00FF88 on #0A0A0A | text-shadow: 0 0 10px #00FF88, 0 0 20px #0088FF | border: 1px solid #00FF88 | radius: 0 | scanlines: bg-image linear-gradient(0deg, rgba(0,0,0,0.15) 50%, transparent 50%) bg-size 100% 4px`
+
+### D. Art & Architecture Movement Profiles
+
+**Art Deco** — Geometric luxury, gilt edges, commanding verticals.
+`font: 'Bodoni Moda' serif 16px | color: #0A1B3D navy on #FFF | accent: #D4AF37 gold | border: 2px solid #0A1B3D | radius: 0 | shadow: 6px 6px 0 rgba(0,0,0,0.2) | clip-path: chamfered corners | letter-spacing: 0.15em uppercase`
+
+**Bauhaus** — Primary colors, geometric shapes, functional form.
+`font: 'Futura' sans-serif 14px | colors: #C8302A red, #E8C018 yellow, #1E3878 blue on #FFF | border: none | radius: 0 | shadow: none | grid-based layout | geometric accents only`
+
+**De Stijl/Mondrian** — Black grid, primary blocks, pure orthogonality.
+`font: 'Helvetica Neue' 12px | color: #000 on #FFF | accent: #FF0000, #0000FF, #FFD700 | border: 6px solid #000 | radius: 0 | shadow: none | CSS Grid rigid structure | no curves anywhere`
+
+**Memphis Design** — Pastels + bold primaries, playful geometry, 80s irreverence.
+`font: 'Space Grotesk' 14px weight-700 | colors: #F48196 pink, #86CCCA teal, #C9AECF lavender, #FFD700 | radius: 30px | shadow: 3px 3px 0 rgba(0,0,0,0.15) | decorative: squiggly borders, geometric patterns`
+
+**Cyberpunk/Sci-Fi** — Neon on black, terminal aesthetic, digital decay.
+`font: 'Space Mono' monospace 12px | color: #18E0FF cyan on #0B0C10 | accent: #FF3CF2 magenta | border: 1px solid #18E0FF | radius: 2px | shadow: 0 0 20px rgba(24,224,255,0.4) | text-shadow: 0 0 10px currentColor | scanlines: bg-image repeating-linear-gradient`
+
+**Art Nouveau** — Organic curves, earth tones, ornamental flowing lines.
+`font: 'Cormorant Garamond' serif 16px weight-300 | color: #3D3D1F on #E8DCC8 | accent: #8B5A3C copper | radius: 50% organic | shadow: none | border: decorative SVG curves | transition: 500ms ease`
+
+**Mid-Century Modern** — Atomic-age optimism, warm geometry, retro palette.
+`font: 'DM Sans' 14px | color: #1A1A1A on #F5F1E8 cream | accent: #DE6F20 burnt-orange, #009B8D teal, #E8AB18 mustard | border: 1px solid #1A1A1A | radius: 2px | shadow: 2px 2px 4px rgba(0,0,0,0.15)`
+
+**Vaporwave/Synthwave** — Pink/purple haze, retro grid, digital nostalgia.
+`font: 'Space Mono' 12px | gradient: linear-gradient(135deg, #FF71CE, #01CDFE) | bg: #0F0F1E | border: 1px solid rgba(255,113,206,0.3) | radius: 0 | shadow: 0 0 15px rgba(255,113,206,0.4) | perspective grid overlay`
+
+**Y2K/Frutiger Aero** — Glossy, translucent, sky-blue optimism, bubble shapes.
+`font: 'Inter' 13px weight-500 | color: #1A1A1A on #87CEEB to #FFF gradient | accent: #32CD32 lime | border: 2px solid rgba(255,255,255,0.6) | radius: 24px | shadow: 0 8px 16px rgba(0,0,0,0.1) | backdrop-filter: blur(12px) brightness(1.1) | glossy surfaces`
+
+**Wabi-Sabi/Zen** — Imperfect, muted earth, asymmetric, generous negative space.
+`font: 'Georgia' serif 15px | color: #5D6E5E on #F5F3F0 | accent: #A9927D warm-stone | border: none | radius: 4px | shadow: none | CSS Grid unequal columns (5fr 7fr) | generous padding: 48px+ | no animations`
+
+### E. Niche Product Profiles
+
+**Spotify** — Dark-first, bold green accent, music energy.
+`bg: #191414 | surface: #121212 | text: #FFFFFF | accent: #1DB954 | font: 'Circular Sp' / system 14px | radius: 500px pills, 8px buttons | depth: no shadows, bg-color separation | spacing: 8px grid`
+
+**Telegram** — Light blue, fast messaging, minimal chrome.
+`bg: #FFFFFF | surface: #F5F5F5 | text: #000000 | accent: #0088CC | font: system 16px | radius: 8px cards, 24px avatars | depth: 1px borders only | spacing: 12px grid`
+
+**Obsidian** — Dark purple-gray, knowledge graph, markdown-native.
+`bg: #1E1E2E | surface: #2D2D3D | text: #E0E0E0 | accent: #6C31E3 | font: system mono 14px | radius: 4px elements, 8px panels | depth: no shadows, borders | spacing: 6px grid`
+
+**Arc Browser** — Colorful, spatial, playful but functional.
+`bg: #FFFFFF | surface: #F9F9F9 | text: #000000 | accent: #3139FB indigo | secondary: #FF5060 coral | font: system 13px | radius: 8px cards, 12px tabs | depth: subtle 2px shadows | spacing: 8px grid`
+
+**Figma** — Light, purple accent, collaborative precision.
+`bg: #FFFFFF | surface: #F5F5F5 | text: #333333 | accent: #7B61FF | font: Inter 12px | radius: 4px components, 8px buttons | depth: 1px borders | spacing: 8px grid`
+
+**Monzo** — Bold coral neobank, card-centric, mobile-first.
+`bg: #FFFFFF | surface: #F8F8F8 | text: #111111 | accent: #D96949 coral | font: system 16px | radius: 12px cards, 20px buttons | depth: 4px card shadows | spacing: 16px grid`
+
+**Superhuman** — Minimal, keyboard-first, speed-obsessed.
+`bg: #0F0F10 | surface: #1A1A1B | text: #EEEEEE | accent: #5B9EFF | font: 'Operator Mono' 13px | radius: 0 | depth: no shadows | spacing: 4px grid`
+
+**Things 3** — Clean white, subtle depth, craft-focused task management.
+`bg: #FFFFFF | surface: #F9F9F9 | text: #333333 | accent: #2DA6DA | font: system 14px | radius: 8px cards, 12px buttons | depth: subtle soft shadows | spacing: 12px grid`
+
+**Bear/iA Writer** — Extreme minimalism, typography-first writing tools.
+`bg: #FFFFFF / #F5F6F6 | text: #424242 | accent: #FF9500 (Bear) / #333 (iA) | font: custom sans 15px | radius: 0 | depth: none | spacing: 8px grid | max-width: 65ch`
+
+**Supabase** — Dev-tool dark, Postgres green, technical density.
+`bg: #11181C | surface: #1B2330 | text: #C9D1D9 | accent: #34B27B | font: mono 13px | radius: 4px | depth: 1px borders | spacing: 4px grid`
+
+**Tailwind UI** — Clean defaults, utility-driven, developer-trusted.
+`bg: #FFFFFF | surface: #F9FAFB | text: #111827 | accent: #3B82F6 | font: system 14px | radius: 6px components, 8px buttons | depth: 1px borders + subtle shadows | spacing: 4px base`
+
+**Framer** — Motion-forward, bold typography, creative energy.
+`bg: #FFF / #0F0F10 | surface: #F5F5F5 / #1A1A1A | text: #000 / #FFF | accent: #2563EB | font: Inter 14px weight-700 headings | radius: 8px | depth: motion shadows on hover | spacing: 8px grid`
+
+### F. Regional/Cultural Profiles
+
+**Korean** (Naver, Kakao) — Extreme density, animated, mobile-first, vibrant CTAs.
+`font: 'Nanum Barun Gothic' 14px | color: #1A1A1A | bg: #FFFFFF | accent: #FF5D31 orange | secondary: #00D4FF | radius: 4px | shadow: 0 2px 8px rgba(0,0,0,0.12) | spacing: 4px grid | dense layout, small gaps, heavy information`
+
+**Chinese** (Ant Design, WeChat) — Systematic tokens, structured hierarchy, blue primary.
+`font: 'PingFang SC' / system 14px | color: #000000 | bg: #FAFAFA | primary: #1677FF | success: #52C41A | error: #FF4D4F | warning: #FAAD14 | border: 1px solid #D9D9D9 | radius: 2px | shadow: 0 2px 8px rgba(0,0,0,0.06) | spacing: 8px token grid`
+
+**Indian** (Flipkart, Swiggy, CRED) — Bold deals, celebration-driven, mobile-optimized.
+`font: Inter / Rubik 14px | color: #152336 | bg: #F1F3F6 | primary: #0C73EB blue | accent: #FC8019 orange | highlight: #F8E831 yellow | radius: 8px | shadow: 0 4px 12px rgba(0,0,0,0.15) | spacing: 8px/16px | bold CTAs, deal badges, celebration gradients`
+
+**Arabic/Middle Eastern** — RTL, ornamental geometry, calligraphic, rich golds.
+`direction: rtl | font: 'Segoe UI' / Arabic Typesetting 16px | color: #1A1A1A | bg: #F5F5F5 | primary: #0066CC | accent: #D4AF37 gold | radius: 4px | shadow: 0 2px 6px rgba(0,0,0,0.1) | spacing: 16px | border-top: 3px solid gold on headers | geometric pattern overlays at 10% opacity`
+
+**Latin American** (Nubank, Mercado Libre) — Bold fintech, vibrant, disruptive energy.
+`font: system sans 14px weight-600 | color: #1A1A1A | bg: #FFFFFF | primary: #8C1CE4 purple (Nubank) | accent: #FFE600 yellow (MeLi) | radius: 12px | shadow: 0 8px 16px rgba(0,0,0,0.1) | spacing: 16px | mobile-first stacks | bright gradients`
+
+**African** (M-Pesa, Flutterwave) — Mobile-first, accessibility-focused, bold greens, practical.
+`font: Inter / system 16px | color: #1A1A1A | bg: #FFFFFF | primary: #3AA335 green | accent: #FF6B35 orange | radius: 8px | shadow: 0 2px 8px rgba(0,0,0,0.1) | spacing: 12px/16px | WCAG AA minimum | 44px min touch targets | high contrast, large body text`
+
+**German/Swiss Enterprise** (SAP Fiori) — Structured, systematic, compliance-ready.
+`font: 'SAP 72' / system sans 14px | color: #1A1A1A | bg: #FFFFFF | primary: #0A6ED1 | success: #107E3E | error: #BB0000 | warning: #E89B00 | radius: 0 | shadow: 0 1px 3px rgba(0,0,0,0.08) | spacing: 8px grid | persistent left nav | audit-ready structure`
+
+### G. Profile Selection Strategy
+
+For N variations, mix across ALL categories (A-F). The wider the spread, the more genuinely different the output.
+
+**Example for 8 variations:**
+- 2 product profiles (A/E): Linear + Monzo
+- 1 industry profile (B): Editorial
+- 2 movement profiles (C/D): Brutalist + Art Deco
+- 1 niche product (E): Bear/iA Writer
+- 1 regional (F): Korean density
+- 1 hybrid: "Wabi-Sabi meets Stripe" — generous whitespace + editorial trust signals
+
+**Example for 12 variations:**
+- 2 product (A): Stripe, Vercel
+- 2 industry (B): Fintech, Gaming
+- 2 classic movements (C): Swiss, Neomorphism
+- 2 art movements (D): Cyberpunk, Mid-Century Modern
+- 2 niche products (E): Obsidian, Things 3
+- 1 regional (F): Latin American
+- 1 hybrid: "Japanese Density meets Linear" — dark, dense, monospaced metrics
+
+**Rules:**
+- Never pick 2+ profiles from the same subcategory (e.g., don't use both Linear and Vercel — they're too similar)
+- At least one profile should be from D (art movements) or F (regional) — these produce the most unexpected results
+- Hybrids combine two profiles from different categories — name both parents explicitly
+- For 4 or fewer variations: at least 3 different categories represented
+- For 8+: at least 5 different categories represented
 
 ---
 
@@ -544,7 +695,87 @@ When planning variations, vary along these axes. Use at least 3 different dimens
 
 ---
 
-## 9. Interaction Polish
+## 9. Structural Mutation Recipes
+
+CSS-only variations are themes, not designs. This section lists fundamentally different HTML structures for common component types. Each structure implies a different DOM tree — not just different class names on the same elements.
+
+**Rule: at least half the variations in any set must use a different structure from this list (or one you invent). Two variations that share a structure must come from very different profiles to justify it.**
+
+### Quick-reference cheatsheet
+
+Cite these codes in your variation plan. Full structure details below.
+
+| Toast | | Pricing | | Login | |
+|---|---|---|---|---|---|
+| T1 | flex-row (icon│content│×) | P1 | 3-col card grid | L1 | centered card |
+| T2 | full-width bar, two-row | P2 | horizontal rows (table-like) | L2 | split-screen (brand│form) |
+| T3 | stacked col + action row | P3 | featured + 2 thumbnails | L3 | minimal inline (no frame) |
+| T4 | terminal block (pre>code) | P4 | tabbed single-card | L4 | step-by-step (fieldsets) |
+| T5 | text-only, no frame | P5 | carousel / slider | L5 | social-first with email fallback |
+| T6 | ultra-dense single line | P6 | comparison matrix (table) | L6 | dense horizontal (label│input) |
+| T7 | split panel (icon│content) | P7 | vertical accordion | L7 | full-page takeover |
+| T8 | expandable (`<details>`) | P8 | asymmetric split | L8 | command-line (pre>code) |
+| T9 | bottom-sheet with progress | P9 | progressive reveal | | |
+| T10 | timeline entry (dot on line) | P10 | full-bleed stacked sections | | |
+
+For components not listed (buttons, badges, modals, nav bars, data tables…), invent a code in the same style and document the structure in your variation plan comment.
+
+### Toast / Notification
+
+| # | Structure | HTML skeleton | Good profiles |
+|---|-----------|--------------|---------------|
+| T1 | Standard inline | `flex-row: icon + column(title, msg) + close` | Stripe, Tailwind, GitHub |
+| T2 | Full-width bar | `flex-row across viewport: icon + title + msg + dismiss` — no card, no shadow, just a bar at edge of screen | Vercel, Swiss, Government |
+| T3 | Stacked vertical | `flex-col: icon centered → title → msg → action-row(buttons)` | Monzo, Things 3, Apple |
+| T4 | Terminal / code block | `pre-formatted block: status-line + message + command-row` — monospace, no "card" feel | Cyberpunk, Linear, Data-Dense, Supabase |
+| T5 | Minimal text-only | No icon, no card, no border — just styled text with generous whitespace and a subtle dismiss | Wabi-Sabi, Bear/iA Writer, Luxury |
+| T6 | Dense single-line | Everything on one line: `icon · title · msg · timestamp · ×` — maximum information, minimum height | Korean, Japanese, Telegram |
+| T7 | Split panel | `grid: 2 columns — left column is icon/status zone (colored bg), right column is content` | Art Deco, De Stijl, Mid-Century |
+| T8 | Expandable | Collapsed: `icon + title + chevron`. Expanded: reveals message + actions. Two-state HTML. | Figma, Arc, Obsidian |
+| T9 | Bottom sheet | Wider, shorter, anchored to bottom — `flex-row with progress bar on top edge` | Spotify, Monzo (mobile) |
+| T10 | Timeline entry | No card — a dot/line on a vertical timeline, content beside it. For notification lists. | Notion, GitHub, Linear |
+
+### Pricing Card / Tier Comparison
+
+| # | Structure | HTML skeleton | Good profiles |
+|---|-----------|--------------|---------------|
+| P1 | Side-by-side columns | `grid: 3 equal columns, each a card` — the standard | Stripe, Tailwind, Apple |
+| P2 | Stacked comparison | `flex-col: each tier is a horizontal row with name/price/features/CTA in columns` — table-like | Swiss, Data-Dense, Government, SAP |
+| P3 | Featured + thumbnails | `grid: 1 large featured card + 2 smaller cards beside or below it` — hero tier | Luxury, Editorial, Apple |
+| P4 | Tabbed / toggle | One card, tabs or segmented control to switch between tiers — only one visible at a time | Arc, Figma, Superhuman |
+| P5 | Slider / carousel | One tier visible, arrows or dots to navigate between — mobile-first | Spotify, Monzo, Korean |
+| P6 | Comparison matrix | No individual cards — a grid/table with features as rows, tiers as columns, checkmarks | Linear, GitHub, Japanese, SAP |
+| P7 | Vertical accordion | Each tier is a collapsible section — expand to see features | Things 3, Notion, Bear |
+| P8 | Asymmetric split | Two tiers get 30% width, featured tier gets 40% — intentional imbalance | Editorial, De Stijl, Wabi-Sabi |
+| P9 | Progressive reveal | Start with prices only, "See details" expands features per tier | Vercel, Superhuman, Telegram |
+| P10 | Full-bleed tier pages | Each tier is a full-width section with its own background treatment, stacked vertically | Luxury, Art Deco, Brutalist |
+
+### Login / Auth Form
+
+| # | Structure | HTML skeleton | Good profiles |
+|---|-----------|--------------|---------------|
+| L1 | Centered card | `centered container: heading + inputs + button + links` — the standard | Stripe, Tailwind, GitHub |
+| L2 | Split screen | `grid: 2 columns — left is brand/illustration panel, right is form` | Apple, Luxury, Art Deco, Spotify |
+| L3 | Minimal inline | No card, no border — just inputs and button floating in whitespace | Wabi-Sabi, Bear, Vercel |
+| L4 | Step-by-step | Email on screen 1, password on screen 2 — progressive disclosure (simulate with CSS states) | Superhuman, Arc, Linear |
+| L5 | Social-first | Large social login buttons at top, email/password collapsed below "or use email" divider | Figma, Spotify, Arc |
+| L6 | Dense horizontal | Labels and inputs side-by-side (label left, input right), compact | Japanese, Korean, SAP, Data-Dense |
+| L7 | Full-page takeover | No card — form elements at vertical center of a full-color or full-image background | Luxury, Art Deco, Vaporwave |
+| L8 | Command-line | Terminal-style: `>email:` then `>password:` with blinking cursor, monospace | Cyberpunk, Linear, Supabase, Data-Dense |
+
+### Generic Component (buttons, badges, cards, modals)
+
+For any component not listed above, generate structural variety by varying these axes:
+
+1. **Containment**: card vs. inline vs. floating vs. full-width vs. none (bare elements)
+2. **Axis**: horizontal vs. vertical vs. grid vs. radial
+3. **Element count**: add elements (timestamp, avatar, tag, secondary action) or remove them (icon-only, text-only)
+4. **Interaction shape**: static vs. expandable vs. togglable vs. draggable affordance
+5. **Information density**: one piece of data per view vs. all data visible vs. progressive disclosure
+
+---
+
+## 10. Interaction Polish (formerly §9)
 
 Static mockups still need these to feel real:
 

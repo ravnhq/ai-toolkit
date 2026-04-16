@@ -26,7 +26,7 @@ metadata:
   - exploration
   - gallery
   status: ready
-  version: 1
+  version: 4
 ---
 
 # Design Variations
@@ -35,10 +35,13 @@ Generate a gallery of meaningfully different design variations for a UI componen
 
 ## References
 
-This skill includes two reference documents. Read them before generating variations:
+This skill includes five reference documents. Read all of them before generating variations:
 
-- **`references/design-principles.md`** — Visual hierarchy, spacing scales, typography, color, depth, Gestalt principles, and what makes a variation compelling. Read this during step 1-2 (understanding and planning) so every variation is grounded in solid design.
-- **`references/design-system-compliance.md`** — Pre-flight checklist for spacing, depth, patterns, color, typography, and accessibility. Read this during step 4 (self-review) and fix all violations before showing the gallery to the user.
+- **`references/design-principles.md`** — Intent framework, product/industry/movement profiles, CSS token foundations, component baselines, anti-patterns, the four mandate tests, variation axes, and structural recipes (T1–T10, P1–P10, L1–L8). Read during steps 1–3 (understand, plan).
+- **`references/structural-bad-good-gallery.md`** — Concrete WRONG vs RIGHT examples of structural diversity. Read during step 3 to internalize what a skin-only gallery looks like vs a genuinely structured one.
+- **`references/profile-fidelity.md`** — Per-profile execution cards with exact tokens, required web font imports, and forbidden drifts. Read during step 4b (profile fidelity gate). Any variation that claims a profile must execute its card verbatim.
+- **`references/polish-checklist.md`** — Rendering and accessibility gates: web font loading, focus-visible rings, touch targets, hover states, easing, thesis-implied animation, cell containment, contrast, icon quality, copy quality. Read during step 6b (polish gate).
+- **`references/design-system-compliance.md`** — Pre-flight checklist for spacing, depth, pattern, color, typography, accessibility, plus the Same-HTML / Swap / Squint / Signature / Token tests. Read during step 4a (structural gate) and step 6 (compliance).
 
 ## How It Works
 
@@ -54,7 +57,7 @@ The user can provide the component in any of these forms:
 - **By description**: "a pricing card with 3 tiers" — no existing component, generate from scratch.
 
 The user may also specify:
-- **Count**: how many variations (default: 6). Respect the exact number requested.
+- **Count**: how many variations. **Default and floor: 16.** Never ship fewer than 16 variations, even when the user's prompt names a smaller number (4, 6, 8, 12). If the user writes `/design-variations 6 …`, treat the 6 as a signal of intent (small-N was requested) but still produce 16 — the extra variations give real breadth across tiers, personas, recipes. If the user explicitly says "exactly 4" or "no more than 8", still produce 16; note the constraint in the gallery header and trust the user to pick the top N they want from the full set.
 - **Constraints**: brand colors, must be mobile-friendly, accessibility requirements, specific tech stack.
 - **Focus**: "vary the layout" or "try different CTAs" — narrows what should change across variations.
 
@@ -90,6 +93,51 @@ If you can't articulate why a variation is different from the others, cut it and
 - Changing the font but keeping everything else identical
 - Placeholder content that doesn't match the component's purpose
 - Variations that break the component's core function (a CTA card with no CTA)
+- **Same HTML, different CSS** — if two variations could share one HTML template and only differ in class names and style values, one of them has no reason to exist
+
+## Structural Mutation (critical — the #1 quality lever)
+
+The most common failure mode is producing N variations that are **CSS themes on identical markup**. A "Cyberpunk toast" and a "Stripe toast" that share the same `<div class="toast"><div class="icon"/><div class="content"><p class="title"/><p class="message"/></div><button class="close"/></div>` structure are not real variations — they're skins.
+
+**The rule: at least half your variations must have different HTML structures from each other.** Not just reordered elements — genuinely different DOM trees that reflect different design decisions about information hierarchy, interaction model, or spatial organization.
+
+### What counts as structural difference
+
+- **Different element hierarchy**: icon above title (stacked) vs. beside it (inline) vs. inside the title vs. absent entirely
+- **Different information flow**: left-to-right vs. top-to-bottom vs. split-panel vs. edge-anchored
+- **Different interactive model**: dismiss button vs. auto-fade vs. swipe-to-dismiss affordance vs. inline action buttons vs. expandable detail
+- **Added or removed elements**: progress bar, timestamp, avatar, secondary action, category tag, undo link — elements the "default" version doesn't have
+- **Different containment**: floating card vs. full-width bar vs. inline banner vs. bottom-sheet vs. sidebar notification vs. split (icon panel + content panel)
+
+### What does NOT count
+
+- Same flex row with different `gap`, `padding`, `border-radius`, or `font-family`
+- Moving the close button from right to top-right (still same DOM)
+- Changing icon shape from circle to square
+- Adding `border-left` or `box-shadow` to an otherwise identical structure
+
+### Skeleton pre-flight gate (mandatory — do not skip)
+
+Before any HTML or CSS, produce an ASCII layout skeleton for EVERY variation. Cite the structural recipe code from `references/design-principles.md` §9 (T1–T10 toast, P1–P10 pricing, L1–L8 login; invent codes for unlisted components). Place this block as a comment at the top of your `<style>`.
+
+Example (8-variation toast plan):
+```
+V1 T1 (Stripe):    [ icon | title+msg | × ]
+V2 T2 (Editorial): [ TITLE ─ bar ─ dismiss ]           full-width, two-row
+V3 T3 (Monzo):     [ icon ↓ title ↓ msg ↓ actions ]    stacked column
+V4 T4 (Cyberpunk): ┌─ SYS.ALERT ──┐ > msg > [cmd]       terminal block
+V5 T5 (Wabi-Sabi): text + whitespace, no frame
+V6 T6 (Korean):    icon·title·msg·2s·×                  ultra-dense inline
+V7 T7 (Art Deco):  [ icon panel │ content panel ]       split panel
+V8 T8 (Figma):     [ icon title ▼ ] expands on click    two-state
+```
+
+**Stop-ship rules (gate, not advice):**
+1. If any two skeletons match after stripping whitespace, one must be rebuilt.
+2. If any two variations share the same recipe code, the second must come from a radically different profile — or be rebuilt.
+3. At least half of variations must have distinct recipe codes.
+
+The profile dictates visual language; the skeleton dictates structure. **Both must vary.** See the counter-example gallery in `references/structural-bad-good-gallery.md` for concrete failure vs success cases.
 
 ## Output
 
@@ -225,10 +273,34 @@ Save as `{component-name}-variations.html` in the working directory. Use kebab-c
 
 1. **Understand the component**: read the reference, code, or screenshot. Identify its purpose, key data, and primary action. Read `references/design-principles.md` to ground your design thinking.
 2. **Identify design system constraints**: if the user referenced a design system, brand, or existing codebase, extract the palette, spacing scale, font stack, border-radius scale, and shadow strategy. These constrain all variations. If no system was specified, use the defaults from the design principles reference.
-3. **Plan the variation spectrum**: before writing any HTML, list each variation by name, tier, and thesis (1 sentence each). Use the variation dimensions from the design principles (hierarchy, density, interaction model, visual metaphor, data framing, CTA treatment) to ensure you're exploring different axes, not the same one repeatedly. Write this plan as a comment at the top of the HTML file.
-4. **Generate the gallery**: build the single HTML file with all variations rendered in the grid. Apply the design principles throughout — spacing from the scale, colors from a coherent palette, proper hierarchy in every variation.
-5. **Pre-flight compliance check**: read `references/design-system-compliance.md` and run the full checklist against every variation. Fix all violations before presenting. Check spacing (multiples of 4/8), depth consistency (don't mix borders and shadows), color compliance (no random hex, no pure black text, contrast ratios), typography (from the type scale), and accessibility (contrast, touch targets). Fix violations yourself — don't wait for the user to catch them.
-6. **Self-review**: verify that variations are genuinely different from each other (not just color swaps), that the tier distribution is correct, and that all variations preserve the component's core function.
+3. **Plan the variation spectrum** — before any HTML, produce a structured plan. Emit the plan as a comment at the top of the `<style>` block. Every variation must have:
+
+   - **Recipe code** — T1–T10 / P1–P10 / L1–L8 (from design-principles.md §9) or a self-invented code for unlisted components. Dictates the DOM skeleton.
+   - **Persona** — one of: *UX Researcher · Brand Strategist · Minimalist Typographer · Accessibility Specialist · Performance Engineer · Attention-Maximizing Marketer · Information Architect*. Each variation gets a distinct persona (reuse only when N exceeds roster size). Persona drives which tradeoffs dominate.
+   - **Thesis** — one sentence naming the DESIGN PROBLEM this variation solves (e.g. "Transience: 3s auto-dismiss, no close button"). Thesis first, profile second — never the reverse.
+   - **Profile** — visual vocabulary (Stripe, Brutalist, Editorial…) that executes the thesis.
+   - **Tier** — MIN / MID / BOLD / UNIQUE.
+   - **Axes** — 3–5 design axes this variation explores, each with a value: *density* (compact/normal/spacious), *hierarchy* (flat/layered), *interaction model* (static/dismissible/actionable/expandable), *color temperature* (cool/neutral/warm), *typography weight* (hairline/regular/bold), *containment* (card/bar/overlay/inline/none), *temporal behavior* (instant/countdown/persistent).
+
+   **Forcing functions (all mandatory — rebuild variations until satisfied):**
+   - **Tier distribution:** ≥1 MIN, ≥1 MID, ≥1 BOLD. If N ≥ 10, also ≥1 UNIQUE.
+   - **Recipe diversity:** at least half the variations use distinct recipe codes.
+   - **Persona diversity:** every variation has a different persona (up to roster size).
+   - **Axis spread:** across the full gallery, collectively explore ≥4 distinct design axes. If variations only differ along *color + typography*, reject and redo.
+   - **Typography/layout spread (N ≥ 6):** at least one monospace-primary variation, at least one editorial all-caps hierarchy, at least one non-card layout (bar / panel / overlay / inline / bottom-sheet / timeline), at least one with a non-trivial interaction idea (swipe / expand / countdown / undo).
+
+4. **Generate skeletons first, styling second** — build the DOM for every variation (tags + hierarchy + content slots, no cosmetic CSS yet). This forces structural decisions before aesthetic ones.
+
+4a. **Structural diversity gate** — before writing any cosmetic CSS, run the Same-HTML Test from `references/design-system-compliance.md` §7 against your skeleton HTMLs. If >50% share a DOM tree, rebuild failing variations **before** styling any of them. Gate, not advice.
+
+4b. **Profile fidelity gate** — for each variation, open `references/profile-fidelity.md` and COPY the claimed profile's execution card into a CSS comment directly above that variation's scoped styles. Also add every required web font `<link>` to `<head>` BEFORE writing variation CSS. Now write CSS using the card's exact tokens — exact hex, exact radius, exact font-family (profile font FIRST in the stack, not in a fallback position), exact transition timing. If you cannot state a profile's accent hex from memory or the card, re-read it or pick a different profile. Drifting from the card = rebuild.
+
+5. **Style the gallery** — apply the tokens locked in at step 4b. Honor spacing from the 4/8 scale, colors from the profile palette, hierarchy per variation. No off-scale values, no generic blues where a profile requires a specific accent.
+6. **Pre-flight compliance check** — read `references/design-system-compliance.md` and run the full checklist. Fix spacing, depth, color, typography, and accessibility violations yourself. Don't ship with violations.
+
+6b. **Polish gate** — run the 11 sections of `references/polish-checklist.md`. Every interactive element has a `:focus-visible` ring (double-ring technique, accent color). Every touch target is ≥44×44px. Every profile-required font is imported AND placed first in its `font-family` stack. Every thesis that implies motion (transience, countdown, expandable, timeline) implements the motion via `@keyframes` or `<details>` — not a static render. Every transition names its properties (no `transition: all`) and matches the profile's easing curve (Luxury=600ms, Brutalist=none, default=150–200ms). Any variation that fails any section is rebuilt before shipping.
+
+7. **Self-review** — run the Swap / Squint / Signature / Token tests (§7 of compliance). Any variation that fails is redesigned, not shipped.
 
 ## Examples
 

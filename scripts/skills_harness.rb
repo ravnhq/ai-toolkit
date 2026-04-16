@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require "yaml"
+require "json"
 require "pathname"
 
 ROOT = Pathname.new(__dir__).join("..").expand_path
@@ -55,8 +56,12 @@ metrics = {
   functional_cases: 0,
   functional_pass: 0,
   performance_cases: 0,
-  performance_pass: 0
+  performance_pass: 0,
+  diversity_cases: 0,
+  diversity_pass: 0
 }
+
+DIVERSITY_REQUIRED_KEYS = %w[distinct_skeletons_required min_distinct_ratio recipes_must_cover_any_of min_recipes_covered].freeze
 
 ACTIVE_SKILL_FILES.each do |path|
   frontmatter, body = parse_skill(path)
@@ -122,15 +127,69 @@ ACTIVE_SKILL_FILES.each do |path|
       message: "Exceeds limits: lines=#{body_lines} (<=500), words=#{body_words} (<=5000), description=#{description.length} (<=1024)."
     )
   end
+
+  # Structural-diversity suite (only runs for skills that declare an evals.json)
+  evals_path = Pathname.new(path).dirname.join("evals/evals.json")
+  next unless evals_path.file?
+
+  begin
+    evals = JSON.parse(File.read(evals_path))
+  rescue JSON::ParserError => e
+    failures << Failure.new(suite: "diversity", path: evals_path.to_s, message: "evals.json parse error: #{e.message}")
+    next
+  end
+
+  eval_entries = evals.is_a?(Hash) ? evals["evals"] : evals
+  next unless eval_entries.is_a?(Array)
+
+  eval_entries.each do |entry|
+    next unless entry.is_a?(Hash) && entry.key?("structural_diversity_pass_criteria")
+
+    metrics[:diversity_cases] += 1
+    criteria = entry["structural_diversity_pass_criteria"]
+    missing = DIVERSITY_REQUIRED_KEYS.reject { |k| criteria.key?(k) }
+    if !missing.empty?
+      failures << Failure.new(
+        suite: "diversity",
+        path: evals_path.to_s,
+        message: "eval #{entry['id']} structural_diversity_pass_criteria missing keys: #{missing.join(', ')}"
+      )
+      next
+    end
+
+    unless criteria["recipes_must_cover_any_of"].is_a?(Array) && !criteria["recipes_must_cover_any_of"].empty?
+      failures << Failure.new(
+        suite: "diversity",
+        path: evals_path.to_s,
+        message: "eval #{entry['id']} recipes_must_cover_any_of must be a non-empty array"
+      )
+      next
+    end
+
+    ratio = criteria["min_distinct_ratio"].to_f
+    unless ratio > 0.0 && ratio <= 1.0
+      failures << Failure.new(
+        suite: "diversity",
+        path: evals_path.to_s,
+        message: "eval #{entry['id']} min_distinct_ratio must be in (0, 1]"
+      )
+      next
+    end
+
+    metrics[:diversity_pass] += 1
+  end
 end
 
 puts "Skills tested: #{ACTIVE_SKILL_FILES.count}"
 puts "Trigger suite: #{metrics[:trigger_pass]}/#{metrics[:trigger_cases]}"
 puts "Functional suite: #{metrics[:functional_pass]}/#{metrics[:functional_cases]}"
 puts "Performance suite: #{metrics[:performance_pass]}/#{metrics[:performance_cases]}"
+if metrics[:diversity_cases].positive?
+  puts "Diversity schema suite: #{metrics[:diversity_pass]}/#{metrics[:diversity_cases]}"
+end
 
 if failures.empty?
-  puts "PASS: trigger, functional, and performance suites all passed."
+  puts "PASS: all suites passed."
   exit 0
 end
 

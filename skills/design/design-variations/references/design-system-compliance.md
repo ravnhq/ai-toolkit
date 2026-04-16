@@ -135,6 +135,7 @@ color: #6b7280;  /* gray-500 */
 
 These checks compare variations against each other. Run them after all individual checks pass.
 
+- [ ] **Same HTML Test (run first)**: compare the HTML structure (not CSS) of every pair of variations. Strip all class names, inline styles, and text content — look only at element nesting. If two variations have the same nesting tree (e.g., both are `div > div.icon + div > p + p + button`), they fail. At least half the variations in any set must have genuinely different DOM trees. Refer to the structural recipes in `design-principles.md` §9 — each recipe number (T1-T10, P1-P10, L1-L8) represents a distinct structure. Two variations using the same recipe number share a structure.
 - [ ] **Swap Test**: take any two variations and swap their color palettes. If they still look like the same two designs, they differ only in color — redesign one of them.
 - [ ] **Squint Test**: blur your eyes on each variation. The primary action and key data must be visually dominant. If everything flattens to the same gray, hierarchy is broken.
 - [ ] **Signature Test**: cover the color and typography. Can you identify each variation from layout/structure alone? If not, it lacks a signature element.
