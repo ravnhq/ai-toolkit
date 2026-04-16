@@ -1,12 +1,13 @@
 ---
 name: design-variations
-description: >
-  Generate a gallery of design variations for a UI component. Takes an existing
-  component (referenced by name, pasted code, or screenshot) and produces N
-  distinct rendered alternatives in a single comparison page. Use when exploring
-  visual directions, generating mockups, comparing design approaches for a
-  component, creating A/B candidates, or when anyone says "show me options" or
-  "give me variations" for a UI element.
+description: 'Generate a gallery of design variations for a UI component. Takes an
+  existing component (referenced by name, pasted code, or screenshot) and produces
+  N distinct rendered alternatives in a single comparison page. Use when exploring
+  visual directions, generating mockups, comparing design approaches for a component,
+  creating A/B candidates, or when anyone says "show me options" or "give me variations"
+  for a UI element.
+
+  '
 allowed-tools:
 - Bash
 - Read
@@ -26,7 +27,7 @@ metadata:
   - exploration
   - gallery
   status: ready
-  version: 4
+  version: 5
 ---
 
 # Design Variations

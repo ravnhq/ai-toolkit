@@ -2,6 +2,7 @@
 
 ## 2026-04-16
 
+- Added structural-diversity eval suite and profile fidelity refs.
 - Updated tighten skill prompts for literal interpretation.
 ## 2026-04-14
 
