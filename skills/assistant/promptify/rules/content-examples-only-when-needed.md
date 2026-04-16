@@ -21,7 +21,7 @@ Example output:
 5. Next.js
 ```
 
-A numbered list of names needs no example. The example wastes tokens and may anchor the model on the specific items shown.
+A numbered list of names needs no example. The example wastes tokens and anchors the model on the specific items shown.
 
 **Incorrect (example that anchors instead of clarifying):**
 

@@ -24,7 +24,7 @@ metadata:
   - authoring
   - templates
   status: ready
-  version: 7
+  version: 8
 ---
 
 # Skill Creator
@@ -62,7 +62,7 @@ Do not include README.md, CHANGELOG.md, or any auxiliary documentation files.
 
 ### Context Budget
 
-The context window is shared. Only include what Claude does not already know. Prefer concise examples over verbose explanations. Challenge each paragraph: "Does this justify its token cost?"
+The context window is shared. Only include what Claude does not already know. Prefer concise examples over verbose explanations. Every paragraph must justify its token cost — remove paragraphs that do not.
 
 **Hard limit**: Keep SKILL.md body under 5,000 words. Move detailed content to `references/`.
 
@@ -78,11 +78,11 @@ Match specificity to the task's fragility:
 
 Three-layer loading minimizes context usage:
 
-1. **Frontmatter** (~100 words) — always in context
-2. **SKILL.md body** (<5k words) — loaded when skill triggers
+1. **Frontmatter** (under 100 words) — always in context
+2. **SKILL.md body** (under 5,000 words) — loaded when skill triggers
 3. **Bundled resources** (unlimited) — loaded as needed
 
-Keep SKILL.md lean. Split into reference files when approaching 300 lines. Always reference split files from SKILL.md with clear descriptions of when to read them.
+Keep SKILL.md lean. Split into reference files when exceeding 300 lines. Always reference split files from SKILL.md with clear descriptions of when to read them.
 
 ### Composability and Portability
 
@@ -160,7 +160,7 @@ Validate triggering and output quality.
 
 See `references/testing-iteration.md` for detailed testing methodology and success criteria.
 
-**Exit**: Skill triggers reliably (~90% on relevant prompts) and produces consistent output.
+**Exit**: Skill triggers on 9 out of 10 relevant prompts and produces consistent output.
 
 ### 5. Iterate
 

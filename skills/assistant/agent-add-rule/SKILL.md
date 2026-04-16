@@ -23,7 +23,7 @@ metadata:
   - claude-md
   - configuration
   status: ready
-  version: 4
+  version: 5
 ---
 
 # Add Rule — Place Agent Instructions Correctly
@@ -33,9 +33,9 @@ Add a new rule or convention to the right location in the progressive disclosure
 ## Context Spectrum
 
 ```
-Static (root CLAUDE.md)      — loaded every conversation. Token cost always paid.
-Semi-dynamic (docs/agents/)  — linked from root. Loaded when Claude follows a link.
-Fully dynamic (skills)       — metadata only in context. Body loaded on trigger.
+Static (root CLAUDE.md)      — loaded every conversation. Token cost paid on every conversation.
+Semi-dynamic (docs/agents/)  — linked from root. Token cost paid only when Claude reads it.
+Fully dynamic (skills)       — metadata only in context. Token cost paid only when triggered.
 ```
 
 ## Workflow
@@ -62,8 +62,7 @@ Apply this decision tree:
 
 ```
 Does the agent consistently get this wrong WITHOUT being told?
-├── NO → Challenge: "Does this justify its token cost?"
-│        If user still wants it → treat as semi-dynamic
+├── NO → Skip. The rule costs tokens and is not needed.
 │
 ├── YES → Does it apply to EVERY task?
 │   ├── YES → Root CLAUDE.md (static)
@@ -76,7 +75,7 @@ Does the agent consistently get this wrong WITHOUT being told?
     ├── YES → Skill (fully dynamic)
     │         Examples: deployment process, PR review checklist, migration procedure
     │
-    └── NO → Probably not needed. Ask: "Does this justify its token cost?"
+    └── NO → Skip. The rule is not needed.
 ```
 
 Key questions to ask the user:
@@ -104,9 +103,9 @@ Reasoning:
 
 Ask the user to confirm or override. If they override, respect their choice but note the trade-off:
 
-- Moving to root: "This adds ~X lines to every conversation's context"
-- Moving to docs/agents/: "This won't be visible unless Claude follows the link"
-- Moving to skill: "This will only load when triggered by matching keywords"
+- Moving to root: "This adds 1-3 lines to every conversation's context"
+- Moving to docs/agents/: "This is visible only when explicitly linked and read"
+- Moving to skill: "This loads only when the skill is triggered by a matching keyword"
 
 ### Step 6: Write
 
@@ -115,7 +114,7 @@ Based on confirmed placement:
 **If root CLAUDE.md:**
 
 - Add the rule under the appropriate section (Key Rules, Workflow, etc.)
-- Warn: "This adds to every conversation's token budget"
+- This adds 1-2 lines to every conversation's context
 - Keep it concise — 1-2 lines max
 
 **If existing docs/agents/ file:**
@@ -149,7 +148,7 @@ Action: Add to Key Rules section in CLAUDE.md
 
 User: "API responses must always include a `requestId` field"
 
-Classification: Agent might get wrong + only applies to API work → **Semi-dynamic**
+Classification: Agent sometimes misses this + only applies to API work → **Semi-dynamic**
 
 Action: Add to docs/agents/guardrails.md or create docs/agents/api-conventions.md
 
@@ -183,7 +182,7 @@ Expected behavior: Do not prioritize `agent-add-rule`; use an implementation-foc
 
 ## Principles
 
-- **Challenge before adding**: Every rule costs tokens. Ask "does this justify its token cost?"
+- **Validate necessity**: Every rule costs tokens. Only add rules the agent consistently gets wrong without being told.
 - **No duplication**: If ESLint, TypeScript, or another tool already enforces it, don't add it
 - **Routing signals matter**: When adding to docs/agents/, update the root CLAUDE.md link description so Claude knows when to follow it
 - **One level deep**: Never cross-reference between docs/agents/ files. All links go from root

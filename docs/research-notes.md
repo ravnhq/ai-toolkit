@@ -9,7 +9,7 @@
   - "Read this plan file and interview me in detail using AskUserQuestionTool about literally anything: technical implementation, UI & UX, concerns, tradeoffs, etc."
   - The important pieces are to make the plan (PRD.md, PLAN.md), document the progress (progress.txt)
 
-- Claude Opus 4.5 has a 200K context window.
+- Claude Opus has a large context window — but quality drops as you fill it.
   - It's good to watch the context window and try not to go over 50%. Context poisoning starts to happen.
 
 

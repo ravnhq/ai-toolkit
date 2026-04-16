@@ -21,7 +21,18 @@ metadata:
   - decision-making
   - validation
   status: ready
-  version: 6
+  version: 7
+  triggers:
+    positive:
+    - grill me on this plan
+    - stress-test this design
+    - interview me about this
+    - probe my assumptions
+    negative:
+    - review this code
+    - fix this bug
+    - what do you think
+    - give me feedback
 ---
 
 # Grill Me

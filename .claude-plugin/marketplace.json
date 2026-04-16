@@ -213,6 +213,12 @@
       "source": "./skills/qa/test-plan-gen",
       "description": "Generate professional QA Test Plan documents (.docx or .pdf) from a structured interview. Trigger on \"create/write a test plan\", \"I need a test plan\", \"prepare QA documentation\", /testplan, or when a user uploads a PRD/requirements and wants a test plan generated.",
       "version": "1.0.0"
+    },
+    {
+      "name": "design-variations",
+      "source": "./skills/design/design-variations",
+      "description": "Generate a gallery of design variations for a UI component. Takes an existing component (by name, code, or screenshot) and produces N distinct rendered alternatives in a single HTML comparison page.",
+      "version": "1.0.0"
     }
   ]
 }

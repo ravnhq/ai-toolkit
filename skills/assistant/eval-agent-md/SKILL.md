@@ -19,6 +19,17 @@ allowed-tools:
 - Agent
 metadata:
   category: assistant
+  triggers:
+    positive:
+    - eval my CLAUDE.md
+    - run compliance tests
+    - behavioral test this agent definition
+    - "/eval-agent-md"
+    negative:
+    - write a new rule
+    - add a linting rule
+    - review code quality
+    - help me refactor this
   tags:
   - testing
   - compliance
@@ -27,7 +38,7 @@ metadata:
   - meta
   - quality
   status: ready
-  version: 12
+  version: 13
 compatibility:
 - claude-code
 ---
@@ -70,10 +81,10 @@ Read the file and confirm with the user: "I found [filename] at [path] ([N] line
 
 ### Step 2: Generate test scenarios
 
-Tell the user: "Generating test scenarios from [filename]... this calls `claude -p --model sonnet` and typically takes 30-60 seconds."
+Tell the user: "Generating test scenarios from [filename]... this calls `claude -p --model sonnet` and takes 30-60 seconds on average."
 
 Before running, mention whether this is a warm or cold generation run:
-- Warm cache: "Scenario cache is warm, so generation may return almost immediately."
+- Warm cache: "Scenario cache is warm, so generation will return almost immediately."
 - Cold cache: "Scenario cache is cold, so this will make a fresh model call."
 
 Run the scenario generator script bundled with this skill. **IMPORTANT: Do NOT capture output — run via the Bash tool so the user sees progress lines in real time:**

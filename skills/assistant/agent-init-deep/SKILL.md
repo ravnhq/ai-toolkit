@@ -24,7 +24,7 @@ metadata:
   - progressive-disclosure
   - setup
   status: ready
-  version: 4
+  version: 5
 ---
 
 # Init Deep — Progressive Disclosure CLAUDE.md
@@ -35,11 +35,11 @@ Set up or migrate to a progressive disclosure CLAUDE.md structure using `docs/ag
 
 ```
 Static (root CLAUDE.md)      — loaded every conversation, minimal, high-value
-Semi-dynamic (docs/agents/)  — linked from root, loaded on-demand when relevant
+Semi-dynamic (docs/agents/)  — linked from root, loaded when the link is followed
 Fully dynamic (skills)       — triggered by metadata match, loaded only when invoked
 ```
 
-Root CLAUDE.md should be ~40-50 lines. Everything else belongs in docs/agents/ or skills.
+Root CLAUDE.md must be 40-50 lines maximum. Everything else belongs in docs/agents/ or skills.
 
 ## Target Structure
 
@@ -179,18 +179,18 @@ When working on tasks involving these topics, read the linked doc:
 
 When deciding what stays in root vs moves to docs/agents/:
 
-| Criteria                     | Root                  | docs/agents/ |
-| ---------------------------- | --------------------- | ------------ |
-| Agent gets wrong without it? | YES                   | maybe        |
-| Applies to every task?       | YES                   | no           |
-| Under 2 lines?               | YES                   | any length   |
-| Detailed reference?          | NO                    | YES          |
-| Procedural/workflow?         | only the 4-stage loop | YES          |
+| Criteria                     | Root                  | docs/agents/            |
+| ---------------------------- | --------------------- | ----------------------- |
+| Agent gets wrong without it? | YES                   | Sometimes               |
+| Applies to every task?       | YES                   | NO                      |
+| Under 2 lines?               | YES                   | Any length              |
+| Detailed reference?          | NO                    | YES                     |
+| Procedural/workflow?         | only the 4-stage loop | YES (multi-step)        |
 
 ## Principles
 
-- **Minimal root**: Every line in root costs tokens on every conversation. Only include what the agent consistently gets wrong without being told.
-- **Routing signals**: Each link description helps Claude decide whether to follow it. Be specific: "pnpm conventions, ESLint config" not just "tooling".
+- **Minimal root**: Every line in root costs tokens on every conversation. Include only rules the agent consistently gets wrong without being told.
+- **Routing signals**: Each link description must tell Claude exactly when to read it. Be specific: "pnpm conventions, ESLint config" not just "tooling".
 - **One level deep**: All docs link from root. No cross-references between docs/agents/ files.
 - **docs/agents/ not docs/**: The `agents/` subdirectory separates agent instructions from human documentation.
 
