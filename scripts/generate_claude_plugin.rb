@@ -5,7 +5,7 @@
 #
 # Differences:
 #   - Root key: "skills" → "plugins"
-#   - Source prefix: "skills/..." → "./skills/..."
+#   - Source prefix: "skills/..." → "../skills/..." (relative to .claude-plugin/)
 #   - Version: integer build → semver string (1.0.0 baseline)
 #   - Filter: exclude agent-skills-manager (corvus-only) and scaffold skills
 #
@@ -54,9 +54,9 @@ def transform_skill(skill)
     return nil
   end
 
-  # Transform source path: add ./ prefix if missing
+  # Transform source path: add ../ prefix for paths relative to .claude-plugin/
   source = skill["source"]
-  source = "./#{source}" unless source.start_with?("./")
+  source = "../#{source}" unless source.start_with?("../")
 
   # Use semver from metadata or default to 1.0.0
   semver = metadata.dig("metadata", "semver") || "1.0.0"

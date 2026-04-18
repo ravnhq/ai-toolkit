@@ -113,15 +113,15 @@ class Validator
       error "#{name}: version must be semver (X.Y.Z), got: #{version}"
     end
 
-    # Validate source path exists
+    # Validate source path exists (paths are relative to .claude-plugin/)
     source = plugin["source"]
     if source
-      skill_path = ROOT.join(source.sub(%r{^\./}, ""), "SKILL.md")
+      skill_path = PLUGIN_DIR.join(source, "SKILL.md")
       error "#{name}: source path not found: #{skill_path}" unless skill_path.exist?
     end
 
-    # Warn if source doesn't start with ./
-    warn_msg "#{name}: source should start with './' for Claude Code" if source && !source.start_with?("./")
+    # Warn if source doesn't start with ../ (paths must go up from .claude-plugin/)
+    warn_msg "#{name}: source should start with '../' for Claude Code" if source && !source.start_with?("../")
   end
 
   def print_results
