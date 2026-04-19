@@ -1,0 +1,3 @@
+{
+  "response": "I need a bit more context before I can plan this out. Could you answer these questions?\n\n**Which app?** \u2014 The current repo (`ai-toolkit`) is a skills marketplace, not a web app with users. If you meant a different project, let me know its path or describe it.\n\n**What kind of auth?** \u2014 Email/password, OAuth (Google, GitHub\u2026), magic link, or API keys?\n\n**What stack?** \u2014 Next.js, Express, FastAPI, Django, something else?\n\nOnce I know those three things I can explore the right codebase and put together a solid plan."
+}

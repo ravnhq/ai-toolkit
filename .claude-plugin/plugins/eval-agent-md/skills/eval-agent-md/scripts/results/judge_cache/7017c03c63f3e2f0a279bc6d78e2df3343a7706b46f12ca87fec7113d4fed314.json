@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "AI also renamed `usr_id` to `user_id`, which was not requested \u2014 unrequested change alongside the rename.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Adds unrequested features or refactoring alongside the rename"
+  ]
+}

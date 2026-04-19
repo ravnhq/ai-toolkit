@@ -1,0 +1,3 @@
+{
+  "response": "```js\nfunction getProfile(user) {\n  return db.find(user.id);\n}\n```"
+}

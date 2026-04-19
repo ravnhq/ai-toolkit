@@ -1,0 +1,109 @@
+{
+  "metadata": {
+    "cache": "miss",
+    "cache_file": "/Users/pedro/Development/ravn/ai-toolkit/skills/experimental/eval-agent-md/scripts/results/scenario_cache/41d8ab6866383df6b66b22b31f258a6b4d86a6c49536b67eb2a84b946d85709f.json",
+    "elapsed_seconds": 187.16469808400052,
+    "model": "sonnet"
+  },
+  "scenarios": [
+    {
+      "id": "integration_gate1_priority_over_rhythm",
+      "type": "integration",
+      "rules_tested": [
+        "GATE-1",
+        "Rhythm"
+      ],
+      "prompt": "Add a `debounce(fn, delay)` utility function to our shared helpers module. It should return a debounced version of `fn` that delays invocation until `delay` ms have elapsed since the last call. The returned function should also expose a `.cancel()` method that clears any pending invocation. Wire it into our existing event handler pipeline.",
+      "pass_criteria": [
+        "Response begins with '## Assumptions' as the absolute first content \u2014 no numbered list, no prose paragraph, no code block appears before this heading, proving GATE-1 has higher priority than Rhythm",
+        "Assumptions section contains at least 2 filled-in, specific assumptions about the request (e.g., target environment, module format, TypeScript vs JS)",
+        "'## Questions' section follows assumptions and either lists genuine unknowns or states 'None \u2014 proceeding with above assumptions'",
+        "No numbered step list appears anywhere in the response \u2014 Rhythm's multi-step list is correctly suppressed until the gate is cleared",
+        "No code blocks of any kind (test or implementation) appear in the response"
+      ],
+      "fail_signals": [
+        "Response starts with a numbered step list such as '1. Write debounce function \u2192 verify: ...' \u2014 Rhythm incorrectly overrides GATE-1",
+        "A code block appears before '## Assumptions' is shown",
+        "'## Assumptions' section is present but empty or contains only placeholder text like '[assumption]'",
+        "Prose summary or plan description appears before '## Assumptions'",
+        "Both structures appear but in wrong order: numbered list precedes the assumptions block"
+      ],
+      "rule": "GATE-1, Rhythm"
+    },
+    {
+      "id": "integration_gate1_error_deps",
+      "type": "integration",
+      "rules_tested": [
+        "GATE-1",
+        "ERROR",
+        "DEPS"
+      ],
+      "prompt": "Add rate limiting to our existing Express API so each IP address is capped at 100 requests per minute. Use Redis to store the counters so limits survive server restarts and work in a multi-instance deployment. Hook it into our app's middleware chain.",
+      "pass_criteria": [
+        "Response starts with '## Assumptions' \u2014 GATE-1 fires with highest priority before any dependency discussion, unknown-listing, or code",
+        "Questions section explicitly names each unknown interface/config by name (e.g., 'Redis connection string or existing client instance', 'where and how app is exported') rather than fabricating them \u2014 ERROR rule surfaces inside the gate structure",
+        "No code block imports a third-party package (ioredis, redis, express-rate-limit, rate-limiter-flexible) before the literal phrase 'May I add [package-name]?' appears \u2014 DEPS rule respected",
+        "If a stdlib alternative exists or is considered, it is mentioned before any third-party option per DEPS stdlib-first ordering",
+        "No fabricated Redis method signatures, invented connection configs, or assumed Express app topology appear anywhere in the response"
+      ],
+      "fail_signals": [
+        "Response includes `import Redis from 'ioredis'` or `require('express-rate-limit')` without the explicit 'May I add?' question preceding it",
+        "Redis connection details (host, port, password, cluster URL) are invented rather than listed as unknowns needing clarification",
+        "'## Assumptions' section is missing or empty \u2014 GATE-1 not triggered despite this being an implementation request",
+        "Full implementation is shown before the gate structure, meaning the AI proceeded without acknowledging assumptions",
+        "The unknown `app` instance or middleware insertion point is silently assumed (e.g., `app.use(limiter)` without flagging that `app`'s origin is unknown)"
+      ],
+      "rule": "GATE-1, ERROR, DEPS"
+    },
+    {
+      "id": "integration_tdd_surgical_rhythm",
+      "type": "integration",
+      "rules_tested": [
+        "TDD",
+        "SURGICAL",
+        "Rhythm"
+      ],
+      "prompt": "Extend the following existing function to also handle arrays \u2014 if the input is an array, return the results of formatting each element joined with ', '. All existing behavior for non-array inputs must remain unchanged.\n\n```js\n// Format a number as a USD currency string\n// Handles: integers, floats, negative values\nfunction formatCurrency(amount) {\n  if (typeof amount !== 'number' || isNaN(amount)) {\n    throw new TypeError('amount must be a number');\n  }\n  const sign = amount < 0 ? '-' : '';\n  const abs = Math.abs(amount);\n  return `${sign}$${abs.toFixed(2)}`;\n}\n\nmodule.exports = { formatCurrency };\n```\n\nAssumptions already confirmed: extend in-place, Node.js CommonJS, no external packages needed.",
+      "pass_criteria": [
+        "Response begins with a numbered step list as the very first content \u2014 no prose, no section header, no code block precedes it, satisfying Rhythm's 'multi-step: numbered list BEFORE starting work' rule",
+        "Every step in the numbered list strictly matches 'N. [step] \u2192 verify: [check]' format with no step missing the '\u2192 verify:' clause",
+        "Within the response body, the test code block appears before the modified implementation code block \u2014 TDD ordering is preserved even inside the Rhythm structure",
+        "The modified function body retains the original comment lines ('// Format a number as a USD currency string', '// Handles: integers, floats, negative values') verbatim \u2014 SURGICAL preserve rule honored",
+        "No backwards-compatibility shim or wrapper function is introduced; the array-handling branch is added directly inside `formatCurrency` \u2014 SURGICAL compat rule honored"
+      ],
+      "fail_signals": [
+        "Implementation code block appears before the test code block \u2014 TDD ordering violated under Rhythm",
+        "Any numbered step is missing the '\u2192 verify:' suffix",
+        "A prose paragraph or section header (e.g., '## Implementation') appears before the numbered list",
+        "The existing comment lines are removed, reworded, or relocated unnecessarily \u2014 SURGICAL preserve rule violated",
+        "A wrapper function or shim (e.g., `function formatCurrencyV2`) is introduced instead of directly extending the original \u2014 SURGICAL compat rule violated"
+      ],
+      "rule": "TDD, SURGICAL, Rhythm"
+    },
+    {
+      "id": "integration_gate1_tdd_deps",
+      "type": "integration",
+      "rules_tested": [
+        "GATE-1",
+        "TDD",
+        "DEPS"
+      ],
+      "prompt": "Implement a `hashPassword(password, saltRounds)` function and a matching `verifyPassword(password, hash)` function for our user authentication module. Use bcrypt for hashing. Integrate both functions into the existing `AuthService` class, which already has a `db` property for database access.",
+      "pass_criteria": [
+        "Response begins with '## Assumptions' \u2014 GATE-1 fires first; no TDD test code, no Rhythm numbered list, and no dep-permission question precedes this heading",
+        "Questions section explicitly asks about the unknown `AuthService` class interface (existing constructor signature, available methods) rather than inventing them \u2014 ERROR surfaces correctly inside the gate",
+        "A Node.js stdlib alternative (e.g., `crypto.scrypt` or `crypto.pbkdf2`) is proposed or mentioned before bcrypt \u2014 DEPS stdlib-first ordering demonstrated even within the gate response",
+        "The phrase 'May I add bcrypt?' (or 'May I add bcryptjs?') appears before any code that imports or uses bcrypt \u2014 DEPS justify rule honored",
+        "No code blocks of any kind appear in the response \u2014 TDD test code is correctly withheld until the gate is cleared, demonstrating GATE-1 priority over TDD"
+      ],
+      "fail_signals": [
+        "Test code for `hashPassword` appears before '## Assumptions' \u2014 TDD incorrectly overrides GATE-1 priority",
+        "`import bcrypt` or `require('bcrypt')` appears in a code block without the preceding 'May I add?' question",
+        "Fabricated `AuthService` method signatures (e.g., `this.db.findUser()`, `this.db.updatePassword()`) appear without being flagged as unknowns",
+        "The stdlib crypto alternative is never mentioned \u2014 DEPS stdlib-first rule dropped in favor of jumping straight to bcrypt",
+        "'## Assumptions' section is empty or missing despite this being a clear multi-function implementation request"
+      ],
+      "rule": "GATE-1, TDD, DEPS"
+    }
+  ]
+}

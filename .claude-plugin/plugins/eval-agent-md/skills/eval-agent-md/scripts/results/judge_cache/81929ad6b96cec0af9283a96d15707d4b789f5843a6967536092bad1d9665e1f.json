@@ -1,0 +1,10 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Invents asyncpg for warehouse and urllib for Slack without asking; proceeds with full impl plan on assumed interfaces",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Invents a warehouse client API (asyncpg) without asking if it exists",
+    "Uses fabricated Slack approach (urllib.request) without confirming actual API",
+    "Proceeds with complete implementation based on assumed interfaces"
+  ]
+}

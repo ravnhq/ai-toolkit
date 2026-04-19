@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response begins with heading '## GitHub Actions CI/CD Pipeline Setup' and intro paragraph before any numbered list",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Response begins with a heading like '## Steps' before the numbered list"
+  ]
+}

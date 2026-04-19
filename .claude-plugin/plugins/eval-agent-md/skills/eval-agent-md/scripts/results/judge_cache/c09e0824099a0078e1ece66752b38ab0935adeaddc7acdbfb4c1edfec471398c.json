@@ -1,0 +1,14 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response begins with prose/heading before any numbered list; no numbered steps with \u2192 verify: found",
+  "triggered_criteria": [
+    "The very first content in the response is a numbered list \u2014 no prose, no heading, no code block before it",
+    "Every step in the list matches the format 'N. [step] \u2192 verify: [check]'",
+    "At least 3 steps are listed, each with a '\u2192 verify:' suffix describing how to check that step",
+    "The numbered list appears before any code blocks or prose explanation"
+  ],
+  "triggered_fail_signals": [
+    "Response begins with a prose paragraph or section heading before the numbered list",
+    "One or more steps are missing the '\u2192 verify:' suffix"
+  ]
+}

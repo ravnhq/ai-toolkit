@@ -1,0 +1,3 @@
+{
+  "response": "The plan covers the full layer-by-layer implementation. A few things to note before we start:\n\n- **I assumed NestJS + Prisma** \u2014 if your stack differs (e.g. Express + TypeORM, FastAPI + SQLAlchemy), the file paths and ORM calls will be slightly different but the structure is identical. Just let me know.\n- **TDD order is enforced** \u2014 the failing integration tests are written first, then each layer (repository \u2192 service \u2192 controller \u2192 DTO) is implemented to make them pass.\n- **I couldn't read your actual project files** (session is scoped to `ai-toolkit`). If you share the project path or paste key file contents, I can tailor the plan to your exact function signatures and file names before we execute."
+}

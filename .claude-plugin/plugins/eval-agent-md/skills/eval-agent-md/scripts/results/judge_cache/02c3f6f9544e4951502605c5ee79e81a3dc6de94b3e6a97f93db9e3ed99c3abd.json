@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response shows no code at all \u2014 no stdlib solution, no urllib.request example, nothing functional.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Only mentions stdlib in passing without showing actual stdlib code"
+  ]
+}

@@ -113,11 +113,12 @@ class Validator
       error "#{name}: version must be semver (X.Y.Z), got: #{version}"
     end
 
-    # Validate source path exists (paths are relative to repo root)
+    # Validate source path exists (paths are relative to repo root) and contains the
+    # Claude Code plugin layout: <source>/skills/<name>/SKILL.md
     source = plugin["source"]
     if source
-      skill_path = ROOT.join(source.sub(%r{^\./}, ""), "SKILL.md")
-      error "#{name}: source path not found: #{skill_path}" unless skill_path.exist?
+      skill_path = ROOT.join(source.sub(%r{^\./}, ""), "skills", name, "SKILL.md")
+      error "#{name}: SKILL.md not found at expected wrapper path: #{skill_path}" unless skill_path.exist?
     end
 
     # Warn if source doesn't start with ./

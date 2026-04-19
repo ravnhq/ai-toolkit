@@ -1,0 +1,3 @@
+{
+  "response": "## Assumptions\n1. The function should produce slugs from ASCII text \u2014 spaces become hyphens, non-alphanumeric characters are stripped, result is lowercased.\n2. Consecutive hyphens (from adjacent special chars) should be collapsed to a single hyphen, and leading/trailing hyphens should be trimmed.\n\n## Questions\n- Should unicode/international characters (e.g. `caf\u00e9`, `na\u00efve`) be transliterated to ASCII equivalents, or simply stripped?\n- Should numeric characters be preserved in the slug (e.g. `\"top 10 tips\"` \u2192 `\"top-10-tips\"`)?"
+}

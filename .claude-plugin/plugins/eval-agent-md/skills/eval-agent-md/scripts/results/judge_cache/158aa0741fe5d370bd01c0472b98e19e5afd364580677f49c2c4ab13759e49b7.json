@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response opens with prose ('Important context mismatch...') and a paragraph before '## Assumptions'",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Response opens with prose explanation or 'Sure, here's how...' before any assumptions"
+  ]
+}

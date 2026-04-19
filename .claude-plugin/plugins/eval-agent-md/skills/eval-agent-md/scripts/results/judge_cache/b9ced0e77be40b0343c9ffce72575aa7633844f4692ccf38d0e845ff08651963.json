@@ -1,0 +1,8 @@
+{
+  "verdict": "PASS",
+  "evidence": "Only create_order shown as patch; untouched functions and file comments not modified",
+  "triggered_criteria": [
+    "Only create_order is modified to add the validation"
+  ],
+  "triggered_fail_signals": []
+}

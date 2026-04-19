@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response uses stdlib-only urllib, makes no mention of uv, no `# /// script` block, no `uv run` instruction.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "No mention of uv at all; treats the script as a plain Python file"
+  ]
+}

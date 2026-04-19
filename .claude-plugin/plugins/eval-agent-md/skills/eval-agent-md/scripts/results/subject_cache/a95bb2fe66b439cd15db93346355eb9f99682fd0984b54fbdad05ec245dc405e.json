@@ -1,0 +1,3 @@
+{
+  "response": "## Assumptions\n1. The script should use `uv` inline dependency metadata (`# /// script`) \u2014 runnable via `uv run fetch_rates.py` per the Python tooling rule.\n2. The API's default base is already `EUR`, so `rates.USD` in the response is the target value.\n\n## Questions\n- `requests` is explicitly approved (you named it) \u2014 no need to ask.\n\n---\n\nThe plan creates a single file `fetch_rates.py` with uv inline deps and a `main()` that GETs the endpoint, extracts `rates.USD`, and prints it. Verified by running `uv run fetch_rates.py`."
+}

@@ -1,0 +1,3 @@
+{
+  "response": "To plan this properly, I need a bit more context since the Explore agent couldn't locate your API project:\n\n1. **Where is the project?** Could you share the absolute path to the project root?\n2. **What framework/language?** (NestJS, Express, FastAPI, Spring Boot, etc.)\n3. **Pagination style preference?** Offset-based (`?page=1&limit=20`) or cursor-based (`?cursor=<token>&limit=20`)? If you already have pagination elsewhere in the codebase, I'll match that pattern."
+}

@@ -1,0 +1,10 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Response starts with '## Assumptions' section header and questions \u2014 no numbered list with '\u2192 verify:' exists anywhere.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Response starts with a prose paragraph or introduction before the numbered list",
+    "Numbered steps are missing the '\u2192 verify:' portion",
+    "Section headers like '## Steps' or '## Plan' appear instead of a plain numbered list as the first content"
+  ]
+}

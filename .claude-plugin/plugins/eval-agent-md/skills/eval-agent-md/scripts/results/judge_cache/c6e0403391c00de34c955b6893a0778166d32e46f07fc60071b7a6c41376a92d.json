@@ -1,0 +1,11 @@
+{
+  "verdict": "PASS",
+  "evidence": "Starts with '## Assumptions', 5 numbered assumptions, '## Questions' section follows, zero code blocks.",
+  "triggered_criteria": [
+    "Response begins with '## Assumptions' as the very first content",
+    "Lists at least 2 numbered assumptions",
+    "Includes a '## Questions' section after assumptions",
+    "Contains zero code blocks"
+  ],
+  "triggered_fail_signals": []
+}

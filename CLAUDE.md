@@ -63,6 +63,8 @@ Dual distribution: both corvus CLI and Claude Code plugin. CI generates both for
 
 `agent-skills-manager` skill excluded from Claude Code (corvus-specific).
 
+`.claude-plugin/plugins/` is a generated build artifact — `generate_claude_plugin.rb` rebuilds it from scratch each run, wrapping every skill in the `<plugin-root>/skills/<name>/SKILL.md` layout Claude Code expects. Do not hand-edit; change the source under `skills/<category>/<name>/` and regenerate.
+
 ## Skill Architecture
 
 Skills are organized **flat by role** — everything for a domain lives in one directory:

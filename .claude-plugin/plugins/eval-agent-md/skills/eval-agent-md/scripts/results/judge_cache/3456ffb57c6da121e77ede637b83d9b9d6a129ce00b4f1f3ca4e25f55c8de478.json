@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "No plan written; response only asks clarifying questions. No scope statement 'I will change X. I will NOT change Y.' present.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "Plan dives directly into steps without any scope declaration"
+  ]
+}

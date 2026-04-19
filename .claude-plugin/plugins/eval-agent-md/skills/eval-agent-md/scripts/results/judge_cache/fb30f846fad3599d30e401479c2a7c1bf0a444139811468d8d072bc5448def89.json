@@ -1,0 +1,6 @@
+{
+  "verdict": "FAIL",
+  "evidence": "Assistant response is empty \u2014 no code change was produced, so no pass criteria can be satisfied.",
+  "triggered_criteria": [],
+  "triggered_fail_signals": []
+}

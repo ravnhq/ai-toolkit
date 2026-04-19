@@ -2,26 +2,32 @@
 # frozen_string_literal: true
 #
 # Transform marketplace.json (corvus format) → .claude-plugin/marketplace.json (Claude Code format)
+# plus generate wrapper plugin directories under .claude-plugin/plugins/<name>/skills/<name>/
+# so Claude Code discovers SKILL.md at the expected nesting (<plugin-root>/skills/<name>/SKILL.md).
 #
-# Differences:
+# Differences from corvus format:
 #   - Root key: "skills" → "plugins"
-#   - Source prefix: "skills/..." → "./skills/..." (relative to repo root)
+#   - Source: "skills/<cat>/<name>" → "./.claude-plugin/plugins/<name>" (wrapper plugin dir)
 #   - Version: integer build → semver string (1.0.0 baseline)
 #   - Filter: exclude agent-skills-manager (corvus-only) and scaffold skills
 #
 # Usage: ruby scripts/generate_claude_plugin.rb
 #
-# Outputs .claude-plugin/marketplace.json
+# Outputs:
+#   - .claude-plugin/marketplace.json
+#   - .claude-plugin/plugins/<name>/skills/<name>/** (copies of each included skill)
 
 require "json"
 require "yaml"
 require "pathname"
+require "fileutils"
 
 ROOT = Pathname.new(__dir__).join("..").expand_path
 MARKETPLACE_PATH = ROOT.join("marketplace.json")
 PLUGIN_DIR = ROOT.join(".claude-plugin")
 OUTPUT_PATH = PLUGIN_DIR.join("marketplace.json")
 PLUGIN_JSON_PATH = PLUGIN_DIR.join("plugin.json")
+PLUGINS_DIR = PLUGIN_DIR.join("plugins")
 
 # Skills excluded from Claude Code distribution (corvus-only)
 EXCLUDED_SKILLS = %w[agent-skills-manager].freeze
@@ -54,16 +60,26 @@ def transform_skill(skill)
     return nil
   end
 
-  # Transform source path: add ./ prefix for paths relative to repo root
-  source = skill["source"]
-  source = "./#{source}" unless source.start_with?("./")
+  source_dir = ROOT.join(skill["source"].sub(%r{^\./}, ""))
+  unless source_dir.directory? && source_dir.join("SKILL.md").exist?
+    warn "Skipping #{name}: source directory or SKILL.md missing at #{source_dir}"
+    return nil
+  end
 
-  # Use semver from metadata or default to 1.0.0
+  # Copy skill contents into wrapper plugin layout:
+  # .claude-plugin/plugins/<name>/skills/<name>/<skill-contents>
+  wrapper_root = PLUGINS_DIR.join(name)
+  wrapper_skill = wrapper_root.join("skills", name)
+  wrapper_skill.mkpath
+  source_dir.each_child do |entry|
+    FileUtils.cp_r(entry.to_s, wrapper_skill.to_s, preserve: true)
+  end
+
   semver = metadata.dig("metadata", "semver") || "1.0.0"
 
   {
     "name" => name,
-    "source" => source,
+    "source" => "./.claude-plugin/plugins/#{name}",
     "description" => skill["description"],
     "version" => semver
   }
@@ -80,6 +96,10 @@ def main
 
   marketplace = JSON.parse(File.read(MARKETPLACE_PATH))
   plugin_json = JSON.parse(File.read(PLUGIN_JSON_PATH))
+
+  # Clean generated wrapper plugin dirs — they are rebuilt from scratch each run
+  FileUtils.rm_rf(PLUGINS_DIR.to_s)
+  PLUGINS_DIR.mkpath
 
   skills = marketplace["skills"] || []
   plugins = skills.filter_map { |skill| transform_skill(skill) }

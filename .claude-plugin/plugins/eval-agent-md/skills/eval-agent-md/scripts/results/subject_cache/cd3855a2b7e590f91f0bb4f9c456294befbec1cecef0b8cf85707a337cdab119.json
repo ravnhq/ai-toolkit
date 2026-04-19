@@ -1,0 +1,3 @@
+{
+  "response": "## Assumptions\n1. \"My API\" refers to a project in the current working directory or a known codebase \u2014 I don't yet know the language, framework, or existing structure.\n2. \"Authentication\" means verifying identity on incoming requests (e.g., API keys, JWT, OAuth) \u2014 not authorization (role-based access control).\n\n## Questions\n- What framework/language is the API built in (e.g., Express/Node, FastAPI/Python, Rails, Go)?\n- What authentication mechanism do you want \u2014 API keys, JWT bearer tokens, OAuth2, session cookies, or something else?\n- Should all routes be protected, or only specific ones?\n- Is there an existing user/account model, or does auth need to be built from scratch?"
+}

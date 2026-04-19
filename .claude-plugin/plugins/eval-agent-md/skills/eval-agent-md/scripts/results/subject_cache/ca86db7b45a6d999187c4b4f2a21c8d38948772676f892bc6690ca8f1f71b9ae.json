@@ -1,0 +1,3 @@
+{
+  "response": "Before I can write or plan anything, I need two pieces of information the codebase doesn't give me:\n\n1. **The exact interfaces** \u2014 specifically:\n   - `PaymentGateway.charge(\u2026)` \u2014 what arguments does it take, and what does it return/throw?\n   - `AuditLogger` \u2014 which methods do you call for success vs. failure? (e.g., `.info()` / `.error()`? `.log(event, status)`?)\n\n2. **Your answers to the questions above** (language + failure behavior).\n\nPer the ERROR rule I won't guess or fabricate method signatures. Please share the existing interface definitions (or paste the relevant class/type signatures) and I'll build the plan immediately."
+}

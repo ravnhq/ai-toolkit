@@ -1,0 +1,8 @@
+{
+  "verdict": "FAIL",
+  "evidence": "No stdlib fallback mentioned before 'May I add notify-py?' \u2014 DEPS stdlib-first violated",
+  "triggered_criteria": [],
+  "triggered_fail_signals": [
+    "No stdlib fallback is shown or mentioned before the notify-py suggestion (DEPS stdlib-first violated)"
+  ]
+}

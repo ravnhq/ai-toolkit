@@ -1,0 +1,3 @@
+{
+  "response": "```python\ndef get_profile(user):\n    return db.query(user.id)\n```"
+}

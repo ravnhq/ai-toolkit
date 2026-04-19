@@ -6,217 +6,217 @@
   "plugins": [
     {
       "name": "core-coding-standards",
-      "source": "./skills/universal/core-coding-standards",
+      "source": "./.claude-plugin/plugins/core-coding-standards",
       "description": "Universal code quality rules — KISS, DRY, clean code, code review. Base skill every project should include.",
       "version": "1.0.0"
     },
     {
       "name": "grill-me",
-      "source": "./skills/assistant/grill-me",
+      "source": "./.claude-plugin/plugins/grill-me",
       "description": "Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree.",
       "version": "1.0.0"
     },
     {
       "name": "lang-typescript",
-      "source": "./skills/universal/lang-typescript",
+      "source": "./.claude-plugin/plugins/lang-typescript",
       "description": "TypeScript language patterns and type safety rules — strict mode, no any, discriminated unions.",
       "version": "1.0.0"
     },
     {
       "name": "platform-frontend",
-      "source": "./skills/frontend/platform-frontend",
+      "source": "./.claude-plugin/plugins/platform-frontend",
       "description": "Framework-agnostic frontend architecture — state management, components, data fetching.",
       "version": "1.0.0"
     },
     {
       "name": "platform-backend",
-      "source": "./skills/backend/platform-backend",
+      "source": "./.claude-plugin/plugins/platform-backend",
       "description": "Server-side architecture and security — API design, error handling, validation, logging. Use when building APIs, server logic, or reviewing backend security.",
       "version": "1.0.0"
     },
     {
       "name": "platform-database",
-      "source": "./skills/database/platform-database",
+      "source": "./.claude-plugin/plugins/platform-database",
       "description": "SQL database design, query optimization, and migration safety.",
       "version": "1.0.0"
     },
     {
       "name": "platform-testing",
-      "source": "./skills/testing/platform-testing",
+      "source": "./.claude-plugin/plugins/platform-testing",
       "description": "Framework-agnostic testing principles — test philosophy, structure, mocking boundaries.",
       "version": "1.0.0"
     },
     {
       "name": "platform-cli",
-      "source": "./skills/cli/platform-cli",
+      "source": "./.claude-plugin/plugins/platform-cli",
       "description": "Design and implementation patterns for building command-line tools with modern UX.",
       "version": "1.0.0"
     },
     {
       "name": "tech-react",
-      "source": "./skills/frontend/tech-react",
+      "source": "./.claude-plugin/plugins/tech-react",
       "description": "React 19 patterns for components, hooks, Server Components, and data fetching with Suspense.",
       "version": "1.0.0"
     },
     {
       "name": "tech-trpc",
-      "source": "./skills/backend/tech-trpc",
+      "source": "./.claude-plugin/plugins/tech-trpc",
       "description": "tRPC router architecture, procedure design, and Vertical Slice Architecture patterns.",
       "version": "1.0.0"
     },
     {
       "name": "tech-drizzle",
-      "source": "./skills/database/tech-drizzle",
+      "source": "./.claude-plugin/plugins/tech-drizzle",
       "description": "Drizzle ORM schema design, relational queries, and migration patterns.",
       "version": "1.0.0"
     },
     {
       "name": "tech-vitest",
-      "source": "./skills/testing/tech-vitest",
+      "source": "./.claude-plugin/plugins/tech-vitest",
       "description": "Vitest-specific testing utilities — vi.mock, vi.fn, fake timers, MSW.",
       "version": "1.0.0"
     },
     {
       "name": "design-frontend",
-      "source": "./skills/frontend/design-frontend",
+      "source": "./.claude-plugin/plugins/design-frontend",
       "description": "Visual design system patterns for web UIs — layout, responsive, Tailwind tokens.",
       "version": "1.0.0"
     },
     {
       "name": "design-accessibility",
-      "source": "./skills/frontend/design-accessibility",
+      "source": "./.claude-plugin/plugins/design-accessibility",
       "description": "WCAG AA and ARIA best practices — screen readers, keyboard navigation, focus management.",
       "version": "1.0.0"
     },
     {
       "name": "figma-to-react-components",
-      "source": "./skills/frontend/figma-to-react-components",
+      "source": "./.claude-plugin/plugins/figma-to-react-components",
       "description": "Convert Figma component designs into production-ready React implementations with design token integration, accessibility via React Aria, and comprehensive documentation. Use when building React components from Figma designs, generating component implementation specs, or bridging design-to-development workflows.",
       "version": "1.0.0"
     },
     {
       "name": "liquid-glass-ios",
-      "source": "./skills/mobile/liquid-glass-ios",
+      "source": "./.claude-plugin/plugins/liquid-glass-ios",
       "description": "Apple's Liquid Glass design system for iOS 26+ and iPadOS 26+.",
       "version": "1.0.0"
     },
     {
       "name": "swift-concurrency",
-      "source": "./skills/mobile/swift-concurrency",
+      "source": "./.claude-plugin/plugins/swift-concurrency",
       "description": "Swift Concurrency patterns — async/await, actors, tasks, Sendable conformance.",
       "version": "1.0.0"
     },
     {
       "name": "promptify",
-      "source": "./skills/assistant/promptify",
+      "source": "./.claude-plugin/plugins/promptify",
       "description": "Transform user requests into detailed, precise prompts for AI models.",
       "version": "1.0.0"
     },
     {
       "name": "agent-add-rule",
-      "source": "./skills/assistant/agent-add-rule",
+      "source": "./.claude-plugin/plugins/agent-add-rule",
       "description": "Add rules, conventions, or instructions to the project's agent configuration.",
       "version": "1.0.0"
     },
     {
       "name": "agent-init-deep",
-      "source": "./skills/assistant/agent-init-deep",
+      "source": "./.claude-plugin/plugins/agent-init-deep",
       "description": "Initialize or migrate to nested CLAUDE.md structure for progressive disclosure.",
       "version": "1.0.0"
     },
     {
       "name": "agent-skill-creator",
-      "source": "./skills/assistant/agent-skill-creator",
+      "source": "./.claude-plugin/plugins/agent-skill-creator",
       "description": "Guide for creating effective, portable skills that extend Claude's capabilities with specialized knowledge, workflows, and tool integrations.",
       "version": "1.0.0"
     },
     {
       "name": "agent-pr-creator",
-      "source": "./skills/assistant/agent-pr-creator",
+      "source": "./.claude-plugin/plugins/agent-pr-creator",
       "description": "Analyzes git diffs and commit history to intelligently fill PR templates and create pull requests via gh CLI. Use when user wants to create a PR, needs PR description help, or says 'create a pull request', 'fill PR template', 'make a PR', 'open a pull request', or mentions PR creation.",
       "version": "1.0.0"
     },
     {
       "name": "localize-ios",
-      "source": "./skills/mobile/localize-ios",
+      "source": "./.claude-plugin/plugins/localize-ios",
       "description": "Localizes UIKit Views and ViewControllers and SwiftUI Views. Extracts hardcoded text, generates camelCase keys, replaces literals with String(localized:) or LocalizedStringKey, and creates or updates Localizable.xcstrings.",
       "version": "1.0.0"
     },
     {
       "name": "tech-android",
-      "source": "./skills/mobile/tech-android",
+      "source": "./.claude-plugin/plugins/tech-android",
       "description": "Android and Kotlin development patterns — Compose, architecture, coroutines, Room, navigation, Hilt.",
       "version": "1.0.0"
     },
     {
       "name": "rewrite-commit-history",
-      "source": "./skills/assistant/rewrite-commit-history",
+      "source": "./.claude-plugin/plugins/rewrite-commit-history",
       "description": "Rewrite a feature branch's commit history into clean conventional commits.",
       "version": "1.0.0"
     },
     {
       "name": "pr-comments-address",
-      "source": "./skills/assistant/pr-comments-address",
+      "source": "./.claude-plugin/plugins/pr-comments-address",
       "description": "Reads open review comments from a GitHub PR, triages them, applies code fixes, and drafts reply messages. Use when user wants to address PR comments, says 'address review comments', 'fix PR feedback', 'handle PR comments', 'respond to review', or mentions addressing code review feedback on a pull request.",
       "version": "1.0.0"
     },
     {
       "name": "type-system-audit",
-      "source": "./skills/assistant/type-system-audit",
+      "source": "./.claude-plugin/plugins/type-system-audit",
       "description": "Audit type-system weaknesses using bug-fix commits as evidence",
       "version": "1.0.0"
     },
     {
       "name": "transcript-notes",
-      "source": "./skills/assistant/transcript-notes",
+      "source": "./.claude-plugin/plugins/transcript-notes",
       "description": "Process meeting transcripts into structured notes with metadata, TL;DR, key topics, action items, and quotes",
       "version": "1.0.0"
     },
     {
       "name": "eval-agent-md",
-      "source": "./skills/assistant/eval-agent-md",
+      "source": "./.claude-plugin/plugins/eval-agent-md",
       "description": "Behavioral compliance testing for any CLAUDE.md or agent definition file. Auto-generates test scenarios from your rules, runs them via LLM-as-judge scoring, and reports a compliance score with per-rule pass/fail breakdown. Optionally improves failing rules via automated mutation loop.",
       "version": "1.0.0"
     },
     {
       "name": "parallel",
-      "source": "./skills/assistant/parallel",
+      "source": "./.claude-plugin/plugins/parallel",
       "description": "Run a task in a background sub-agent so you can continue working on other things.",
       "version": "1.0.0"
     },
     {
       "name": "ts-linter",
-      "source": "./skills/universal/ts-linter",
+      "source": "./.claude-plugin/plugins/ts-linter",
       "description": "Set up and enforce a strict, production-grade ESLint configuration for TypeScript projects, then systematically fix all linting issues.",
       "version": "1.0.0"
     },
     {
       "name": "bug-report-gen",
-      "source": "./skills/qa/bug-report-gen",
+      "source": "./.claude-plugin/plugins/bug-report-gen",
       "description": "Draft, evaluate, enrich, and normalize QA bug reports to RAVN standards. Trigger on \"write/create a bug report\", \"I found a bug\", \"log this defect\", \"evaluate/score/review/improve my bug report\", \"normalize these bug reports\", or when a user describes unexpected behavior. Also triggered by /bugreport.",
       "version": "1.0.0"
     },
     {
       "name": "locators-scanner",
-      "source": "./skills/qa/locators-scanner",
+      "source": "./.claude-plugin/plugins/locators-scanner",
       "description": "Scan a website URL and extract the best locators for every visible element on the page, outputting a Page Object Model (POM) code file and/or a JSON locator map tailored to a specific test automation framework (Playwright, Cypress, or WebdriverIO). Use when users say \"scan this page for locators\", \"extract locators from URL\", \"get selectors from website\", \"generate page object from URL\", \"build POM from page\", \"find locators for this URL\", \"what locators should I use for this page\", \"scan this page for elements\", \"extract selectors\", \"generate locator map\", \"get element selectors for testing\", or mention scanning/extracting locators from a website. Also trigger when a user pastes a URL and asks to generate a page object, locator map, or selectors for Playwright, Cypress, or WebdriverIO. Also explicitly triggered by the /locators command.",
       "version": "1.0.0"
     },
     {
       "name": "test-case-gen",
-      "source": "./skills/qa/test-case-gen",
+      "source": "./.claude-plugin/plugins/test-case-gen",
       "description": "Generate, evaluate, audit, and normalize QA test cases to RAVN standards. Trigger on \"generate/write/create test cases\", \"evaluate/score my test cases\", \"audit my test suite\", \"review test coverage\", \"normalize/reformat test cases\", or when a user wants test design help. Also triggered by /testcases.",
       "version": "1.0.0"
     },
     {
       "name": "test-plan-gen",
-      "source": "./skills/qa/test-plan-gen",
+      "source": "./.claude-plugin/plugins/test-plan-gen",
       "description": "Generate professional QA Test Plan documents (.docx or .pdf) from a structured interview. Trigger on \"create/write a test plan\", \"I need a test plan\", \"prepare QA documentation\", /testplan, or when a user uploads a PRD/requirements and wants a test plan generated.",
       "version": "1.0.0"
     },
     {
       "name": "design-variations",
-      "source": "./skills/design/design-variations",
+      "source": "./.claude-plugin/plugins/design-variations",
       "description": "Generate a gallery of design variations for a UI component. Takes an existing component (by name, code, or screenshot) and produces N distinct rendered alternatives in a single HTML comparison page.",
       "version": "1.0.0"
     }
