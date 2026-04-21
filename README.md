@@ -140,7 +140,6 @@ npx skills add ravnhq/ai-toolkit -s qa-bug-fixer
 npx skills add ravnhq/ai-toolkit -s qa-personality-builder
 ```
 
-
 ### Universal
 
 | Skill | Description |
