@@ -6,7 +6,7 @@ description: |-
   and malformed requests. Reports bugs with full reproduction details.
   Trigger on "break the API", "chaos monkey", "adversarial testing", "security
   test the endpoints", "test edge cases", or when a test plan defines API endpoints.
-allowed-tools: WebFetch Bash mcp__plugin_playwright_playwright__browser_navigate mcp__plugin_playwright_playwright__browser_snapshot mcp__plugin_playwright_playwright__browser_network_requests Read
+allowed-tools: WebFetch Bash mcp__playwright__browser_navigate mcp__playwright__browser_snapshot mcp__playwright__browser_network_requests Read
 metadata:
   version: 1
   category: qa
