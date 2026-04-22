@@ -27,7 +27,7 @@ metadata:
   - exploration
   - gallery
   status: ready
-  version: 6
+  version: 7
 ---
 
 # Design Variations
