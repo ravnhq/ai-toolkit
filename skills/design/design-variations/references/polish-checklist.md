@@ -153,14 +153,56 @@ If a variation uses a dark background:
 
 ---
 
-## 11. Copy quality
+## 11. Copy register (voice as a design axis)
 
-- Use realistic, context-specific content matching the component's purpose.
-- No "Lorem ipsum." No "Description goes here." No "Sample text."
-- Button labels are action verbs: "Get started", "Sign in", "Upgrade to Pro" — never "Click here", "Submit", "OK".
-- Toast content should match the thesis: an "urgency" toast says "Session expires in 30s", not "This is a notification message."
+Each variation declares a **register** in its plan: Plain / Technical / Playful / Terse / Authoritative / Apologetic. Every string in the variation — CTA verb, value-prop, error tone, empty-state message — must match that register.
 
-**Rule:** a variation with generic placeholder copy fails polish, regardless of how clean the CSS is.
+- No "Lorem ipsum", "Description goes here", "Sample text".
+- Button labels are action verbs matching register:
+  - Plain: "Get started", "Sign in"
+  - Technical: "Authenticate", "Commit changes"
+  - Playful: "Let's go", "Cook something up"
+  - Terse: "Start", "Go"
+  - Authoritative: "Begin enrollment", "Confirm"
+  - Apologetic: "Try again", "Let us fix this"
+- Content matches thesis: an "urgency" toast says "Session expires in 30s", not "This is a notification message."
+- Copy across variations in the same gallery must NOT be identical when theses or registers differ. Identical microcopy across variations is a red flag that register wasn't honored.
+
+**Coherence rule:** profile and register must be mutually compatible. Brutalist + Apologetic, Luxury + Terse-SMS-slang, Government + Playful — these collide. If they clash, rebuild one.
+
+**Rule:** a variation with generic placeholder copy, register-mismatched copy, or copy identical to another variation fails polish, regardless of how clean the CSS is.
+
+---
+
+## 12. Internationalization floor
+
+- **Text expansion**: no fixed widths on text containers. Every variation must survive a 1.6× text expansion (simulating German/Finnish) without clipping or breaking layout. Use `min-width` + flexible layout, not `width`.
+- **RTL (directional)**: at least one variation in any gallery of N ≥ 12 is rendered with `dir="rtl"` either wholesale or as a paired state. Icon-left layouts, arrows, and progress affordances must mirror — not just the text flow. Logical properties (`margin-inline-start`, `padding-inline-end`) preferred over `margin-left` / `padding-right` where the profile allows.
+- **Long-content reality**: at least one variation renders with realistic overflow content (3-line message, 12-item feature list, 40-character button label). The goal is stakeholder confidence that the design doesn't break on real copy.
+
+**Rule:** a gallery of ≥12 variations with zero RTL representation and zero text-expansion-safe variations fails polish. Fix by adding one RTL-rendered variation and making text containers fluid.
+
+---
+
+## 13. Reduced motion
+
+Every variation whose thesis implies motion (transience, countdown, expandable, timeline, progressive reveal) MUST pair its animation with a reduced-motion fallback.
+
+```css
+@media (prefers-reduced-motion: no-preference) {
+  .v3-toast { animation: slideIn 240ms var(--ease-standard); }
+  .v3-toast__progress { animation: countdown 3s linear; }
+}
+/* Static end-state for reduced-motion users — no @media wrapper, always applies as baseline */
+.v3-toast { opacity: 1; transform: none; }
+.v3-toast__progress { width: 0; }
+```
+
+- The baseline (outside the `@media`) renders the animation's END state, not its start.
+- Transitions on hover/focus can remain unguarded if they're short (<200ms) and non-essential.
+- Essential state-change animations (enter, exit, countdown) MUST be guarded.
+
+**Rule:** a variation that auto-dismisses or counts down but has no reduced-motion fallback fails polish and WCAG 2.3.3.
 
 ---
 
