@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-04-23
+
+- Added harvest VoltAgent/awesome-design-md for brand-inspired profiles.
 ## 2026-04-22
 
 - Added encode designer craft — user context, brand tokens, copy register, i18n, reduced motion.
