@@ -2,10 +2,11 @@
 
 Run this checklist on every variation before showing work to the user. Fix violations yourself — don't wait for the user to catch them.
 
-This check has two modes:
+This check has three modes:
 
 - **With a design system**: the user provided brand colors, spacing rules, component patterns, or a reference to an existing system. Check against those constraints.
 - **Without a design system**: no system was provided. Check against the defaults in `design-principles.md` to ensure internal consistency.
+- **Upstream DESIGN.md mode**: the variation claims a brand-inspired profile (e.g. `claude`, `supabase`, `airbnb`, `tesla`). Check against the profile's card in `profile-fidelity.md` AND — if you want the strictest gate — against the canonical upstream at `https://getdesign.md/design-md/<slug>/DESIGN.md`. The card's `Accent`, `Background`, `Radius`, `Shadow`, and `Button` fields must appear byte-identical in the variation's CSS. A generic blue where the card says `#D97757` = rebuild.
 
 ---
 

@@ -102,6 +102,15 @@ Each variation must be grounded in a real product's or design tradition's visual
 **Gaming/Entertainment** (Discord, Steam)
 `Discord: bg #313338, accent #5865F2, text #DBDEE1 | Steam: bg #171A21, surface #1B2838, accent #66C0F4, text #C7D5E0 | font: 'gg sans' 14px | radius: 8px | dense, vivid, dark`
 
+**Fintech** (Stripe, Coinbase, Kraken, Revolut, Wise)
+Dense-data tables, regulatory copy register, trust-through-precision typography, conservative palette with single-accent charts. `accent: Stripe #635BFF, Coinbase #2053E5, Wise #9FE870 | font: system mono 12-14px | radius: 4-6px | table: tabular-nums, tight padding, 1px borders | depth: minimal shadows | trust-signal: high-contrast text, legal footer`
+
+**Automotive** (BMW, Ferrari, Lamborghini, Tesla, Renault)
+Hero-imagery-first, aggressive cinematic gradients, oversize italic or condensed display type, near-full-bleed photography, deep-black or pure-white canvases with single saturated accent. `font: condensed or italic display serif | gradient: vibrant metallics or monochromes | image: fills 80%+ viewport | accent: single saturated hue | bg: #000000 or #FFFFFF only | transition: 400-600ms cinematic`
+
+**Aerospace/Industrial** (SpaceX, NVIDIA)
+Technical blueprint grids, monospace labels as signal of precision, high-contrast minimalist dark with data-rich overlays. `bg: #0A0E27 (SpaceX) | accent: #FF5733 (SpaceX) or #76B900 (NVIDIA) | font: 'IBM Plex Mono' 11-13px | grid: 16-column rigid, no gaps | depth: grid lines only | label: all monospace, ALL CAPS | interaction: data-driven, no animation`
+
 **Education/EdTech** (Duolingo, Khan Academy)
 `accent: #58CC02 green | font: 'Nunito' 16px weight-700 | radius: 16px | shadow: 0 4px 0 #E5E5E5 (3D button) | padding: 16px 24px | playful, rounded, progress-driven`
 
@@ -201,6 +210,18 @@ Each variation must be grounded in a real product's or design tradition's visual
 **Framer** — Motion-forward, bold typography, creative energy.
 `bg: #FFF / #0F0F10 | surface: #F5F5F5 / #1A1A1A | text: #000 / #FFF | accent: #2563EB | font: Inter 14px weight-700 headings | radius: 8px | depth: motion shadows on hover | spacing: 8px grid`
 
+**AI/LLM Platforms (Warm Editorial)** — Claude, Cohere (terracotta, serif headings, approachable)
+`bg: #FFF | accent: #B8860B terracotta-ochre | font: 'Fraunces' serif 16px headings, system 14px body | color: #3A3A3A | radius: 8px | padding: 24px | depth: soft 1px borders | tone: conversational, human-centered`
+
+**AI/LLM Platforms (Void-Canvas Technical)** — RunwayML, x.ai, VoltAgent (near-black, monospace, neon accents)
+`bg: #0A0A0A | surface: #1A1A1A | text: #E0E0E0 | accent: #00FF00 (emerald) or #18E0FF (cyan) | font: 'IBM Plex Mono' 12px | radius: 2px | depth: grid-line rules only | label: monospace, technical precision`
+
+**Dev-tool IDE-likes** — Cursor, Warp, Raycast, Superhuman, Expo (dark chrome, gradient accent, keyboard-first)
+`bg: #1A1A1B | surface: #2A2A2B | text: #E5E5E5 | accent: linear-gradient(135deg, #667EEA, #764BA2) | font: 'Monaco' 13px | radius: 4px | keyboard shortcut: monospace labels | interaction: no-mouse, keyboard-driven | spacing: 6px tight`
+
+**Creative Canvas Tools** — Framer, Miro, Webflow, Pinterest, Airtable (bright white, playful display type, high saturation)
+`bg: #FFFFFF | surface: #F5F5F5 | text: #222222 | accent: #FF6B6B, #4ECDC4, or #FFE66D (per brand) | font: 'Space Grotesk' 16px weight-700 | radius: 12-16px generous | padding: 24-32px spacious | shadow: playful 0 4px 12px rgba(0,0,0,0.08) | whitespace: abundant`
+
 ### F. Regional/Cultural Profiles
 
 **Korean** (Naver, Kakao) — Extreme density, animated, mobile-first, vibrant CTAs.
@@ -251,6 +272,27 @@ For N variations, mix across ALL categories (A-F). The wider the spread, the mor
 - Hybrids combine two profiles from different categories — name both parents explicitly
 - For 4 or fewer variations: at least 3 different categories represented
 - For 8+: at least 5 different categories represented
+
+### H. Profile Selection by Vertical — lookup
+
+When the component lives in a specific product vertical and the user hasn't named a profile, start from this shortlist. These are suggestions, not rules — override when the thesis demands it.
+
+| Vertical | On-system default | Adjacent stretch | Off-system wildcard |
+|---|---|---|---|
+| Fintech (payments, banking) | Stripe | Wise | Revolut |
+| Fintech (crypto/exchange) | Coinbase | Kraken | Cyberpunk |
+| AI/LLM product | Claude | Cohere | VoltAgent |
+| Developer tool / IDE | Linear | Vercel | Warp |
+| Terminal / CLI-adjacent | Warp | Raycast | Brutalist |
+| Documentation / docs site | Mintlify | Vercel | Notion |
+| Creative canvas | Framer | Miro | Pinterest |
+| B2B SaaS dashboard | Linear | Intercom | Figma |
+| E-commerce / marketplace | Airbnb | Shopify-Stripe | Luxury |
+| Consumer mobile-first | Superhuman | Apple | Japanese |
+| Automotive / luxury goods | Tesla | BMW | Luxury |
+| Open-source infra | Supabase | HashiCorp | Ollama |
+| Observability / monitoring | Sentry | PostHog | Cyberpunk |
+| Enterprise / gov | HashiCorp | IBM | GOV.UK |
 
 ---
 
@@ -482,6 +524,8 @@ No pure black (#000). Primary text is gray-800 or gray-900. Secondary text is gr
 ## 5. Component Recipes
 
 Use these as baselines. They represent correct, production-quality implementations. Your variations should feel at least this polished — then diverge in direction.
+
+> For nav, hero, modal, table, dashboard card, sidebar, form, and footer recipes, see `component-recipes-extended.md` (codes N*, H*, M*, TB*, D*, SB*, F*, FT*). The same diversity rules apply — ≥50% distinct recipe codes across a gallery.
 
 ### Pricing Card
 ```css

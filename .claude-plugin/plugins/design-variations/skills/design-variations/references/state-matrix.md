@@ -90,6 +90,21 @@ Pick 1–3 per gallery. These are suggestions, not mandates.
 - **cleared-all** — user just archived/deleted everything
 - **error** — "Couldn't load" vs no-content
 
+### Fintech / regulated surfaces (payments, banking, crypto, KYC)
+
+Use when the component touches money, identity, or regulated actions. Copy register skews toward Authoritative / Apologetic; timing and affordances carry legal weight.
+
+- **unverified** — action blocked pending identity check ("Complete verification to continue")
+- **kyc-pending** — verification submitted, awaiting review (show ETA, not just a spinner)
+- **cooldown** — rate-limited after suspicious activity or failed attempts (show remaining time explicitly)
+- **rate-limited** — generic throttle, distinct from cooldown (app-level vs account-level)
+- **regulatory-hold** — funds or action frozen pending compliance action (never hide; explain the next step)
+- **two-factor-required** — secondary auth step before continuing (inline, not a redirect)
+- **geo-restricted** — jurisdiction blocks this feature ("Not available in your region")
+- **maintenance-window** — scheduled downtime, shown before the user commits an action
+- **price-moved** — quoted rate no longer valid, user must re-confirm (crypto/FX)
+- **success-with-receipt** — post-action state that includes transaction hash / reference number / timestamp
+
 ## Rendering notes
 
 - Label the state in the cell header, don't hide it.

@@ -155,8 +155,60 @@ Each example below shows the WRONG way (all variations share a skeleton), then t
 
 ---
 
+## Brand-profile drift — BAD vs GOOD
+
+Brand-inspired profiles (Claude, Supabase, Linear, Stripe, Airbnb, Tesla…) each carry a signature. A variation that claims the profile but drifts to generic blues, rounded radii, or generic shadows reads as an unbranded card with the profile's name sticker-ed on. Upstream (`getdesign.md/<slug>/design-md`) specifies the exact tokens — drift = rebuild.
+
+### BAD — claims the profile, drifts the tokens
+
+```css
+/* V2 "Claude feature card" — actually generic SaaS */
+.v2-card {
+  background: #fff;
+  color: #111827;           /* cool gray — Claude uses warm #2C2B29 */
+  border-radius: 12px;      /* Claude uses 8–10px, never rounded >12 */
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* generic; Claude uses borders + cream layering */
+  font-family: Inter, sans-serif;        /* missing Tiempos/Styrene + substitutes */
+}
+.v2-cta { background: #3b82f6; }         /* generic blue — Claude accent is terracotta #D97757 */
+```
+
+**Why it fails:** cool-gray text on pure white, generic blue CTA, generic shadow — the card is indistinguishable from any shadcn/ui feature card. The `Claude` label in the cell header is a lie.
+
+### GOOD — executes the card verbatim
+
+```css
+/* V2 Claude feature card (inspired by claude.md) */
+.v2-card {
+  background: #FAF9F7;              /* Claude warm cream surface */
+  color: #2C2B29;                   /* warm near-black */
+  border: 1px solid #E8E3DC;        /* warm border, NOT cool #e5e7eb */
+  border-radius: 10px;
+  box-shadow: 0 1px 0 rgba(44,43,41,0.04);  /* hairline depth, per card */
+  font-family: "Tiempos", "Source Serif 4", Georgia, serif; /* heading */
+  padding: 24px;
+}
+.v2-card h3 { font-family: "Tiempos", serif; letter-spacing: -0.01em; }
+.v2-card p  { font-family: "Styrene", Inter, -apple-system, sans-serif; }
+.v2-cta {
+  background: #D97757;              /* Claude terracotta — exact */
+  color: #fff;
+  border-radius: 6px;
+  padding: 10px 18px;
+}
+```
+
+**Verdict:** every token traces back to the `Claude (inspired by claude.md)` card in `profile-fidelity.md`. A stakeholder who knows Anthropic's marketing site recognizes it in one glance; remove the label and the signature still reads.
+
+**Rule:** when you claim a brand-inspired profile, open its card and COPY tokens. No generic blues, no generic shadows, no cool grays on warm profiles, no sans-serif where the card says serif. If you can't execute the card, pick a different profile or stay in movement profiles (Brutalist, Editorial, …) where the tokens are looser.
+
+---
+
 ## How to use this reference
 
 During step 3 (planning), compare your variation plan to the BAD examples above. If your plan looks like "V1 Stripe card, V2 Brutalist card, V3 Editorial card, V4 Wabi-Sabi card," you're in failure mode — all four are cards, only the paint differs. Rewrite the plan with distinct recipe codes before generating HTML.
 
 During step 4a (structural diversity gate), reduce each variation's DOM to its tag-tree skeleton (drop classes, drop styles, drop text). If two skeletons match, you've shipped a skin, not a variation. Rebuild.
+
+During step 4b (profile fidelity gate), compare each variation's CSS to the brand-profile card. If tokens drift (generic hex, wrong radius, wrong font stack), rebuild with the card's exact values — or pick a different profile.

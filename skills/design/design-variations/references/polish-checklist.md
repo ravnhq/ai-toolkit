@@ -28,6 +28,39 @@ Required imports by profile:
 - **Korean** → Noto Sans KR
 - **Japanese** → Noto Sans JP
 
+For brand-inspired profiles (Claude, Airbnb, Cursor, Supabase, Raycast, Warp, …), consult `profile-fidelity.md` for the card's required font, then `font-substitutes.md` for a free equivalent if the profile's primary font is licensed. Licensed-font profiles MUST either (a) import the substitute and use it first, or (b) be rebuilt with a different profile — never silently fall back to `-apple-system`.
+
+---
+
+## 1b. Depth stacking
+
+Brand-inspired profiles often specify multi-layer shadow stacks, not single shadows. Single-shadow rendering flattens a profile's depth language even when the color and type are correct.
+
+**Gate:** for each variation claiming a brand-inspired profile whose card lists a multi-layer `Shadow:` recipe, the variation's CSS MUST render every layer.
+
+```
+/* Stripe card — 2-layer per card */
+box-shadow:
+  0 1px 3px rgba(0,0,0,0.04),
+  0 4px 12px rgba(0,0,0,0.04);
+
+/* Notion card — 4-layer sub-0.05 stack */
+box-shadow:
+  0 0 0 1px rgba(15,15,15,0.05),
+  0 2px 4px rgba(15,15,15,0.02),
+  0 1px 2px rgba(15,15,15,0.04),
+  0 4px 12px rgba(15,15,15,0.04);
+
+/* Linear / Notion-depth / Vercel-shadow-as-border — if the card says "borders only" or "shadow-as-border", do NOT add a box-shadow */
+```
+
+Failure modes that fail this gate:
+- Replacing the stack with `box-shadow: 0 2px 8px rgba(0,0,0,0.1)` (generic).
+- Adding a shadow to a profile whose card says "none — borders only" (Linear, Notion primary surfaces).
+- Using the recipe on light mode but dropping it on dark mode (or vice versa) — dark-canvas profiles (Linear, Supabase, Warp) usually replace shadows with tinted borders; check the card.
+
+Dark-canvas profiles that require border-based depth: Linear, Supabase, Warp, Raycast, x.ai, VoltAgent, RunwayML. Drifting to box-shadow on these = rebuild.
+
 ---
 
 ## 2. Focus-visible rings (mandatory on ALL interactive elements)

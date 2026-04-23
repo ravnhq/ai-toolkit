@@ -36,14 +36,21 @@ Generate a gallery of meaningfully different design variations for a UI componen
 
 ## References
 
-This skill includes six reference documents. Read all of them before generating variations:
+This skill includes nine reference documents. Read all of them before generating variations:
 
 - **`references/design-principles.md`** — Intent framework, product/industry/movement profiles, CSS token foundations, component baselines, anti-patterns, the four mandate tests, variation axes, and structural recipes (T1–T10, P1–P10, L1–L8). Read during steps 1–3 (understand, plan).
 - **`references/structural-bad-good-gallery.md`** — Concrete WRONG vs RIGHT examples of structural diversity. Read during step 3 to internalize what a skin-only gallery looks like vs a genuinely structured one.
-- **`references/profile-fidelity.md`** — Per-profile execution cards with exact tokens, required web font imports, and forbidden drifts. Read during step 4b (profile fidelity gate). Any variation that claims a profile must execute its card verbatim.
-- **`references/polish-checklist.md`** — Rendering and accessibility gates: web font loading, focus-visible rings, touch targets, hover states, easing, thesis-implied animation, cell containment, contrast, icon quality, copy register, i18n, reduced motion. Read during step 6b (polish gate).
-- **`references/design-system-compliance.md`** — Pre-flight checklist for spacing, depth, pattern, color, typography, accessibility, plus the Same-HTML / Swap / Squint / Signature / Token / Evidence tests. Read during step 4a (structural gate) and step 6 (compliance).
-- **`references/state-matrix.md`** — Optional state coverage per component type (empty, loading, error, long-content, stacked). The designer decides per-gallery whether to render states; when they do, this file lists what's worth showing.
+- **`references/profile-fidelity.md`** — Per-profile execution cards with exact tokens, required web font imports, and forbidden drifts. Covers movement profiles (Editorial, Brutalist, Cyberpunk, Wabi-Sabi, Art Deco…) AND 50+ brand-inspired profiles distilled from the MIT-licensed VoltAgent/awesome-design-md corpus (Claude, Airbnb, Cursor, Supabase, Raycast, Warp, Linear, Stripe, Vercel, Tesla, BMW, Kraken, Revolut, etc.). Read during step 4b (profile fidelity gate). Any variation that claims a profile must execute its card verbatim.
+- **`references/component-recipes-extended.md`** — Structural recipes beyond toast/pricing/login: nav (N1–N8), hero (H1–H8), modal (M1–M6), table (TB1–TB6), dashboard card (D1–D6), sidebar (SB1–SB6), form (F1–F6), footer (FT1–FT4). Cite codes in the skeleton plan just like T/P/L codes. Read during step 3 when the target component is none of toast / pricing / login.
+- **`references/agent-prompt-cheatsheet.md`** — Quick per-profile example prompts for handing stakeholders a copy-pasteable brief. Optional read; useful during step 2 when the user hasn't named a profile.
+- **`references/font-substitutes.md`** — Licensed/proprietary font → free web-font mapping with CDN instructions. Read during step 4b whenever a profile card specifies a licensed font (SF Pro, Circular, Neue Haas Grotesk, proprietary variable fonts…).
+- **`references/polish-checklist.md`** — Rendering and accessibility gates: web font loading, focus-visible rings, touch targets, hover states, easing, thesis-implied animation, cell containment, contrast, icon quality, copy register, i18n, reduced motion, depth stacking. Read during step 6b (polish gate).
+- **`references/design-system-compliance.md`** — Pre-flight checklist for spacing, depth, pattern, color, typography, accessibility, plus the Same-HTML / Swap / Squint / Signature / Token / Evidence / Upstream-DESIGN.md tests. Read during step 4a (structural gate) and step 6 (compliance).
+- **`references/state-matrix.md`** — Optional state coverage per component type (empty, loading, error, long-content, stacked, fintech regulatory states). The designer decides per-gallery whether to render states; when they do, this file lists what's worth showing.
+
+### Attribution
+
+Brand-inspired profile cards in `profile-fidelity.md` are distilled from **VoltAgent/awesome-design-md** (MIT, getdesign.md). Each card cites its upstream slug. These cards claim inspiration from public brands, not affiliation. If a user provides a `getdesign.md/<slug>/design-md` URL as a reference, treat it as authoritative for that variation (see "DESIGN.md mode" below).
 
 ## How It Works
 
@@ -81,6 +88,8 @@ The skill has two modes:
 - **Project-bound mode**: when invoked inside a project repo, scan for an existing design system before generating. Look for (in order): `tailwind.config.*`, `tokens.{json,css,ts}`, `theme.{json,css,ts}`, `:root { --... }` blocks in global stylesheets, `styled-system` config, shadcn/ui `components.json` + CSS vars. If found, extract: primary color, neutral scale, radius scale, font-family, spacing base. If multiple systems coexist (e.g. a storybook + a partial tailwind), ask the user which one is authoritative. If no system is detectable, fall back to free-form.
 
 Can also be provided inline — the user may paste a token block (JSON, CSS vars, or prose: "brand red #D4201F, radius 2px, Inter"). Inline input overrides any auto-detection.
+
+**DESIGN.md mode** (brand-inspired override): when the user references a `getdesign.md/<slug>/design-md` URL, names an upstream-available brand ("make it look like Claude / Supabase / Warp"), or points at a local `DESIGN.md` file in the repo, treat that source as the authoritative brand system. Open the matching card in `references/profile-fidelity.md` and, if the upstream file is newer or more complete, fetch `https://getdesign.md/design-md/<slug>/DESIGN.md` for up-to-date tokens. Gate the gallery the same as project-bound mode: ≥8 on-system variations using those tokens, remainder off-system with the divider.
 
 **When tokens are present, segregate the gallery into two sections:**
 
