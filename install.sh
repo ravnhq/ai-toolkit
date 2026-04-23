@@ -21,12 +21,18 @@ TMP=$(mktemp)
 curl -fsSL "$URL" -o "$TMP"
 chmod +x "$TMP"
 
-# macOS Gatekeeper kills unsigned binaries downloaded from the internet.
-# Strip the quarantine attribute and ad-hoc sign so it runs without an
-# Apple Developer account.
+# On Apple Silicon the kernel refuses to exec unsigned arm64 Mach-Os
+# (the user sees a "can't verify developer / Apple ID" dialog). Bun's
+# --compile output ships with a malformed LC_CODE_SIGNATURE stub, so a
+# plain `codesign --sign -` fails with "invalid or unsupported format".
+# Strip the stub first, then ad-hoc sign.
 if [ "$(uname -s)" = "Darwin" ]; then
-  xattr -d com.apple.quarantine "$TMP" 2>/dev/null || true
-  codesign --sign - "$TMP" 2>/dev/null || true
+  xattr -c "$TMP" 2>/dev/null || true
+  codesign --remove-signature "$TMP" 2>/dev/null || true
+  if ! codesign --force --sign - "$TMP" 2>/dev/null; then
+    echo "Warning: ad-hoc codesign failed. If 'corvus' is killed on launch, run:" >&2
+    echo "  codesign --remove-signature \"\$(command -v corvus)\" && codesign --force --sign - \"\$(command -v corvus)\"" >&2
+  fi
 fi
 
 if [ -w "$INSTALL_DIR" ]; then
