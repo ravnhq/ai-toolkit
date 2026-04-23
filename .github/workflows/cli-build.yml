@@ -73,13 +73,11 @@ jobs:
             outfile="dist-bin/corvus-${platform}"
             echo "  Building ${platform}..."
             bun build src/index.ts --compile --target="$target" --outfile="$outfile"
-            # Bun emits a malformed LC_CODE_SIGNATURE stub, so `codesign --sign -`
-            # alone fails with "invalid or unsupported format" and silently
-            # leaves the binary unsigned. Strip first, then ad-hoc sign, then
-            # verify — without verification the build can silently ship an
-            # unsigned arm64 binary that macOS kernel refuses to exec.
-            codesign --remove-signature "$outfile" 2>/dev/null || true
-            codesign --force --sign - "$outfile"
+            # Bun emits a malformed LC_CODE_SIGNATURE stub; sign-macos.sh strips
+            # it and applies an ad-hoc signature. `codesign -dv` verifies the
+            # result so the build can't silently ship an unsigned arm64 binary
+            # that the macOS kernel refuses to exec.
+            ../scripts/sign-macos.sh "$outfile"
             codesign -dv "$outfile"
             echo "  ✓ ${outfile}"
           done
