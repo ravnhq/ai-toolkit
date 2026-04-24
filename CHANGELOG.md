@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-04-24
+
+- Added artifact-first delivery with ingestion cascade, rich cells, control surface.
 ## 2026-04-23
 
 - Added harvest VoltAgent/awesome-design-md for brand-inspired profiles.
