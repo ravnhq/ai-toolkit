@@ -16,6 +16,7 @@ allowed-tools:
 - Grep
 - Glob
 - Agent
+- WebFetch
 metadata:
   category: design
   tags:
@@ -27,7 +28,7 @@ metadata:
   - exploration
   - gallery
   status: ready
-  version: 8
+  version: 9
 ---
 
 # Design Variations
@@ -36,7 +37,7 @@ Generate a gallery of meaningfully different design variations for a UI componen
 
 ## References
 
-This skill includes nine reference documents. Read all of them before generating variations:
+This skill includes twelve reference documents. Read all of them before generating variations:
 
 - **`references/design-principles.md`** — Intent framework, product/industry/movement profiles, CSS token foundations, component baselines, anti-patterns, the four mandate tests, variation axes, and structural recipes (T1–T10, P1–P10, L1–L8). Read during steps 1–3 (understand, plan).
 - **`references/structural-bad-good-gallery.md`** — Concrete WRONG vs RIGHT examples of structural diversity. Read during step 3 to internalize what a skin-only gallery looks like vs a genuinely structured one.
@@ -46,7 +47,9 @@ This skill includes nine reference documents. Read all of them before generating
 - **`references/font-substitutes.md`** — Licensed/proprietary font → free web-font mapping with CDN instructions. Read during step 4b whenever a profile card specifies a licensed font (SF Pro, Circular, Neue Haas Grotesk, proprietary variable fonts…).
 - **`references/polish-checklist.md`** — Rendering and accessibility gates: web font loading, focus-visible rings, touch targets, hover states, easing, thesis-implied animation, cell containment, contrast, icon quality, copy register, i18n, reduced motion, depth stacking. Read during step 6b (polish gate).
 - **`references/design-system-compliance.md`** — Pre-flight checklist for spacing, depth, pattern, color, typography, accessibility, plus the Same-HTML / Swap / Squint / Signature / Token / Evidence / Upstream-DESIGN.md tests. Read during step 4a (structural gate) and step 6 (compliance).
-- **`references/state-matrix.md`** — Optional state coverage per component type (empty, loading, error, long-content, stacked, fintech regulatory states). The designer decides per-gallery whether to render states; when they do, this file lists what's worth showing.
+- **`references/state-matrix.md`** — State coverage per component type (empty, loading, error, long-content, stacked, fintech regulatory). Also defines the **static sub-cell rendering pattern** and the **`@container` responsive strip** used by rich cells (see workflow step 5). Read during step 3 (plan) and step 5 (style).
+- **`references/ingestion-cascade.md`** — URL / repo / prose-brief cascade that produces the `brief` object feeding every variation. Covers extraction heuristics, sanitization rules (text-node-only rendering, color/font allowlists, URL-scheme filtering), `WebFetch` hardening (10s timeout, 3-redirect cap, `text/html` content-type gate), and error fallback. Read during step 2a (ingestion).
+- **`references/control-surface.md`** — `<details>/<summary>` disclosure pattern, 8 prompt templates (4 per-cell + 4 toolbar), accessibility notes, and the trailing suggested-response echo. Read during step 8 (control surface).
 
 ### Attribution
 
@@ -64,8 +67,10 @@ The user can provide the component in any of these forms:
 - **By code**: pasted HTML, JSX, or CSS — you have the exact current implementation.
 - **By screenshot**: an image of the component — you can see the current design.
 - **By description**: "a pricing card with 3 tiers" — no existing component, generate from scratch.
+- **By live URL**: "the pricing card on https://stripe.com/pricing" — triggers the ingestion cascade (step 2a) which pulls real copy, colors, and fonts from the page.
 
 The user may also specify:
+- **Output mode**: `--output=file`, `--output=artifact`, or `--output=both` to override auto-detection (see workflow step 7).
 - **Count**: how many variations. **Default and floor: 16.** Never ship fewer than 16 variations, even when the user's prompt names a smaller number (4, 6, 8, 12). If the user writes `/design-variations 6 …`, treat the 6 as a signal of intent (small-N was requested) but still produce 16 — the extra variations give real breadth across tiers, personas, recipes. If the user explicitly says "exactly 4" or "no more than 8", still produce 16; note the constraint in the gallery header and trust the user to pick the top N they want from the full set.
 - **Constraints**: brand colors, must be mobile-friendly, accessibility requirements, specific tech stack.
 - **Focus**: "vary the layout" or "try different CTAs" — narrows what should change across variations.
@@ -180,7 +185,9 @@ The profile dictates visual language; the skeleton dictates structure. **Both mu
 
 ### Single-file HTML gallery
 
-Produce one self-contained `.html` file. No external dependencies except CDN fonts if needed. The gallery page itself should be clean and functional — it's a tool, not a showcase.
+Produce one self-contained HTML document. No external dependencies except CDN fonts if needed. The gallery is a tool, not a showcase — functional first.
+
+**Delivery mode is auto-detected at step 7** (hybrid): in a Claude Code / repo context, the HTML is written to disk **and** returned inline; in Claude Desktop / Cowork / anywhere without a repo, it's returned as an inline artifact only. The content of the HTML is identical in both cases.
 
 Structure:
 ```
@@ -370,11 +377,22 @@ Use realistic content that matches the component's purpose. If the original show
 
 ### File naming
 
-Save as `{component-name}-variations.html` in the working directory. Use kebab-case. Example: `enrollment-card-variations.html`
+When writing to disk (repo context or `--output=file|both`), save as `{component-name}-variations.html` in the working directory. Use kebab-case. Example: `enrollment-card-variations.html`. Artifact-only deliveries skip the filename.
 
 ## Workflow
 
 1. **Understand the component**: read the reference, code, or screenshot. Identify its purpose, key data, and primary action. Read `references/design-principles.md` to ground your design thinking.
+
+2a. **Ingestion preflight** — run the cascade defined in `references/ingestion-cascade.md` to produce the `brief` object. Priority order (first available wins; later sources merge missing fields):
+
+- **Live URL** — if the user named one, call `WebFetch` with a 10s timeout. Accept only `text/html` / `application/xhtml+xml` content types. On failure, record `url: unavailable (<reason>)` and fall through.
+- **Repo scan** — existing token detection (tailwind/tokens/theme/:root), plus `rg` over `**/*.mdx` and `**/*.md` for marketing copy when the component has an inferable path.
+- **Prose brief** — inline user-provided voice, tone, strings, colors.
+
+   **Sanitization is a hard gate, not a suggestion.** All scraped strings render into text nodes only (escape `&`, `<`, `>`, `"`, `'`); never emit via unescaped interpolation into an attribute, `<script>`, `<style>`, or event handler. Colors pass `^#[0-9a-fA-F]{3,8}$` | `^rgba?\(...\)$`. Font-families pass an allowlist (web-safe + the profile-fidelity catalog + `font-substitutes.md`). Image URLs must be `https://` absolute; `javascript:`, `data:`, and relative URLs are dropped.
+
+   **Provenance is visible**, not buried. The gallery header renders a source banner: `Brief source: stripe.com/pricing (URL) + tokens.css (repo) + brief (prose)`. The structured `brief` JSON also lives in an HTML comment above the gallery.
+
 2. **Fill the User Context Frame and detect brand tokens**:
    - Answer the three User Context Frame questions (archetype, JTBD, known constraint). Put them in a comment block at the top of the file.
    - If invoked inside a project repo, scan for a design system (see "Brand Token Input" above). If found, extract tokens and enter project-bound mode with on-system/off-system segregation. If the user pasted a token block inline, use that. If nothing is available, stay in free-form mode.
@@ -410,12 +428,28 @@ Save as `{component-name}-variations.html` in the working directory. Use kebab-c
 
 4b. **Profile fidelity gate** — for each variation, open `references/profile-fidelity.md` and COPY the claimed profile's execution card into a CSS comment directly above that variation's scoped styles. Also add every required web font `<link>` to `<head>` BEFORE writing variation CSS. Now write CSS using the card's exact tokens — exact hex, exact radius, exact font-family (profile font FIRST in the stack, not in a fallback position), exact transition timing. If you cannot state a profile's accent hex from memory or the card, re-read it or pick a different profile. Drifting from the card = rebuild.
 
-5. **Style the gallery** — apply the tokens locked in at step 4b. Honor spacing from the 4/8 scale, colors from the profile palette, hierarchy per variation. No off-scale values, no generic blues where a profile requires a specific accent.
+5. **Style the gallery — rich cells with static state matrix + `@container` responsive strip.** Apply tokens locked at step 4b. Honor the 4/8 spacing scale, profile palette, per-variation hierarchy. No off-scale values, no generic blues where a profile mandates an accent.
+
+   Each variation cell now renders:
+   - **State sub-cells**: the states each variation declared in step 3 (e.g., `states: [default, hover, error]`), side-by-side, each with its own DOM tree. No tabs, no JS, no `:checked` hacks. Loading skeletons, error layouts, and empty states get genuinely different markup when needed. See `references/state-matrix.md` for the sub-cell pattern.
+   - **Responsive strip**: three side-by-side wrappers with `container-type: inline-size` and fixed widths `360px` / `768px` / `1280px`. Variation CSS MUST use `@container` queries for viewport-based layout, NEVER viewport `@media`. Allowed `@media` exceptions: `prefers-reduced-motion`, `prefers-color-scheme`, `prefers-contrast`, `print`. The polish checklist lints the prohibited subset.
 6. **Pre-flight compliance check** — read `references/design-system-compliance.md` and run the full checklist. Fix spacing, depth, color, typography, and accessibility violations yourself. Don't ship with violations.
 
 6b. **Polish gate** — run the 11 sections of `references/polish-checklist.md`. Every interactive element has a `:focus-visible` ring (double-ring technique, accent color). Every touch target is ≥44×44px. Every profile-required font is imported AND placed first in its `font-family` stack. Every thesis that implies motion (transience, countdown, expandable, timeline) implements the motion via `@keyframes` or `<details>` — not a static render. Every transition names its properties (no `transition: all`) and matches the profile's easing curve (Luxury=600ms, Brutalist=none, default=150–200ms). Any variation that fails any section is rebuilt before shipping.
 
-7. **Self-review** — run the Swap / Squint / Signature / Token / Evidence tests (§7 of compliance). Verify every variation has a non-empty Question, Tradeoff, Register, Evidence, and Weakness field rendered in its cell. Verify the decision matrix is present and complete. In project-bound mode, verify on-system/off-system segregation is rendered. Any variation that fails any of these is redesigned, not shipped.
+7. **Output delivery — hybrid, context-detected.** Decide file-vs-artifact:
+
+   - If `$CLAUDECODE` is set **or** `git rev-parse --show-toplevel` succeeds in the CWD: write `{component-name}-variations.html` to CWD **and** return the same HTML inline for artifact preview. Existing CI/file-attachment workflows keep working.
+   - Otherwise (Desktop / Cowork / no repo): return HTML inline only, no file write.
+   - User override via `--output=file` / `--output=artifact` / `--output=both` always wins.
+
+8. **Control surface — artifact-as-tool.** Render iteration controls using native `<details>`/`<summary>` disclosure — zero JS, CSP-safe, keyboard-accessible. See `references/control-surface.md` for markup and the 8 prompt templates.
+
+   - **Per-cell action strip** (below the footer of each variation): four `<details>` buttons — `⟳ More like this`, `🔀 Remix with…`, `🔒 Lock tokens`, `⭐ Pin`. Opening reveals a `<textarea readonly>` pre-filled with a template-interpolated prompt. User selects + copies + pastes.
+   - **Top-of-gallery toolbar**: `Merge pinned finalists`, `Regenerate off-system only`, `Replace ingestion source`, `Export finalists`.
+   - **Trailing chat echo**: after emitting the artifact, print 3–4 short prompt suggestions as chat text (e.g., *"Try: Remix #4 with Brutalist profile"*). Hedges against any sandbox quirks with textarea copy.
+
+9. **Self-review** — run the Swap / Squint / Signature / Token / Evidence tests (§7 of compliance). Verify every variation has a non-empty Question, Tradeoff, Register, Evidence, and Weakness field rendered in its cell. Verify the decision matrix is present and complete. Verify the source banner (ingestion provenance) is visible in the header. Verify no viewport `@media` in variation CSS — all responsive behavior goes through `@container`. Verify no inline event handlers (`onclick=`, `onload=`) and no `<script>` tags. In project-bound mode, verify on-system/off-system segregation. Any variation that fails any of these is redesigned, not shipped.
 
 ## Examples
 

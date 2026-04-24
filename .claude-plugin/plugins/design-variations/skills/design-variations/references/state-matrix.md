@@ -1,8 +1,11 @@
-# State Matrix (optional)
+# State Matrix
 
 Designers showing variations to stakeholders often leave out the "hard states" — empty, loading, error, overflow. The gallery looks clean but fails the first real-data review.
 
-This file is **opt-in**. The designer (or user) decides per-gallery whether state coverage matters. When it does, this file lists what's worth rendering per component type. When it doesn't — for pure visual exploration — skip this entirely.
+This file now serves two roles:
+
+1. **State coverage menu** (per-component lists of states worth rendering — unchanged).
+2. **Rich cell rendering pattern** (static sub-cells + `@container` responsive strip — the mechanism workflow step 5 uses to render declared states side-by-side without JS).
 
 ## When to include states
 
@@ -123,3 +126,111 @@ states: default + loading + empty // data component, wants real-data review
 ```
 
 If unsure, default to `default-only` and let the stakeholder ask for more.
+
+---
+
+## Rich cell rendering (workflow step 5)
+
+When a variation declares states, render them as **static side-by-side sub-cells** inside the variation's preview area. No tabs, no `:checked` toggles, no JS.
+
+### Cell skeleton
+
+```html
+<div class="variation-cell">
+  <div class="variation-header">…</div>
+
+  <!-- Preview area now contains TWO strips: states (top) and responsive (bottom) -->
+  <div class="variation-preview">
+
+    <!-- State sub-cells: one per declared state -->
+    <div class="variation-states">
+      <figure class="state">
+        <figcaption>default</figcaption>
+        <!-- rendered component in default state -->
+      </figure>
+      <figure class="state">
+        <figcaption>hover</figcaption>
+        <!-- rendered component in hover state (e.g., :hover selectors forced via a class) -->
+      </figure>
+      <figure class="state">
+        <figcaption>error</figcaption>
+        <!-- rendered component with distinct error DOM -->
+      </figure>
+    </div>
+
+    <!-- Responsive strip: 3 wrappers with container-type: inline-size -->
+    <div class="variation-responsive">
+      <figure class="viewport viewport--desktop">
+        <figcaption>1280</figcaption>
+        <div class="viewport__frame">
+          <!-- same rendered component, wrapped for container query -->
+        </div>
+      </figure>
+      <figure class="viewport viewport--tablet">
+        <figcaption>768</figcaption>
+        <div class="viewport__frame">
+          <!-- same rendered component -->
+        </div>
+      </figure>
+      <figure class="viewport viewport--mobile">
+        <figcaption>360</figcaption>
+        <div class="viewport__frame">
+          <!-- same rendered component -->
+        </div>
+      </figure>
+    </div>
+
+  </div>
+
+  <div class="variation-footer">…</div>
+</div>
+```
+
+### Required CSS for the responsive strip
+
+```css
+.viewport__frame {
+  container-type: inline-size;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+.viewport--desktop .viewport__frame { width: 1280px; max-width: 100%; }
+.viewport--tablet  .viewport__frame { width: 768px;  max-width: 100%; }
+.viewport--mobile  .viewport__frame { width: 360px;  max-width: 100%; }
+```
+
+Variation component CSS MUST use `@container` queries for viewport-responsive behavior:
+
+```css
+/* Good */
+@container (max-width: 500px) {
+  .v4-card { flex-direction: column; }
+}
+
+/* Bad — viewport @media does NOT fire on a fixed-width container */
+@media (max-width: 500px) {
+  .v4-card { flex-direction: column; }
+}
+```
+
+### Allowed `@media` exceptions
+
+`@media` is still permitted for accessibility/print features — these respond to user preference, not viewport width, and work identically inside or outside a container:
+
+- `prefers-reduced-motion`
+- `prefers-color-scheme`
+- `prefers-contrast`
+- `print`
+
+Any other `@media` query (`min-width`, `max-width`, `orientation`, `hover`, `pointer`) in variation CSS is a polish-checklist failure — rebuild.
+
+### Why static sub-cells beat tabs
+
+- **Structural states work natively.** A loading skeleton, an error layout, and a default render can have completely different DOM trees — each sub-cell is independent.
+- **No JS, no ARIA radiogroup burden, no keyboard-trap risk, no CSP concerns.**
+- **Faster decisions.** Stakeholders compare states visually in one glance instead of clicking through tabs.
+- **Print-friendly.** Print the gallery and states come through.
+
+### When NOT to render multiple states
+
+If a variation's thesis is single-state (e.g., a static badge, a decorative mark), render only the `default` sub-cell. Declaring a state you don't actually have is worse than skipping it — empty or lorem-filled "error" sub-cells break trust.

@@ -239,6 +239,76 @@ Every variation whose thesis implies motion (transience, countdown, expandable, 
 
 ---
 
+## 14. Ingestion sanitization (text-node rendering)
+
+Every value drawn from `brief.copy`, `brief.assets`, or `brief.voice` (ingestion cascade, step 2a) is untrusted. The generator MUST render it as escaped text between tags, never as raw HTML. See `ingestion-cascade.md` for the full contract.
+
+**Gate:** grep the generated gallery. Zero instances of scraped strings appearing inside:
+- `<script>` blocks
+- inline event handler attributes (`onclick=`, `onload=`, `onerror=`, etc.)
+- `href="javascript:..."`
+- `src="data:..."` or `href="data:..."`
+- raw `innerHTML`-style injection patterns (the generator should be outputting a static HTML document — no runtime DOM injection)
+
+**Test vectors** (used by verification step 13): feed the cascade these strings (as prices, headings, CTAs) and confirm all render as literal text or are dropped:
+```
+<script>alert(1)</script>
+<img src=x onerror=alert(1)>
+javascript:alert(1)
+"><img src=x onerror=alert(1)>
+```
+
+**Rule:** any variation whose content could be derived from an untrusted source and is not escaped fails.
+
+---
+
+## 15. CSP safety (no inline JS, no `<script>`)
+
+The gallery MUST be a static HTML document.
+
+**Forbidden:**
+- Any `<script>` tag anywhere in the output.
+- Any inline event handler attribute (`onclick`, `onload`, `onerror`, `onmouseover`, `onfocus`, `onblur`, `oninput`, `onchange`, etc.).
+- `javascript:` URL schemes in `href` / `src`.
+- `eval`, `setTimeout` / `setInterval` with string args — irrelevant without `<script>`, but flag if present.
+
+All interactivity is native: `<details>`/`<summary>` for control-surface disclosures, `:hover` / `:focus-visible` for state feedback, `@container` for responsive behavior.
+
+**Gate:** grep output for `<script`, ` on[a-z]+=`, `javascript:`, `data:text/html`. Zero matches.
+
+---
+
+## 16. Viewport `@media` ban in variation CSS
+
+Variation CSS MUST use `@container` queries for layout that responds to component width. Viewport `@media` queries (`min-width`, `max-width`, `orientation`, `hover`, `pointer`, `aspect-ratio`) are forbidden inside variation-scoped styles because the responsive strip renders each viewport inside a fixed-width container (`container-type: inline-size`) — viewport `@media` does not fire against the container's size.
+
+**Allowed `@media` exceptions** (preference-based, not viewport-based):
+- `prefers-reduced-motion`
+- `prefers-color-scheme`
+- `prefers-contrast`
+- `print`
+
+**Gate:** grep every `.vN-*` scoped style block for `@media`. Any match whose condition uses `min-width`, `max-width`, `orientation`, `hover`, `pointer`, or `aspect-ratio` = rebuild.
+
+Gallery-chrome CSS (the outer grid, header, decision matrix) MAY use viewport `@media` — only variation-scoped styles are restricted.
+
+---
+
+## 17. Control-surface a11y (`<details>` + `<textarea>`)
+
+Every control-surface disclosure (per `references/control-surface.md`) MUST satisfy:
+
+- `<summary>` has a visible `:focus-visible` ring (polish §2).
+- `<summary>` is keyboard-activatable (native behavior — don't override).
+- Each revealed `<textarea>` has BOTH `aria-label` AND a visible `<label for="…">`.
+- `<textarea>` is `readonly`, never `disabled`.
+- `<textarea>` `rows` is large enough that the full prompt is visible without internal scrolling.
+- Prompt text is plain ASCII (no smart quotes, no em dashes that break when pasted into CLIs).
+
+**Gate:** any control-surface element missing its label, ring, or readonly flag fails.
+
+---
+
 ## How to run this checklist
 
-After compliance (`design-system-compliance.md`), run sections 1–11 on each variation. For each failure, rebuild the specific element and re-check. Don't ship the gallery until every variation passes every section.
+After compliance (`design-system-compliance.md`), run sections 1–17 on each variation. For each failure, rebuild the specific element and re-check. Don't ship the gallery until every variation passes every section.
