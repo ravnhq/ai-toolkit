@@ -36,6 +36,31 @@
         "recipes_must_cover_any_of": ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10"],
         "min_recipes_covered": 8
       }
+    },
+    {
+      "id": 4,
+      "prompt": "/design-variations 16 A horizontal top navigation bar for a developer-tools SaaS — logo, 4 links, a search input, and a sign-up CTA.",
+      "expected_output": "Single HTML file with 16 nav-bar variations, each citing an N1–N8 recipe code from component-recipes-extended.md, with at least half using distinct recipe codes.",
+      "files": [],
+      "structural_diversity_pass_criteria": {
+        "distinct_skeletons_required": 10,
+        "min_distinct_ratio": 0.625,
+        "recipes_must_cover_any_of": ["N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8"],
+        "min_recipes_covered": 6
+      }
+    },
+    {
+      "id": 5,
+      "prompt": "/design-variations 16 A feature card for an AI product landing page, using the Claude profile (inspired by claude.md) — warm terracotta accent, cream canvas, serif heading.",
+      "expected_output": "Gallery where on-system Claude-profile variations render Claude's exact tokens — terracotta accent #D97757, warm cream background, serif display font — per the Claude card in profile-fidelity.md. Off-system variations may deviate but must be segregated below the divider.",
+      "files": [],
+      "profile_fidelity_pass_criteria": {
+        "profile": "claude",
+        "required_hex_on_system": ["#D97757"],
+        "forbidden_hex_on_system": ["#3b82f6", "#0ea5e9"],
+        "required_font_family_first": ["Tiempos", "Styrene", "Inter"],
+        "required_source_citation": "getdesign.md/claude/design-md"
+      }
     }
   ]
 }

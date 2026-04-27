@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-04-24
+
+- Added artifact-first delivery with ingestion cascade, rich cells, control surface.
+## 2026-04-23
+
+- Added harvest VoltAgent/awesome-design-md for brand-inspired profiles.
+## 2026-04-22
+
+- Added encode designer craft — user context, brand tokens, copy register, i18n, reduced motion.
 ## 2026-04-16
 
 - Added structural-diversity eval suite and profile fidelity refs.

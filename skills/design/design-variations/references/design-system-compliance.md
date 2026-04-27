@@ -2,10 +2,11 @@
 
 Run this checklist on every variation before showing work to the user. Fix violations yourself — don't wait for the user to catch them.
 
-This check has two modes:
+This check has three modes:
 
 - **With a design system**: the user provided brand colors, spacing rules, component patterns, or a reference to an existing system. Check against those constraints.
 - **Without a design system**: no system was provided. Check against the defaults in `design-principles.md` to ensure internal consistency.
+- **Upstream DESIGN.md mode**: the variation claims a brand-inspired profile (e.g. `claude`, `supabase`, `airbnb`, `tesla`). Check against the profile's card in `profile-fidelity.md` AND — if you want the strictest gate — against the canonical upstream at `https://getdesign.md/design-md/<slug>/DESIGN.md`. The card's `Accent`, `Background`, `Radius`, `Shadow`, and `Button` fields must appear byte-identical in the variation's CSS. A generic blue where the card says `#D97757` = rebuild.
 
 ---
 
@@ -140,6 +141,8 @@ These checks compare variations against each other. Run them after all individua
 - [ ] **Squint Test**: blur your eyes on each variation. The primary action and key data must be visually dominant. If everything flattens to the same gray, hierarchy is broken.
 - [ ] **Signature Test**: cover the color and typography. Can you identify each variation from layout/structure alone? If not, it lacks a signature element.
 - [ ] **Token Test**: every spacing value from the scale, every font size from the type scale, every color from the palette, every radius consistent. One off-scale value fails.
+- [ ] **Evidence Test**: every variation's `Evidence` field names a real source — `research:<note>` / `heuristic:<name>` / `competitor:<product>` / `anti-pattern-avoidance` / `ASSUMPTION`. Blank fields or "it looks cool" fail. `ASSUMPTION` is acceptable but must be the literal string so a reviewer can flag it for validation.
+- [ ] **Brand-compliance Test** (project-bound mode only): MIN + MID variations live in the on-system section and only use tokens from the detected design system. A MIN variation that drops an off-system font or accent color fails — either fix it or demote it to the off-system section.
 
 ---
 

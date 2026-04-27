@@ -16,6 +16,7 @@ allowed-tools:
 - Grep
 - Glob
 - Agent
+- WebFetch
 metadata:
   category: design
   tags:
@@ -27,7 +28,7 @@ metadata:
   - exploration
   - gallery
   status: ready
-  version: 5
+  version: 9
 ---
 
 # Design Variations
@@ -36,13 +37,23 @@ Generate a gallery of meaningfully different design variations for a UI componen
 
 ## References
 
-This skill includes five reference documents. Read all of them before generating variations:
+This skill includes twelve reference documents. Read all of them before generating variations:
 
 - **`references/design-principles.md`** — Intent framework, product/industry/movement profiles, CSS token foundations, component baselines, anti-patterns, the four mandate tests, variation axes, and structural recipes (T1–T10, P1–P10, L1–L8). Read during steps 1–3 (understand, plan).
 - **`references/structural-bad-good-gallery.md`** — Concrete WRONG vs RIGHT examples of structural diversity. Read during step 3 to internalize what a skin-only gallery looks like vs a genuinely structured one.
-- **`references/profile-fidelity.md`** — Per-profile execution cards with exact tokens, required web font imports, and forbidden drifts. Read during step 4b (profile fidelity gate). Any variation that claims a profile must execute its card verbatim.
-- **`references/polish-checklist.md`** — Rendering and accessibility gates: web font loading, focus-visible rings, touch targets, hover states, easing, thesis-implied animation, cell containment, contrast, icon quality, copy quality. Read during step 6b (polish gate).
-- **`references/design-system-compliance.md`** — Pre-flight checklist for spacing, depth, pattern, color, typography, accessibility, plus the Same-HTML / Swap / Squint / Signature / Token tests. Read during step 4a (structural gate) and step 6 (compliance).
+- **`references/profile-fidelity.md`** — Per-profile execution cards with exact tokens, required web font imports, and forbidden drifts. Covers movement profiles (Editorial, Brutalist, Cyberpunk, Wabi-Sabi, Art Deco…) AND 50+ brand-inspired profiles distilled from the MIT-licensed VoltAgent/awesome-design-md corpus (Claude, Airbnb, Cursor, Supabase, Raycast, Warp, Linear, Stripe, Vercel, Tesla, BMW, Kraken, Revolut, etc.). Read during step 4b (profile fidelity gate). Any variation that claims a profile must execute its card verbatim.
+- **`references/component-recipes-extended.md`** — Structural recipes beyond toast/pricing/login: nav (N1–N8), hero (H1–H8), modal (M1–M6), table (TB1–TB6), dashboard card (D1–D6), sidebar (SB1–SB6), form (F1–F6), footer (FT1–FT4). Cite codes in the skeleton plan just like T/P/L codes. Read during step 3 when the target component is none of toast / pricing / login.
+- **`references/agent-prompt-cheatsheet.md`** — Quick per-profile example prompts for handing stakeholders a copy-pasteable brief. Optional read; useful during step 2 when the user hasn't named a profile.
+- **`references/font-substitutes.md`** — Licensed/proprietary font → free web-font mapping with CDN instructions. Read during step 4b whenever a profile card specifies a licensed font (SF Pro, Circular, Neue Haas Grotesk, proprietary variable fonts…).
+- **`references/polish-checklist.md`** — Rendering and accessibility gates: web font loading, focus-visible rings, touch targets, hover states, easing, thesis-implied animation, cell containment, contrast, icon quality, copy register, i18n, reduced motion, depth stacking. Read during step 6b (polish gate).
+- **`references/design-system-compliance.md`** — Pre-flight checklist for spacing, depth, pattern, color, typography, accessibility, plus the Same-HTML / Swap / Squint / Signature / Token / Evidence / Upstream-DESIGN.md tests. Read during step 4a (structural gate) and step 6 (compliance).
+- **`references/state-matrix.md`** — State coverage per component type (empty, loading, error, long-content, stacked, fintech regulatory). Also defines the **static sub-cell rendering pattern** and the **`@container` responsive strip** used by rich cells (see workflow step 5). Read during step 3 (plan) and step 5 (style).
+- **`references/ingestion-cascade.md`** — URL / repo / prose-brief cascade that produces the `brief` object feeding every variation. Covers extraction heuristics, sanitization rules (text-node-only rendering, color/font allowlists, URL-scheme filtering), `WebFetch` hardening (10s timeout, 3-redirect cap, `text/html` content-type gate), and error fallback. Read during step 2a (ingestion).
+- **`references/control-surface.md`** — `<details>/<summary>` disclosure pattern, 8 prompt templates (4 per-cell + 4 toolbar), accessibility notes, and the trailing suggested-response echo. Read during step 8 (control surface).
+
+### Attribution
+
+Brand-inspired profile cards in `profile-fidelity.md` are distilled from **VoltAgent/awesome-design-md** (MIT, getdesign.md). Each card cites its upstream slug. These cards claim inspiration from public brands, not affiliation. If a user provides a `getdesign.md/<slug>/design-md` URL as a reference, treat it as authoritative for that variation (see "DESIGN.md mode" below).
 
 ## How It Works
 
@@ -56,11 +67,41 @@ The user can provide the component in any of these forms:
 - **By code**: pasted HTML, JSX, or CSS — you have the exact current implementation.
 - **By screenshot**: an image of the component — you can see the current design.
 - **By description**: "a pricing card with 3 tiers" — no existing component, generate from scratch.
+- **By live URL**: "the pricing card on https://stripe.com/pricing" — triggers the ingestion cascade (step 2a) which pulls real copy, colors, and fonts from the page.
 
 The user may also specify:
+- **Output mode**: `--output=file`, `--output=artifact`, or `--output=both` to override auto-detection (see workflow step 7).
 - **Count**: how many variations. **Default and floor: 16.** Never ship fewer than 16 variations, even when the user's prompt names a smaller number (4, 6, 8, 12). If the user writes `/design-variations 6 …`, treat the 6 as a signal of intent (small-N was requested) but still produce 16 — the extra variations give real breadth across tiers, personas, recipes. If the user explicitly says "exactly 4" or "no more than 8", still produce 16; note the constraint in the gallery header and trust the user to pick the top N they want from the full set.
 - **Constraints**: brand colors, must be mobile-friendly, accessibility requirements, specific tech stack.
 - **Focus**: "vary the layout" or "try different CTAs" — narrows what should change across variations.
+
+## User Context Frame (do this before planning variations)
+
+Before any thesis-writing, answer three questions in a comment block at the top of the file. These anchor every variation to a real user decision, not visual novelty.
+
+1. **Primary user archetype** — one of: First-Time / Returning / Power / Skeptic / Time-Pressed / Low-Bandwidth / Screen-Reader / Anonymous. Pick the most likely primary; secondary archetypes surface in per-variation personas.
+2. **Job-to-be-done** — one sentence. E.g., "Decide whether to upgrade from Free to Pro in under 30 seconds."
+3. **Known constraint** — one evidence source: research finding, heuristic, competitor reference, or the literal string `ASSUMPTION` if none. Don't fabricate research.
+
+Every variation's thesis (step 3) must reference at least one of these three. Theses that can't are rebuilt.
+
+## Brand Token Input (optional)
+
+The skill has two modes:
+
+- **Free-form mode** (default): no brand system provided. Profiles override freely. All 16 variations are exploratory.
+- **Project-bound mode**: when invoked inside a project repo, scan for an existing design system before generating. Look for (in order): `tailwind.config.*`, `tokens.{json,css,ts}`, `theme.{json,css,ts}`, `:root { --... }` blocks in global stylesheets, `styled-system` config, shadcn/ui `components.json` + CSS vars. If found, extract: primary color, neutral scale, radius scale, font-family, spacing base. If multiple systems coexist (e.g. a storybook + a partial tailwind), ask the user which one is authoritative. If no system is detectable, fall back to free-form.
+
+Can also be provided inline — the user may paste a token block (JSON, CSS vars, or prose: "brand red #D4201F, radius 2px, Inter"). Inline input overrides any auto-detection.
+
+**DESIGN.md mode** (brand-inspired override): when the user references a `getdesign.md/<slug>/design-md` URL, names an upstream-available brand ("make it look like Claude / Supabase / Warp"), or points at a local `DESIGN.md` file in the repo, treat that source as the authoritative brand system. Open the matching card in `references/profile-fidelity.md` and, if the upstream file is newer or more complete, fetch `https://getdesign.md/design-md/<slug>/DESIGN.md` for up-to-date tokens. Gate the gallery the same as project-bound mode: ≥8 on-system variations using those tokens, remainder off-system with the divider.
+
+**When tokens are present, segregate the gallery into two sections:**
+
+1. **On-system variations** (≥8 of the 16): MIN + MID tier. Honor the extracted tokens. These are production-viable.
+2. **Off-system variations** (the remaining BOLD + UNIQUE): rendered below a divider labeled `OFF-SYSTEM — exploratory, not brand-compliant`. Free to deviate. These stretch the stakeholder's imagination without pretending to be shippable.
+
+Rendered in the HTML as two `<section>` blocks with clear header separation. The decision matrix (below) stays single-table across both.
 
 ## Variation Strategy
 
@@ -144,7 +185,9 @@ The profile dictates visual language; the skeleton dictates structure. **Both mu
 
 ### Single-file HTML gallery
 
-Produce one self-contained `.html` file. No external dependencies except CDN fonts if needed. The gallery page itself should be clean and functional — it's a tool, not a showcase.
+Produce one self-contained HTML document. No external dependencies except CDN fonts if needed. The gallery is a tool, not a showcase — functional first.
+
+**Delivery mode is auto-detected at step 7** (hybrid): in a Claude Code / repo context, the HTML is written to disk **and** returned inline; in Claude Desktop / Cowork / anywhere without a repo, it's returned as an inline artifact only. The content of the HTML is identical in both cases.
 
 Structure:
 ```
@@ -177,12 +220,22 @@ Each gallery cell MUST use a structural layout with the label/header area physic
 <div class="variation-cell">
   <!-- HEADER: fixed structural area, not overlaid -->
   <div class="variation-header">
-    <span class="variation-name">1. Precision Standard</span>
-    <span class="variation-tier">MIN</span>
+    <div class="variation-title-row">
+      <span class="variation-name">1. Precision Standard</span>
+      <span class="variation-tier">MIN</span>
+    </div>
+    <span class="variation-question">Do users want the price or the value-prop first?</span>
   </div>
   <!-- PREVIEW: bounded area for the component -->
   <div class="variation-preview">
     <!-- rendered component goes here -->
+  </div>
+  <!-- FOOTER: tradeoff strip + weakness -->
+  <div class="variation-footer">
+    <span class="variation-tradeoff">
+      <b>Gains:</b> scannability · <b>Costs:</b> depth · <b>Best for:</b> Time-Pressed
+    </span>
+    <span class="variation-weakness" title="Fails at >5 features">⚠ weakness</span>
   </div>
 </div>
 ```
@@ -227,9 +280,65 @@ Each gallery cell MUST use a structural layout with the label/header area physic
   align-items: center;
   justify-content: center;
 }
+.variation-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.variation-question {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-style: italic;
+  color: #6b7280;
+  line-height: 1.4;
+}
+.variation-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 16px;
+  border-top: 1px solid #e5e7eb;
+  background: #fafafa;
+  font-size: 11px;
+  color: #4b5563;
+  flex-shrink: 0;
+}
+.variation-tradeoff b { font-weight: 600; color: #111827; }
+.variation-weakness {
+  color: #9ca3af;
+  cursor: help;
+  white-space: nowrap;
+}
 ```
 
 This structure guarantees the label is always visible regardless of component height. Do NOT use `position: absolute` for labels — it causes components to overlap titles.
+
+### Decision matrix (required)
+
+Above the gallery grid, render a compact `<table class="decision-matrix">` with one row per variation and columns: **#**, **Name**, **User persona**, **Register**, **Question**, **Tradeoff**, **Tier**. A stakeholder should be able to shortlist 3 finalists from this table alone without scrolling through renderings. Keep it visually quiet — small type, no heavy borders. It is the second most important artifact in the gallery, after the renders themselves.
+
+### Off-system segregation (project-bound mode only)
+
+When brand tokens were provided or auto-detected, split the gallery into two `<section>` blocks with clear header separation:
+
+```html
+<section class="gallery-on-system">
+  <h2>On-system variations — brand-compliant</h2>
+  <!-- MIN + MID variations using extracted tokens -->
+</section>
+
+<hr class="gallery-divider">
+
+<section class="gallery-off-system">
+  <h2>Off-system — exploratory, not brand-compliant</h2>
+  <p class="gallery-off-system-note">These deviate from the detected design system. Use as conceptual fuel, not as shippable candidates.</p>
+  <!-- BOLD + UNIQUE variations -->
+</section>
+```
+
+The decision matrix stays a single table across both sections.
 
 ### Component containment (critical)
 
@@ -268,25 +377,48 @@ Use realistic content that matches the component's purpose. If the original show
 
 ### File naming
 
-Save as `{component-name}-variations.html` in the working directory. Use kebab-case. Example: `enrollment-card-variations.html`
+When writing to disk (repo context or `--output=file|both`), save as `{component-name}-variations.html` in the working directory. Use kebab-case. Example: `enrollment-card-variations.html`. Artifact-only deliveries skip the filename.
 
 ## Workflow
 
 1. **Understand the component**: read the reference, code, or screenshot. Identify its purpose, key data, and primary action. Read `references/design-principles.md` to ground your design thinking.
-2. **Identify design system constraints**: if the user referenced a design system, brand, or existing codebase, extract the palette, spacing scale, font stack, border-radius scale, and shadow strategy. These constrain all variations. If no system was specified, use the defaults from the design principles reference.
+
+2a. **Ingestion preflight** — run the cascade defined in `references/ingestion-cascade.md` to produce the `brief` object. Priority order (first available wins; later sources merge missing fields):
+
+   1. **Live URL** — if the user named one, call `WebFetch` with a 10s timeout. Accept only `text/html` / `application/xhtml+xml` content types. On failure, record `url: unavailable (<reason>)` and fall through.
+   2. **Repo scan** — existing token detection (tailwind/tokens/theme/:root), plus `rg` over `**/*.mdx` and `**/*.md` for marketing copy when the component has an inferable path.
+   3. **Prose brief** — inline user-provided voice, tone, strings, colors.
+
+   **Sanitization is a hard gate, not a suggestion.** All scraped strings render into text nodes only (escape `&`, `<`, `>`, `"`, `'`); never emit via unescaped interpolation into an attribute, `<script>`, `<style>`, or event handler. Colors pass `^#[0-9a-fA-F]{3,8}$` | `^rgba?\(...\)$`. Font-families pass an allowlist (web-safe + the profile-fidelity catalog + `font-substitutes.md`). Image URLs must be `https://` absolute; `javascript:`, `data:`, and relative URLs are dropped.
+
+   **Provenance is visible**, not buried. The gallery header renders a source banner: `Brief source: stripe.com/pricing (URL) + tokens.css (repo) + brief (prose)`. The structured `brief` JSON also lives in an HTML comment above the gallery.
+
+2. **Fill the User Context Frame and detect brand tokens**:
+   - Answer the three User Context Frame questions (archetype, JTBD, known constraint). Put them in a comment block at the top of the file.
+   - If invoked inside a project repo, scan for a design system (see "Brand Token Input" above). If found, extract tokens and enter project-bound mode with on-system/off-system segregation. If the user pasted a token block inline, use that. If nothing is available, stay in free-form mode.
+   - If no system is specified anywhere, use the defaults from the design principles reference.
 3. **Plan the variation spectrum** — before any HTML, produce a structured plan. Emit the plan as a comment at the top of the `<style>` block. Every variation must have:
 
    - **Recipe code** — T1–T10 / P1–P10 / L1–L8 (from design-principles.md §9) or a self-invented code for unlisted components. Dictates the DOM skeleton.
-   - **Persona** — one of: *UX Researcher · Brand Strategist · Minimalist Typographer · Accessibility Specialist · Performance Engineer · Attention-Maximizing Marketer · Information Architect*. Each variation gets a distinct persona (reuse only when N exceeds roster size). Persona drives which tradeoffs dominate.
-   - **Thesis** — one sentence naming the DESIGN PROBLEM this variation solves (e.g. "Transience: 3s auto-dismiss, no close button"). Thesis first, profile second — never the reverse.
+   - **User persona** — who this variation serves: First-Time / Returning / Power / Skeptic / Time-Pressed / Low-Bandwidth / Screen-Reader / Anonymous. Drives WHICH tradeoff is acceptable (e.g., Skeptic tolerates density for comparison; Time-Pressed does not).
+   - **Design persona** — the maker's lens: *UX Researcher · Brand Strategist · Minimalist Typographer · Accessibility Specialist · Performance Engineer · Attention-Maximizing Marketer · Information Architect*. Drives HOW the variation is built.
+   - **Thesis** — one sentence naming the DESIGN PROBLEM this variation solves, grounded in the User Context Frame (e.g. "Skeptics need a side-by-side feature matrix, not marketing copy"). Thesis first, profile second — never the reverse.
+   - **Question** — the decision this variation forces the stakeholder to make. One interrogative sentence. E.g., "Do users want the price or the value-prop first?" or "Is auto-dismiss acceptable for critical alerts?" Rendered in the cell header under the variation name, in italics.
    - **Profile** — visual vocabulary (Stripe, Brutalist, Editorial…) that executes the thesis.
    - **Tier** — MIN / MID / BOLD / UNIQUE.
+   - **Register** — copy voice: Plain / Technical / Playful / Terse / Authoritative / Apologetic. Drives CTA verb, error tone, value-prop phrasing. Must cohere with the profile (Brutalist+Playful = incoherent; rebuild).
+   - **Tradeoff** — `Gains: <noun phrase> · Costs: <noun phrase>`. Rendered in the cell footer. E.g., `Gains: scannability · Costs: depth`.
+   - **Evidence** — one of: `research:<source>` / `heuristic:<name>` / `competitor:<product>` / `anti-pattern-avoidance` / `ASSUMPTION`. Never blank. "Looks cool" is not evidence.
+   - **Weakness** — one sentence of honest self-critique: where this variation fails. E.g., "Fails at >5 features"; "Requires premium font license"; "Assumes desktop viewport". Rendered as cell footnote or `title` tooltip.
    - **Axes** — 3–5 design axes this variation explores, each with a value: *density* (compact/normal/spacious), *hierarchy* (flat/layered), *interaction model* (static/dismissible/actionable/expandable), *color temperature* (cool/neutral/warm), *typography weight* (hairline/regular/bold), *containment* (card/bar/overlay/inline/none), *temporal behavior* (instant/countdown/persistent).
 
    **Forcing functions (all mandatory — rebuild variations until satisfied):**
    - **Tier distribution:** ≥1 MIN, ≥1 MID, ≥1 BOLD. If N ≥ 10, also ≥1 UNIQUE.
    - **Recipe diversity:** at least half the variations use distinct recipe codes.
-   - **Persona diversity:** every variation has a different persona (up to roster size).
+   - **Design-persona diversity:** be aggressively brainstormy. Every variation uses a different design persona (up to roster size). When N exceeds the roster, invent new design personas (e.g., *Data Journalist*, *Conversion Copywriter*, *Motion Designer*, *System Librarian*, *Zine Maker*) rather than reusing.
+   - **User-persona diversity:** cover ≥4 distinct user personas across the gallery. No single user persona dominates more than 40% of variations.
+   - **Register diversity:** use ≥3 distinct copy registers across the gallery. Two variations with the same register + same tier is a signal to rebuild one.
+   - **Question diversity:** no two variations ask the same stakeholder question. If they do, one is redundant.
    - **Axis spread:** across the full gallery, collectively explore ≥4 distinct design axes. If variations only differ along *color + typography*, reject and redo.
    - **Typography/layout spread (N ≥ 6):** at least one monospace-primary variation, at least one editorial all-caps hierarchy, at least one non-card layout (bar / panel / overlay / inline / bottom-sheet / timeline), at least one with a non-trivial interaction idea (swipe / expand / countdown / undo).
 
@@ -296,12 +428,28 @@ Save as `{component-name}-variations.html` in the working directory. Use kebab-c
 
 4b. **Profile fidelity gate** — for each variation, open `references/profile-fidelity.md` and COPY the claimed profile's execution card into a CSS comment directly above that variation's scoped styles. Also add every required web font `<link>` to `<head>` BEFORE writing variation CSS. Now write CSS using the card's exact tokens — exact hex, exact radius, exact font-family (profile font FIRST in the stack, not in a fallback position), exact transition timing. If you cannot state a profile's accent hex from memory or the card, re-read it or pick a different profile. Drifting from the card = rebuild.
 
-5. **Style the gallery** — apply the tokens locked in at step 4b. Honor spacing from the 4/8 scale, colors from the profile palette, hierarchy per variation. No off-scale values, no generic blues where a profile requires a specific accent.
+5. **Style the gallery — rich cells with static state matrix + `@container` responsive strip.** Apply tokens locked at step 4b. Honor the 4/8 spacing scale, profile palette, per-variation hierarchy. No off-scale values, no generic blues where a profile mandates an accent.
+
+   Each variation cell now renders:
+   - **State sub-cells**: the states each variation declared in step 3 (e.g., `states: [default, hover, error]`), side-by-side, each with its own DOM tree. No tabs, no JS, no `:checked` hacks. Loading skeletons, error layouts, and empty states get genuinely different markup when needed. See `references/state-matrix.md` for the sub-cell pattern.
+   - **Responsive strip**: three side-by-side wrappers with `container-type: inline-size` and fixed widths `360px` / `768px` / `1280px`. Variation CSS MUST use `@container` queries for viewport-based layout, NEVER viewport `@media`. Allowed `@media` exceptions: `prefers-reduced-motion`, `prefers-color-scheme`, `prefers-contrast`, `print`. The polish checklist lints the prohibited subset.
 6. **Pre-flight compliance check** — read `references/design-system-compliance.md` and run the full checklist. Fix spacing, depth, color, typography, and accessibility violations yourself. Don't ship with violations.
 
 6b. **Polish gate** — run the 11 sections of `references/polish-checklist.md`. Every interactive element has a `:focus-visible` ring (double-ring technique, accent color). Every touch target is ≥44×44px. Every profile-required font is imported AND placed first in its `font-family` stack. Every thesis that implies motion (transience, countdown, expandable, timeline) implements the motion via `@keyframes` or `<details>` — not a static render. Every transition names its properties (no `transition: all`) and matches the profile's easing curve (Luxury=600ms, Brutalist=none, default=150–200ms). Any variation that fails any section is rebuilt before shipping.
 
-7. **Self-review** — run the Swap / Squint / Signature / Token tests (§7 of compliance). Any variation that fails is redesigned, not shipped.
+7. **Output delivery — hybrid, context-detected.** Decide file-vs-artifact:
+
+   - If `$CLAUDECODE` is set **or** `git rev-parse --show-toplevel` succeeds in the CWD: write `{component-name}-variations.html` to CWD **and** return the same HTML inline for artifact preview. Existing CI/file-attachment workflows keep working.
+   - Otherwise (Desktop / Cowork / no repo): return HTML inline only, no file write.
+   - User override via `--output=file` / `--output=artifact` / `--output=both` always wins.
+
+8. **Control surface — artifact-as-tool.** Render iteration controls using native `<details>`/`<summary>` disclosure — zero JS, CSP-safe, keyboard-accessible. See `references/control-surface.md` for markup and the 8 prompt templates.
+
+   - **Per-cell action strip** (below the footer of each variation): four `<details>` buttons — `⟳ More like this`, `🔀 Remix with…`, `🔒 Lock tokens`, `⭐ Pin`. Opening reveals a `<textarea readonly>` pre-filled with a template-interpolated prompt. User selects + copies + pastes.
+   - **Top-of-gallery toolbar**: `Merge pinned finalists`, `Regenerate off-system only`, `Replace ingestion source`, `Export finalists`.
+   - **Trailing chat echo**: after emitting the artifact, print 3–4 short prompt suggestions as chat text (e.g., *"Try: Remix #4 with Brutalist profile"*). Hedges against any sandbox quirks with textarea copy.
+
+9. **Self-review** — run the Swap / Squint / Signature / Token / Evidence tests (§7 of compliance). Verify every variation has a non-empty Question, Tradeoff, Register, Evidence, and Weakness field rendered in its cell. Verify the decision matrix is present and complete. Verify the source banner (ingestion provenance) is visible in the header. Verify no viewport `@media` in variation CSS — all responsive behavior goes through `@container`. Verify no inline event handlers (`onclick=`, `onload=`) and no `<script>` tags. In project-bound mode, verify on-system/off-system segregation. Any variation that fails any of these is redesigned, not shipped.
 
 ## Examples
 

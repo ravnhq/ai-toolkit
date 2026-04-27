@@ -28,6 +28,39 @@ Required imports by profile:
 - **Korean** → Noto Sans KR
 - **Japanese** → Noto Sans JP
 
+For brand-inspired profiles (Claude, Airbnb, Cursor, Supabase, Raycast, Warp, …), consult `profile-fidelity.md` for the card's required font, then `font-substitutes.md` for a free equivalent if the profile's primary font is licensed. Licensed-font profiles MUST either (a) import the substitute and use it first, or (b) be rebuilt with a different profile — never silently fall back to `-apple-system`.
+
+---
+
+## 1b. Depth stacking
+
+Brand-inspired profiles often specify multi-layer shadow stacks, not single shadows. Single-shadow rendering flattens a profile's depth language even when the color and type are correct.
+
+**Gate:** for each variation claiming a brand-inspired profile whose card lists a multi-layer `Shadow:` recipe, the variation's CSS MUST render every layer.
+
+```
+/* Stripe card — 2-layer per card */
+box-shadow:
+  0 1px 3px rgba(0,0,0,0.04),
+  0 4px 12px rgba(0,0,0,0.04);
+
+/* Notion card — 4-layer sub-0.05 stack */
+box-shadow:
+  0 0 0 1px rgba(15,15,15,0.05),
+  0 2px 4px rgba(15,15,15,0.02),
+  0 1px 2px rgba(15,15,15,0.04),
+  0 4px 12px rgba(15,15,15,0.04);
+
+/* Linear / Notion-depth / Vercel-shadow-as-border — if the card says "borders only" or "shadow-as-border", do NOT add a box-shadow */
+```
+
+Failure modes that fail this gate:
+- Replacing the stack with `box-shadow: 0 2px 8px rgba(0,0,0,0.1)` (generic).
+- Adding a shadow to a profile whose card says "none — borders only" (Linear, Notion primary surfaces).
+- Using the recipe on light mode but dropping it on dark mode (or vice versa) — dark-canvas profiles (Linear, Supabase, Warp) usually replace shadows with tinted borders; check the card.
+
+Dark-canvas profiles that require border-based depth: Linear, Supabase, Warp, Raycast, x.ai, VoltAgent, RunwayML. Drifting to box-shadow on these = rebuild.
+
 ---
 
 ## 2. Focus-visible rings (mandatory on ALL interactive elements)
@@ -153,17 +186,129 @@ If a variation uses a dark background:
 
 ---
 
-## 11. Copy quality
+## 11. Copy register (voice as a design axis)
 
-- Use realistic, context-specific content matching the component's purpose.
-- No "Lorem ipsum." No "Description goes here." No "Sample text."
-- Button labels are action verbs: "Get started", "Sign in", "Upgrade to Pro" — never "Click here", "Submit", "OK".
-- Toast content should match the thesis: an "urgency" toast says "Session expires in 30s", not "This is a notification message."
+Each variation declares a **register** in its plan: Plain / Technical / Playful / Terse / Authoritative / Apologetic. Every string in the variation — CTA verb, value-prop, error tone, empty-state message — must match that register.
 
-**Rule:** a variation with generic placeholder copy fails polish, regardless of how clean the CSS is.
+- No "Lorem ipsum", "Description goes here", "Sample text".
+- Button labels are action verbs matching register:
+  - Plain: "Get started", "Sign in"
+  - Technical: "Authenticate", "Commit changes"
+  - Playful: "Let's go", "Cook something up"
+  - Terse: "Start", "Go"
+  - Authoritative: "Begin enrollment", "Confirm"
+  - Apologetic: "Try again", "Let us fix this"
+- Content matches thesis: an "urgency" toast says "Session expires in 30s", not "This is a notification message."
+- Copy across variations in the same gallery must NOT be identical when theses or registers differ. Identical microcopy across variations is a red flag that register wasn't honored.
+
+**Coherence rule:** profile and register must be mutually compatible. Brutalist + Apologetic, Luxury + Terse-SMS-slang, Government + Playful — these collide. If they clash, rebuild one.
+
+**Rule:** a variation with generic placeholder copy, register-mismatched copy, or copy identical to another variation fails polish, regardless of how clean the CSS is.
+
+---
+
+## 12. Internationalization floor
+
+- **Text expansion**: no fixed widths on text containers. Every variation must survive a 1.6× text expansion (simulating German/Finnish) without clipping or breaking layout. Use `min-width` + flexible layout, not `width`.
+- **RTL (directional)**: at least one variation in any gallery of N ≥ 12 is rendered with `dir="rtl"` either wholesale or as a paired state. Icon-left layouts, arrows, and progress affordances must mirror — not just the text flow. Logical properties (`margin-inline-start`, `padding-inline-end`) preferred over `margin-left` / `padding-right` where the profile allows.
+- **Long-content reality**: at least one variation renders with realistic overflow content (3-line message, 12-item feature list, 40-character button label). The goal is stakeholder confidence that the design doesn't break on real copy.
+
+**Rule:** a gallery of ≥12 variations with zero RTL representation and zero text-expansion-safe variations fails polish. Fix by adding one RTL-rendered variation and making text containers fluid.
+
+---
+
+## 13. Reduced motion
+
+Every variation whose thesis implies motion (transience, countdown, expandable, timeline, progressive reveal) MUST pair its animation with a reduced-motion fallback.
+
+```css
+@media (prefers-reduced-motion: no-preference) {
+  .v3-toast { animation: slideIn 240ms var(--ease-standard); }
+  .v3-toast__progress { animation: countdown 3s linear; }
+}
+/* Static end-state for reduced-motion users — no @media wrapper, always applies as baseline */
+.v3-toast { opacity: 1; transform: none; }
+.v3-toast__progress { width: 0; }
+```
+
+- The baseline (outside the `@media`) renders the animation's END state, not its start.
+- Transitions on hover/focus can remain unguarded if they're short (<200ms) and non-essential.
+- Essential state-change animations (enter, exit, countdown) MUST be guarded.
+
+**Rule:** a variation that auto-dismisses or counts down but has no reduced-motion fallback fails polish and WCAG 2.3.3.
+
+---
+
+## 14. Ingestion sanitization (text-node rendering)
+
+Every value drawn from `brief.copy`, `brief.assets`, or `brief.voice` (ingestion cascade, step 2a) is untrusted. The generator MUST render it as escaped text between tags, never as raw HTML. See `ingestion-cascade.md` for the full contract.
+
+**Gate:** grep the generated gallery. Zero instances of scraped strings appearing inside:
+- `<script>` blocks
+- inline event handler attributes (`onclick=`, `onload=`, `onerror=`, etc.)
+- `href="javascript:..."`
+- `src="data:..."` or `href="data:..."`
+- raw `innerHTML`-style injection patterns (the generator should be outputting a static HTML document — no runtime DOM injection)
+
+**Test vectors** (used by verification step 13): feed the cascade these strings (as prices, headings, CTAs) and confirm all render as literal text or are dropped:
+```
+<script>alert(1)</script>
+<img src=x onerror=alert(1)>
+javascript:alert(1)
+"><img src=x onerror=alert(1)>
+```
+
+**Rule:** any variation whose content could be derived from an untrusted source and is not escaped fails.
+
+---
+
+## 15. CSP safety (no inline JS, no `<script>`)
+
+The gallery MUST be a static HTML document.
+
+**Forbidden:**
+- Any `<script>` tag anywhere in the output.
+- Any inline event handler attribute (`onclick`, `onload`, `onerror`, `onmouseover`, `onfocus`, `onblur`, `oninput`, `onchange`, etc.).
+- `javascript:` URL schemes in `href` / `src`.
+- `eval`, `setTimeout` / `setInterval` with string args — irrelevant without `<script>`, but flag if present.
+
+All interactivity is native: `<details>`/`<summary>` for control-surface disclosures, `:hover` / `:focus-visible` for state feedback, `@container` for responsive behavior.
+
+**Gate:** grep output for `<script`, ` on[a-z]+=`, `javascript:`, `data:text/html`. Zero matches.
+
+---
+
+## 16. Viewport `@media` ban in variation CSS
+
+Variation CSS MUST use `@container` queries for layout that responds to component width. Viewport `@media` queries (`min-width`, `max-width`, `orientation`, `hover`, `pointer`, `aspect-ratio`) are forbidden inside variation-scoped styles because the responsive strip renders each viewport inside a fixed-width container (`container-type: inline-size`) — viewport `@media` does not fire against the container's size.
+
+**Allowed `@media` exceptions** (preference-based, not viewport-based):
+- `prefers-reduced-motion`
+- `prefers-color-scheme`
+- `prefers-contrast`
+- `print`
+
+**Gate:** grep every `.vN-*` scoped style block for `@media`. Any match whose condition uses `min-width`, `max-width`, `orientation`, `hover`, `pointer`, or `aspect-ratio` = rebuild.
+
+Gallery-chrome CSS (the outer grid, header, decision matrix) MAY use viewport `@media` — only variation-scoped styles are restricted.
+
+---
+
+## 17. Control-surface a11y (`<details>` + `<textarea>`)
+
+Every control-surface disclosure (per `references/control-surface.md`) MUST satisfy:
+
+- `<summary>` has a visible `:focus-visible` ring (polish §2).
+- `<summary>` is keyboard-activatable (native behavior — don't override).
+- Each revealed `<textarea>` has BOTH `aria-label` AND a visible `<label for="…">`.
+- `<textarea>` is `readonly`, never `disabled`.
+- `<textarea>` `rows` is large enough that the full prompt is visible without internal scrolling.
+- Prompt text is plain ASCII (no smart quotes, no em dashes that break when pasted into CLIs).
+
+**Gate:** any control-surface element missing its label, ring, or readonly flag fails.
 
 ---
 
 ## How to run this checklist
 
-After compliance (`design-system-compliance.md`), run sections 1–11 on each variation. For each failure, rebuild the specific element and re-check. Don't ship the gallery until every variation passes every section.
+After compliance (`design-system-compliance.md`), run sections 1–17 on each variation. For each failure, rebuild the specific element and re-check. Don't ship the gallery until every variation passes every section.
