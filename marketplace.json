@@ -576,7 +576,86 @@
         "gallery"
       ],
       "status": "ready",
-      "version": 10
+      "version": 5
+    },
+    {
+      "name": "qa-happy-path",
+      "source": "skills/qa/qa-happy-path",
+      "description": "Drive a web application's UI through core positive flows using Playwright browser automation. Verify that primary user journeys work end-to-end, take snapshots at each step, and report bugs with full reproduction details.",
+      "category": "qa",
+      "tags": [
+        "qa",
+        "testing",
+        "playwright",
+        "ui",
+        "happy-path"
+      ],
+      "status": "ready",
+      "rules": 4,
+      "version": 1
+    },
+    {
+      "name": "qa-chaos-monkey",
+      "source": "skills/qa/qa-chaos-monkey",
+      "description": "Adversarial QA tester that systematically tries to break an application's API. Tests security boundaries, input validation, race conditions, deduplication, and malformed requests.",
+      "category": "qa",
+      "tags": [
+        "qa",
+        "testing",
+        "security",
+        "adversarial",
+        "api"
+      ],
+      "status": "ready",
+      "rules": 6,
+      "version": 1
+    },
+    {
+      "name": "qa-bug-fixer",
+      "source": "skills/qa/qa-bug-fixer",
+      "description": "Receive bug reports from QA agents and implement focused, minimal fixes. Read before writing, understand the root cause, fix with the smallest possible change, and report what was changed.",
+      "category": "qa",
+      "tags": [
+        "qa",
+        "bug-fix",
+        "automation",
+        "surgical"
+      ],
+      "status": "ready",
+      "rules": 3,
+      "version": 1
+    },
+    {
+      "name": "qa-orchestrator",
+      "source": "skills/qa/qa-orchestrator",
+      "description": "Orchestrate QA agent workflows — spawn test agents in parallel, collect results, triage bugs, trigger the bug fixer, and generate QA reports. The main entry point for running a QA session.",
+      "category": "qa",
+      "tags": [
+        "qa",
+        "orchestration",
+        "testing",
+        "workflow",
+        "agents"
+      ],
+      "status": "ready",
+      "rules": 3,
+      "version": 1
+    },
+    {
+      "name": "qa-personality-builder",
+      "source": "skills/qa/qa-personality-builder",
+      "description": "Create custom QA agent personalities for project-specific testing needs. Guided builder that asks about the specialty, tools, and test scenarios, then generates a personality file.",
+      "category": "qa",
+      "tags": [
+        "qa",
+        "agent-builder",
+        "personality",
+        "custom",
+        "workflow"
+      ],
+      "status": "ready",
+      "rules": 1,
+      "version": 1
     }
   ]
 }

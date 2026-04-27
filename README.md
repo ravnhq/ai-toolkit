@@ -105,6 +105,41 @@ skills/
 └── assistant/     # Agent workflows
 ```
 
+### Stack Recipes
+
+**Full-stack TypeScript (React + tRPC + Drizzle)**
+```bash
+npx skills add ravnhq/ai-toolkit -s lang-typescript
+npx skills add ravnhq/ai-toolkit -s tech-react
+npx skills add ravnhq/ai-toolkit -s tech-trpc
+npx skills add ravnhq/ai-toolkit -s tech-drizzle
+npx skills add ravnhq/ai-toolkit -s tech-vitest
+npx skills add ravnhq/ai-toolkit -s design-frontend
+```
+
+**iOS / Swift**
+```bash
+npx skills add ravnhq/ai-toolkit -s swift-concurrency
+npx skills add ravnhq/ai-toolkit -s liquid-glass-ios
+```
+
+**Backend API only**
+```bash
+npx skills add ravnhq/ai-toolkit -s lang-typescript
+npx skills add ravnhq/ai-toolkit -s tech-trpc
+npx skills add ravnhq/ai-toolkit -s tech-drizzle
+npx skills add ravnhq/ai-toolkit -s platform-testing
+```
+
+**QA Agent Workflow**
+```bash
+npx skills add ravnhq/ai-toolkit -s qa-orchestrator
+npx skills add ravnhq/ai-toolkit -s qa-happy-path
+npx skills add ravnhq/ai-toolkit -s qa-chaos-monkey
+npx skills add ravnhq/ai-toolkit -s qa-bug-fixer
+npx skills add ravnhq/ai-toolkit -s qa-personality-builder
+```
+
 ### Universal
 
 | Skill | Description |
@@ -161,6 +196,22 @@ skills/
 | `test-case-gen` | Generate and audit test cases |
 | `test-plan-gen` | Test plan documents from interviews |
 | `locators-scanner` | Extract page locators for Playwright/Cypress |
+
+### QA
+
+| Skill | Description |
+|-------|-------------|
+| `bug-report-gen` | Draft, evaluate, enrich, and normalize QA bug reports to RAVN standards. |
+| `test-case-gen` | Generate, evaluate, audit, and normalize QA test cases. |
+| `test-plan-gen` | Generate professional QA Test Plan documents from a structured interview. |
+| `locators-scanner` | Scan a website URL and extract the best locators for test automation. |
+| `qa-orchestrator` | Orchestrate QA agent workflows — spawn agents, collect results, triage bugs, generate reports. |
+| `qa-happy-path` | Drive UI through positive flows using Playwright, verify user journeys end-to-end. |
+| `qa-chaos-monkey` | Adversarial tester — break APIs with security, validation, race condition, and edge case tests. |
+| `qa-bug-fixer` | Receive bug reports from QA agents and implement focused, minimal fixes. |
+| `qa-personality-builder` | Guided builder for creating custom QA agent personalities. |
+
+See [docs/qa-agents.md](docs/qa-agents.md) for the full QA agent workflow guide.
 
 ### CLI
 
