@@ -219,6 +219,36 @@
       "source": "./.claude-plugin/plugins/design-variations",
       "description": "Generate a gallery of design variations for a UI component. Takes an existing component (by name, code, or screenshot) and produces N distinct rendered alternatives in a single HTML comparison page.",
       "version": "1.0.0"
+    },
+    {
+      "name": "qa-happy-path",
+      "source": "./.claude-plugin/plugins/qa-happy-path",
+      "description": "Drive a web application's UI through core positive flows using Playwright browser automation. Verify that primary user journeys work end-to-end, take snapshots at each step, and report bugs with full reproduction details.",
+      "version": "1.0.0"
+    },
+    {
+      "name": "qa-chaos-monkey",
+      "source": "./.claude-plugin/plugins/qa-chaos-monkey",
+      "description": "Adversarial QA tester that systematically tries to break an application's API. Tests security boundaries, input validation, race conditions, deduplication, and malformed requests.",
+      "version": "1.0.0"
+    },
+    {
+      "name": "qa-bug-fixer",
+      "source": "./.claude-plugin/plugins/qa-bug-fixer",
+      "description": "Receive bug reports from QA agents and implement focused, minimal fixes. Read before writing, understand the root cause, fix with the smallest possible change, and report what was changed.",
+      "version": "1.0.0"
+    },
+    {
+      "name": "qa-orchestrator",
+      "source": "./.claude-plugin/plugins/qa-orchestrator",
+      "description": "Orchestrate QA agent workflows — spawn test agents in parallel, collect results, triage bugs, trigger the bug fixer, and generate QA reports. The main entry point for running a QA session.",
+      "version": "1.0.0"
+    },
+    {
+      "name": "qa-personality-builder",
+      "source": "./.claude-plugin/plugins/qa-personality-builder",
+      "description": "Create custom QA agent personalities for project-specific testing needs. Guided builder that asks about the specialty, tools, and test scenarios, then generates a personality file.",
+      "version": "1.0.0"
     }
   ]
 }

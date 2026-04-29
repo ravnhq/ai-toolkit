@@ -28,7 +28,7 @@ metadata:
   - exploration
   - gallery
   status: ready
-  version: 9
+  version: 10
 ---
 
 # Design Variations
@@ -39,17 +39,17 @@ Generate a gallery of meaningfully different design variations for a UI componen
 
 This skill includes twelve reference documents. Read all of them before generating variations:
 
-- **`references/design-principles.md`** — Intent framework, product/industry/movement profiles, CSS token foundations, component baselines, anti-patterns, the four mandate tests, variation axes, and structural recipes (T1–T10, P1–P10, L1–L8). Read during steps 1–3 (understand, plan).
-- **`references/structural-bad-good-gallery.md`** — Concrete WRONG vs RIGHT examples of structural diversity. Read during step 3 to internalize what a skin-only gallery looks like vs a genuinely structured one.
-- **`references/profile-fidelity.md`** — Per-profile execution cards with exact tokens, required web font imports, and forbidden drifts. Covers movement profiles (Editorial, Brutalist, Cyberpunk, Wabi-Sabi, Art Deco…) AND 50+ brand-inspired profiles distilled from the MIT-licensed VoltAgent/awesome-design-md corpus (Claude, Airbnb, Cursor, Supabase, Raycast, Warp, Linear, Stripe, Vercel, Tesla, BMW, Kraken, Revolut, etc.). Read during step 4b (profile fidelity gate). Any variation that claims a profile must execute its card verbatim.
-- **`references/component-recipes-extended.md`** — Structural recipes beyond toast/pricing/login: nav (N1–N8), hero (H1–H8), modal (M1–M6), table (TB1–TB6), dashboard card (D1–D6), sidebar (SB1–SB6), form (F1–F6), footer (FT1–FT4). Cite codes in the skeleton plan just like T/P/L codes. Read during step 3 when the target component is none of toast / pricing / login.
-- **`references/agent-prompt-cheatsheet.md`** — Quick per-profile example prompts for handing stakeholders a copy-pasteable brief. Optional read; useful during step 2 when the user hasn't named a profile.
-- **`references/font-substitutes.md`** — Licensed/proprietary font → free web-font mapping with CDN instructions. Read during step 4b whenever a profile card specifies a licensed font (SF Pro, Circular, Neue Haas Grotesk, proprietary variable fonts…).
-- **`references/polish-checklist.md`** — Rendering and accessibility gates: web font loading, focus-visible rings, touch targets, hover states, easing, thesis-implied animation, cell containment, contrast, icon quality, copy register, i18n, reduced motion, depth stacking. Read during step 6b (polish gate).
-- **`references/design-system-compliance.md`** — Pre-flight checklist for spacing, depth, pattern, color, typography, accessibility, plus the Same-HTML / Swap / Squint / Signature / Token / Evidence / Upstream-DESIGN.md tests. Read during step 4a (structural gate) and step 6 (compliance).
-- **`references/state-matrix.md`** — State coverage per component type (empty, loading, error, long-content, stacked, fintech regulatory). Also defines the **static sub-cell rendering pattern** and the **`@container` responsive strip** used by rich cells (see workflow step 5). Read during step 3 (plan) and step 5 (style).
-- **`references/ingestion-cascade.md`** — URL / repo / prose-brief cascade that produces the `brief` object feeding every variation. Covers extraction heuristics, sanitization rules (text-node-only rendering, color/font allowlists, URL-scheme filtering), `WebFetch` hardening (10s timeout, 3-redirect cap, `text/html` content-type gate), and error fallback. Read during step 2a (ingestion).
-- **`references/control-surface.md`** — `<details>/<summary>` disclosure pattern, 8 prompt templates (4 per-cell + 4 toolbar), accessibility notes, and the trailing suggested-response echo. Read during step 8 (control surface).
+- **`references/design-principles.md`** — Intent framework, profiles, tokens, baselines, mandate tests, axes, recipes (T1–T10, P1–P10, L1–L8). Steps 1–3.
+- **`references/structural-bad-good-gallery.md`** — WRONG vs RIGHT structural diversity examples. Step 3.
+- **`references/profile-fidelity.md`** — Per-profile execution cards (tokens, font imports, forbidden drifts). Movement profiles + 50+ brand-inspired profiles from MIT-licensed VoltAgent/awesome-design-md. Step 4b.
+- **`references/component-recipes-extended.md`** — Recipes for nav (N1–N8), hero (H1–H8), modal (M1–M6), table (TB1–TB6), card (D1–D6), sidebar (SB1–SB6), form (F1–F6), footer (FT1–FT4). Step 3 for non-toast/pricing/login components.
+- **`references/agent-prompt-cheatsheet.md`** — Per-profile example prompts. Optional, step 2.
+- **`references/font-substitutes.md`** — Licensed font → free web-font mapping. Step 4b.
+- **`references/polish-checklist.md`** — Rendering/accessibility gates: focus rings, touch targets, easing, animation, contrast, i18n, reduced motion. Step 6b.
+- **`references/design-system-compliance.md`** — Compliance checklist + Same-HTML / Swap / Squint / Signature / Token / Evidence / Upstream tests. Steps 4a, 6.
+- **`references/state-matrix.md`** — State coverage + sub-cell pattern + `@container` responsive strip. Steps 3, 5.
+- **`references/ingestion-cascade.md`** — URL/repo/prose cascade producing the `brief` object; sanitization, `WebFetch` hardening, error fallback. Step 2a.
+- **`references/control-surface.md`** — `<details>/<summary>` disclosure, 8 prompt templates, trailing chat echo. Step 8.
 
 ### Attribution
 
@@ -385,9 +385,9 @@ When writing to disk (repo context or `--output=file|both`), save as `{component
 
 2a. **Ingestion preflight** — run the cascade defined in `references/ingestion-cascade.md` to produce the `brief` object. Priority order (first available wins; later sources merge missing fields):
 
-   1. **Live URL** — if the user named one, call `WebFetch` with a 10s timeout. Accept only `text/html` / `application/xhtml+xml` content types. On failure, record `url: unavailable (<reason>)` and fall through.
-   2. **Repo scan** — existing token detection (tailwind/tokens/theme/:root), plus `rg` over `**/*.mdx` and `**/*.md` for marketing copy when the component has an inferable path.
-   3. **Prose brief** — inline user-provided voice, tone, strings, colors.
+- **Live URL** — if the user named one, call `WebFetch` with a 10s timeout. Accept only `text/html` / `application/xhtml+xml` content types. On failure, record `url: unavailable (<reason>)` and fall through.
+- **Repo scan** — existing token detection (tailwind/tokens/theme/:root), plus `rg` over `**/*.mdx` and `**/*.md` for marketing copy when the component has an inferable path.
+- **Prose brief** — inline user-provided voice, tone, strings, colors.
 
    **Sanitization is a hard gate, not a suggestion.** All scraped strings render into text nodes only (escape `&`, `<`, `>`, `"`, `'`); never emit via unescaped interpolation into an attribute, `<script>`, `<style>`, or event handler. Colors pass `^#[0-9a-fA-F]{3,8}$` | `^rgba?\(...\)$`. Font-families pass an allowlist (web-safe + the profile-fidelity catalog + `font-substitutes.md`). Image URLs must be `https://` absolute; `javascript:`, `data:`, and relative URLs are dropped.
 

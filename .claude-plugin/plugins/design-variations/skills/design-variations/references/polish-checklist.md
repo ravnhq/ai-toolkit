@@ -274,7 +274,7 @@ The gallery MUST be a static HTML document.
 
 All interactivity is native: `<details>`/`<summary>` for control-surface disclosures, `:hover` / `:focus-visible` for state feedback, `@container` for responsive behavior.
 
-**Gate:** grep output for `<script`, ` on[a-z]+=`, `javascript:`, `data:text/html`. Zero matches.
+**Gate:** grep output for `<script`, `on[a-z]+=`, `javascript:`, `data:text/html`. Zero matches.
 
 ---
 
