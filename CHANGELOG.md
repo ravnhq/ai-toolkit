@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-04-29
+
+- Restored design-variations version and trim word count.
 ## 2026-04-24
 
 - Added artifact-first delivery with ingestion cascade, rich cells, control surface.
