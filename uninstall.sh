@@ -50,8 +50,8 @@ if [ "$PURGE" -eq 1 ] && [ -d "$HOME/.corvus" ]; then
     exit 2
   fi
   echo ""
-  echo "~/.corvus/ contains:"
-  ls -A "$HOME/.corvus" | sed 's/^/  /'
+  echo "$HOME/.corvus/ contains:"
+  find "$HOME/.corvus" -maxdepth 1 -mindepth 1 | while IFS= read -r f; do echo "  $(basename "$f")"; done
   printf "Remove ~/.corvus/ and all installed skills? [y/N] "
   read -r ans || ans=""
   case "$ans" in
