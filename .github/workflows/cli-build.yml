@@ -73,10 +73,12 @@ jobs:
             outfile="dist-bin/corvus-${platform}"
             echo "  Building ${platform}..."
             bun build src/index.ts --compile --target="$target" --outfile="$outfile"
-            # Ad-hoc sign so macOS Gatekeeper accepts the binary without a
-            # Developer ID certificate. Quarantine xattr is added by the
-            # downloader (curl/browser), not by CI, so no need to strip it here.
-            codesign --sign - "$outfile"
+            # Bun emits a malformed LC_CODE_SIGNATURE stub; sign-macos.sh strips
+            # it and applies an ad-hoc signature. `codesign -dv` verifies the
+            # result so the build can't silently ship an unsigned arm64 binary
+            # that the macOS kernel refuses to exec.
+            ../scripts/sign-macos.sh "$outfile"
+            codesign -dv "$outfile"
             echo "  ✓ ${outfile}"
           done
 

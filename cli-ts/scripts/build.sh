@@ -26,6 +26,13 @@ for target in "${TARGETS[@]}"; do
     --compile \
     --target="$target" \
     --outfile="$outfile" 2>/dev/null
+
+  # Bun emits a malformed LC_CODE_SIGNATURE stub; strip it and ad-hoc sign
+  # so Apple Silicon will exec the binary without an Apple Developer cert.
+  if [[ "$target" == bun-darwin-* ]] && [[ "$(uname -s)" == "Darwin" ]]; then
+    "${PROJECT_DIR}/../scripts/sign-macos.sh" "$outfile"
+  fi
+
   echo "  ✓ ${outfile}"
 done
 
