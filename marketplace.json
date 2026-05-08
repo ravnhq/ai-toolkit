@@ -489,6 +489,21 @@
       "version": 3
     },
     {
+      "name": "dev-orchestrator",
+      "source": "skills/assistant/dev-orchestrator",
+      "description": "Detect bundled development work and dispatch each task as a parallel sub-agent. Use when a prompt contains two or more independent dev tasks, soft-sequenced tasks, or explicit /orchestrate. Hands off to qa-orchestrator after code-touching work.",
+      "category": "assistant",
+      "tags": [
+        "orchestration",
+        "parallel",
+        "multi-task",
+        "agents",
+        "workflow"
+      ],
+      "status": "draft",
+      "version": 1
+    },
+    {
       "name": "ts-linter",
       "source": "skills/universal/ts-linter",
       "description": "Set up and enforce a strict, production-grade ESLint configuration for TypeScript projects, then systematically fix all linting issues.",
