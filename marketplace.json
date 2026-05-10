@@ -397,6 +397,21 @@
       "version": 3
     },
     {
+      "name": "git-commit-push",
+      "source": "skills/assistant/git-commit-push",
+      "description": "Stage changes, write a clean conventional commit message, and push to remote without LLM co-author attribution.",
+      "category": "assistant",
+      "tags": [
+        "git",
+        "commit",
+        "push",
+        "workflow",
+        "conventional-commits"
+      ],
+      "status": "ready",
+      "version": 1
+    },
+    {
       "name": "pr-comments-address",
       "source": "skills/assistant/pr-comments-address",
       "description": "Reads open review comments from a GitHub PR, triages them, applies code fixes, and drafts reply messages. Use when user wants to address PR comments, says 'address review comments', 'fix PR feedback', 'handle PR comments', 'respond to review', or mentions addressing code review feedback on a pull request.",
