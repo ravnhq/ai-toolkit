@@ -35,5 +35,3 @@ npm install -g typescript typescript-language-server
 ## Verify
 
 `/reload-plugins` reports counts for every reloaded component, including LSP servers, and flags any load errors. After installing, you should see `1 plugin LSP server` (or `2`, if both). `0` means the plugin loaded but registered no servers — [#15148](https://github.com/anthropics/claude-code/issues/15148). Switch to Piebald.
-
-For the raw startup signal, `claude --debug lsp` streams LSP-scoped logs to your terminal on the next launch.
