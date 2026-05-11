@@ -4,7 +4,7 @@ title: "TypeScript and Python LSPs in Claude Code, the working way"
 date: 2026-05-11
 author: "Pedro Guimarães"
 author_github: "0x7067"
-excerpt: "The official TypeScript and Python LSP plugins for Claude Code often register zero servers (bug #15148, still open). Two setups that work today: the Piebald community plugins, and the official one for projects that can tolerate the bug."
+excerpt: "The official TypeScript and Python LSP plugins for Claude Code often register zero servers (bug #15148, still open). Two setups that work today: the Piebald community plugins, and the official ones when the bug doesn't bite."
 ---
 
 ## Piebald-AI (recommended)
@@ -34,4 +34,4 @@ npm install -g typescript typescript-language-server
 
 ## Verify
 
-`/reload-plugins` reports counts for every reloaded component, including LSP servers, and flags any load errors. After installing, you should see `1 plugin LSP server` (or `2`, if both). `0` means the plugin loaded but registered no servers — [#15148](https://github.com/anthropics/claude-code/issues/15148). Switch to Piebald.
+`/reload-plugins` reports an LSP server count when it finishes. Look for `1 plugin LSP server` (or `2` if you installed both). A `0` means the plugin loaded but registered nothing: that's [#15148](https://github.com/anthropics/claude-code/issues/15148). Switch to Piebald.
