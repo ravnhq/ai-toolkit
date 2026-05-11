@@ -32,4 +32,18 @@ npm install -g typescript typescript-language-server
 /reload-plugins
 ```
 
-If the status line shows `0 plugin LSP server`, you've hit [#15148](https://github.com/anthropics/claude-code/issues/15148) — switch to Piebald.
+## Verify
+
+Most status lines do not surface LSP state. The unambiguous check is the debug log. Restart with:
+
+```bash
+claude --debug
+```
+
+Look for this line in the startup output:
+
+```
+LSP notification handlers registered successfully for all N server(s)
+```
+
+`N ≥ 1` means at least one server registered. `N = 0` is [#15148](https://github.com/anthropics/claude-code/issues/15148) — switch to Piebald. Inside a running session, `/doctor` is the quicker sanity check; it reports install and settings issues with status icons and lets you press `f` to fix them.
