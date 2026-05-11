@@ -41,6 +41,7 @@ jobs:
         run: bundle exec jekyll build --source docs --destination _site
         env:
           JEKYLL_ENV: production
+          BUNDLE_GEMFILE: ${{ github.workspace }}/docs/Gemfile
       - name: Validate feed output
         run: |
           test -f _site/feed.xml
