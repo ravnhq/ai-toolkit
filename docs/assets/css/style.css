@@ -125,20 +125,7 @@ body {
   line-height: 1.6;
 }
 
-/* --- Post List --- */
-
-.post-list {
-  list-style: none;
-}
-
-.post-item {
-  padding: 40px 0;
-  border-top: 1px solid var(--border);
-}
-
-.post-item:last-child {
-  border-bottom: 1px solid var(--border);
-}
+/* --- Post Index: lead + tight stack --- */
 
 .post-meta {
   font-size: 12px;
@@ -168,50 +155,230 @@ body {
   margin-top: -2px;
 }
 
-.post-item h2 {
-  font-size: 28px;
-  font-weight: 800;
-  line-height: 1.3;
-  margin-bottom: 12px;
+/* Lead post — given more space than the rest. */
+.post-lead {
+  position: relative;
+  padding: 8px 0 48px;
 }
 
-.post-item h2 a {
+.post-lead-title {
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.post-lead-title a {
   color: var(--text);
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
-.post-item h2 a:hover {
+.post-lead-title a:hover {
   color: var(--gold);
 }
 
 .post-excerpt {
   color: var(--text-muted);
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.7;
+  max-width: 64ch;
 }
 
-.read-more {
-  display: inline-block;
-  margin-top: 16px;
+/* Stretched link: make the whole article row clickable without nesting blocks in an anchor. */
+.stretched-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* Author link inside the lead meta sits above the stretched overlay so its target wins. */
+.post-lead .author-link,
+.post-row .author-link {
+  position: relative;
+  z-index: 2;
+}
+
+/* Tight stack of older posts — tabular subgrid so date / author / reading align across all rows. */
+.post-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  column-gap: 32px;
+}
+
+.post-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  align-items: baseline;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.25s ease;
+}
+
+.post-row:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.post-row:hover {
+  background-color: rgba(255, 255, 255, 0.015);
+}
+
+.post-row-title {
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+/* Stretched link via the title's anchor element. */
+.post-row-title::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.post-row:hover .post-row-title,
+.post-row-title:focus-visible {
+  color: var(--gold);
+}
+
+.post-row-date,
+.post-row-author,
+.post-row-reading {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.post-row-reading {
+  color: var(--gold);
+}
+
+/* --- Post (single) --- */
+
+/* Editorial layout: side-meta column at wide viewports, single column below. */
+.post-layout {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.post-main {
+  min-width: 0; /* prevent pre overflow from blowing out the grid */
+}
+
+.post-side-meta {
+  display: none; /* hidden until wide */
+}
+
+.post-meta--inline {
+  /* Default: visible inline above the title. Hidden when side-meta is showing. */
+}
+
+@media (min-width: 1100px) {
+  .post-layout {
+    max-width: 1080px;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    column-gap: 64px;
+    align-items: start;
+  }
+
+  .post-side-meta {
+    display: block;
+    position: sticky;
+    top: 48px;
+    font-size: 12px;
+  }
+
+  .post-side-meta .back-link {
+    margin-bottom: 40px;
+  }
+
+  .post-meta--inline {
+    display: none;
+  }
+
+  .post-main {
+    max-width: 720px; /* keep prose at ~70ch even in the wider grid */
+  }
+}
+
+.side-meta-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 0;
+}
+
+.side-meta-list > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.side-meta-list dt {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.side-meta-list dd {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.side-meta-list .author-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.side-meta-list time {
+  font-variant-numeric: tabular-nums;
+}
+
+.copy-permalink {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  color: var(--gold);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--gold);
-  text-decoration: none;
-  transition: transform 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 
-.read-more:hover {
-  transform: translateX(4px);
+.copy-permalink:hover {
+  opacity: 0.75;
 }
 
-.read-more::after {
-  content: ' \2192';
+.copy-permalink.is-copied {
+  color: var(--text);
 }
-
-/* --- Post (single) --- */
 
 .post-header {
   margin-bottom: 48px;
@@ -233,6 +400,7 @@ body {
 }
 
 .post-content h2 {
+  position: relative;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 2px;
@@ -241,12 +409,44 @@ body {
   margin: 48px 0 8px;
   padding-top: 48px;
   border-top: 1px solid var(--border);
+  scroll-margin-top: 32px;
 }
 
 .post-content h2:first-child {
   margin-top: 0;
   padding-top: 0;
   border-top: none;
+}
+
+.post-content .heading-anchor {
+  position: absolute;
+  left: -1.25em;
+  top: 48px;
+  color: var(--border);
+  text-decoration: none;
+  border: none;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.post-content h2:first-child .heading-anchor {
+  top: 0;
+}
+
+.post-content h2:hover .heading-anchor,
+.post-content .heading-anchor:focus-visible {
+  opacity: 1;
+  color: var(--gold);
+}
+
+@media (max-width: 1099px) {
+  /* Inline the anchor on narrow viewports — no gutter space. */
+  .post-content .heading-anchor {
+    position: static;
+    margin-left: 8px;
+    opacity: 0.4;
+  }
 }
 
 .post-content p {
@@ -395,6 +595,78 @@ body {
   color: var(--gold);
 }
 
+/* --- Post coda --- */
+
+.post-coda {
+  margin-top: 80px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.post-coda p {
+  margin: 0;
+}
+
+.post-coda a {
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px solid var(--gold-dim);
+  transition: border-color 0.3s ease;
+}
+
+.post-coda a:hover {
+  border-bottom-color: var(--gold);
+}
+
+/* --- Accessibility --- */
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 16px;
+  background: var(--gold);
+  color: var(--bg);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 1000;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 16px;
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Don't double up outlines on elements that already have a clear focus treatment. */
+.copy-permalink:focus-visible {
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* --- Section label --- */
 
 .section-label {
@@ -436,8 +708,54 @@ body {
     font-size: 28px;
   }
 
-  .post-item h2 {
-    font-size: 22px;
+  .post-lead-title {
+    font-size: 26px;
+  }
+
+  .post-excerpt {
+    font-size: 16px;
+  }
+
+  .post-rows {
+    display: block;
+    column-gap: 0;
+  }
+
+  .post-row {
+    display: block;
+    padding: 16px 0;
+  }
+
+  .post-row-title {
+    display: block;
+    font-size: 17px;
+    margin-bottom: 6px;
+  }
+
+  .post-row-date,
+  .post-row-author,
+  .post-row-reading {
+    display: inline;
+  }
+
+  .post-row-author::before,
+  .post-row-reading::before {
+    content: ' · ';
+    color: var(--border);
+  }
+
+  .post-row-author:empty,
+  .post-row-author:empty::before {
+    display: none;
+  }
+
+  .post-content {
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .post-coda {
+    margin-top: 56px;
   }
 
   .site-footer .container {

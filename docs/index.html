@@ -11,29 +11,47 @@ title: Blog
 
   <div class="section-label">Latest Posts</div>
 
-  <ul class="post-list">
-    {% for post in site.posts %}
-    <li class="post-item">
-      <div class="post-meta">
-        {{ post.date | date: "%B %d, %Y" }}
-        {%- if post.author %}
-          &middot;
-          {%- if post.author_github %}
-          <a href="https://github.com/{{ post.author_github }}" class="author-link" target="_blank" rel="noopener noreferrer">
-            <img src="https://github.com/{{ post.author_github }}.png?size=40" alt="" class="author-avatar">
-            {{ post.author }}
-          </a>
-          {%- else %}
-          {{ post.author }}
-          {%- endif %}
+  {%- assign lead = site.posts.first -%}
+  {%- assign rest = site.posts | shift -%}
+
+  {%- if lead %}
+  {%- assign lead_words = lead.content | number_of_words -%}
+  {%- assign lead_reading = lead_words | divided_by: 225 | plus: 1 -%}
+  <article class="post-lead">
+    <div class="post-meta">
+      <time datetime="{{ lead.date | date_to_xmlschema }}">{{ lead.date | date: "%B %d, %Y" }}</time>
+      {%- if lead.author %}
+        &middot;
+        {%- if lead.author_github %}
+        <a href="https://github.com/{{ lead.author_github }}" class="author-link" target="_blank" rel="noopener noreferrer">
+          <img src="https://github.com/{{ lead.author_github }}.png?size=40" alt="" class="author-avatar" loading="lazy">
+          {{ lead.author }}
+        </a>
+        {%- else %}
+        {{ lead.author }}
         {%- endif %}
-      </div>
-      <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-      {% if post.excerpt %}
-      <p class="post-excerpt">{{ post.excerpt | strip_html | truncatewords: 40 }}</p>
-      {% endif %}
-      <a href="{{ post.url | relative_url }}" class="read-more">Read more</a>
+      {%- endif %}
+      &middot; {{ lead_reading }} min
+    </div>
+    <h2 class="post-lead-title"><a href="{{ lead.url | relative_url }}" class="stretched-link">{{ lead.title }}</a></h2>
+    {% if lead.excerpt %}
+    <p class="post-excerpt">{{ lead.excerpt | strip_html | truncatewords: 40 }}</p>
+    {% endif %}
+  </article>
+  {%- endif %}
+
+  {%- if rest.size > 0 %}
+  <ul class="post-rows">
+    {% for post in rest %}
+    {%- assign post_words = post.content | number_of_words -%}
+    {%- assign post_reading = post_words | divided_by: 225 | plus: 1 -%}
+    <li class="post-row">
+      <a href="{{ post.url | relative_url }}" class="post-row-title">{{ post.title }}</a>
+      <time class="post-row-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %d, %Y" }}</time>
+      <span class="post-row-author">{% if post.author %}{{ post.author }}{% endif %}</span>
+      <span class="post-row-reading">{{ post_reading }} min</span>
     </li>
     {% endfor %}
   </ul>
+  {%- endif %}
 </div>
