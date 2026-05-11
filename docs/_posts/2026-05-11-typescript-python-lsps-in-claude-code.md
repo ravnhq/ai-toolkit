@@ -24,11 +24,12 @@ brew install basedpyright
 ## Official
 
 ```bash
-npm install -g typescript typescript-language-server
+npm install -g typescript typescript-language-server pyright
 ```
 
 ```
 /plugin install typescript-lsp@claude-plugins-official
+/plugin install pyright-lsp@claude-plugins-official
 /reload-plugins
 ```
 
