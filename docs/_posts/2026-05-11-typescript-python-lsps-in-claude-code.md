@@ -34,16 +34,6 @@ npm install -g typescript typescript-language-server
 
 ## Verify
 
-Most status lines do not surface LSP state. The unambiguous check is the debug log. Restart with:
+`/reload-plugins` reports counts for every reloaded component, including LSP servers, and flags any load errors. After installing, you should see `1 plugin LSP server` (or `2`, if both). `0` means the plugin loaded but registered no servers — [#15148](https://github.com/anthropics/claude-code/issues/15148). Switch to Piebald.
 
-```bash
-claude --debug
-```
-
-Look for this line in the startup output:
-
-```
-LSP notification handlers registered successfully for all N server(s)
-```
-
-`N ≥ 1` means at least one server registered. `N = 0` is [#15148](https://github.com/anthropics/claude-code/issues/15148) — switch to Piebald. Inside a running session, `/doctor` is the quicker sanity check; it reports install and settings issues with status icons and lets you press `f` to fix them.
+For the raw startup signal, `claude --debug lsp` streams LSP-scoped logs to your terminal on the next launch.
