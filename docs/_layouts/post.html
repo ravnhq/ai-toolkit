@@ -2,28 +2,120 @@
 layout: default
 ---
 
-<article class="container">
-  <a href="{{ '/' | relative_url }}" class="back-link">Back to blog</a>
+{%- assign words = content | number_of_words -%}
+{%- assign reading_time = words | divided_by: 225 | plus: 1 -%}
+{%- assign permalink = page.url | absolute_url -%}
 
-  <header class="post-header">
-    <div class="post-meta">
-      {{ page.date | date: "%B %d, %Y" }}
+<article class="post-layout">
+  <aside class="post-side-meta" aria-label="Article metadata">
+    <a href="{{ '/' | relative_url }}" class="back-link">Back to blog</a>
+
+    <dl class="side-meta-list">
+      <div>
+        <dt>Published</dt>
+        <dd><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%b %d, %Y" }}</time></dd>
+      </div>
       {%- if page.author %}
-        &middot;
-        {%- if page.author_github %}
-        <a href="https://github.com/{{ page.author_github }}" class="author-link" target="_blank" rel="noopener noreferrer">
-          <img src="https://github.com/{{ page.author_github }}.png?size=40" alt="" class="author-avatar">
+      <div>
+        <dt>Author</dt>
+        <dd>
+          {%- if page.author_github %}
+          <a href="https://github.com/{{ page.author_github }}" class="author-link" target="_blank" rel="noopener noreferrer">
+            <img src="https://github.com/{{ page.author_github }}.png?size=40" alt="" class="author-avatar" loading="lazy">
+            {{ page.author }}
+          </a>
+          {%- else %}
           {{ page.author }}
-        </a>
-        {%- else %}
-        {{ page.author }}
-        {%- endif %}
+          {%- endif %}
+        </dd>
+      </div>
       {%- endif %}
-    </div>
-    <h1>{{ page.title }}</h1>
-  </header>
+      <div>
+        <dt>Reading</dt>
+        <dd>{{ reading_time }} min</dd>
+      </div>
+      <div>
+        <dt>Share</dt>
+        <dd>
+          <button type="button" class="copy-permalink" data-url="{{ permalink }}" aria-label="Copy link to this post">
+            <span class="copy-label">Copy link</span>
+          </button>
+        </dd>
+      </div>
+    </dl>
+  </aside>
 
-  <div class="post-content">
-    {{ content }}
+  <div class="post-main">
+    <header class="post-header">
+      <div class="post-meta post-meta--inline">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %d, %Y" }}</time>
+        {%- if page.author %}
+          &middot;
+          {%- if page.author_github %}
+          <a href="https://github.com/{{ page.author_github }}" class="author-link" target="_blank" rel="noopener noreferrer">
+            <img src="https://github.com/{{ page.author_github }}.png?size=40" alt="" class="author-avatar" loading="lazy">
+            {{ page.author }}
+          </a>
+          {%- else %}
+          {{ page.author }}
+          {%- endif %}
+        {%- endif %}
+        &middot; {{ reading_time }} min
+      </div>
+      <h1>{{ page.title }}</h1>
+    </header>
+
+    <div class="post-content">
+      {{ content }}
+    </div>
+
+    <footer class="post-coda">
+      <p>
+        Published {{ page.date | date: "%B %d, %Y" }}{% if page.author %} by
+        {%- if page.author_github %}
+          <a href="https://github.com/{{ page.author_github }}" target="_blank" rel="noopener noreferrer">{{ page.author }}</a>
+        {%- else %}
+          {{ page.author }}
+        {%- endif %}{% endif %}.
+        Found a problem or want to suggest a fix?
+        <a href="https://github.com/ravnhq/ai-toolkit/issues/new" target="_blank" rel="noopener noreferrer">Open an issue</a>.
+      </p>
+    </footer>
   </div>
 </article>
+
+<script>
+  (function () {
+    // Anchor-on-h2: append a clickable '#' to every h2 with an id.
+    var headings = document.querySelectorAll('.post-content h2[id]');
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      var a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.className = 'heading-anchor';
+      a.setAttribute('aria-label', 'Link to ' + (h.textContent || '').trim());
+      a.textContent = '#';
+      h.appendChild(a);
+    }
+
+    // Copy-permalink button.
+    var btn = document.querySelector('.copy-permalink');
+    if (btn && navigator.clipboard) {
+      btn.addEventListener('click', function () {
+        var url = btn.getAttribute('data-url') || window.location.href;
+        navigator.clipboard.writeText(url).then(function () {
+          var label = btn.querySelector('.copy-label');
+          var original = label.textContent;
+          label.textContent = 'Copied';
+          btn.classList.add('is-copied');
+          setTimeout(function () {
+            label.textContent = original;
+            btn.classList.remove('is-copied');
+          }, 1600);
+        });
+      });
+    } else if (btn) {
+      btn.hidden = true;
+    }
+  })();
+</script>
