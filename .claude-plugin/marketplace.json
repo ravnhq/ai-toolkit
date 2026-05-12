@@ -185,6 +185,12 @@
       "version": "1.0.0"
     },
     {
+      "name": "dev-orchestrator",
+      "source": "./.claude-plugin/plugins/dev-orchestrator",
+      "description": "Detect bundled development work and dispatch each task as a parallel sub-agent. Use when a prompt contains two or more independent dev tasks, soft-sequenced tasks, or explicit /orchestrate. Adds an opt-in '--worktree' execution mode that provisions an isolated git worktree, runs all sub-agents sequentially on a single feature branch, validates with auto-detected lint and test commands, auto-merges back to the base branch when green, and spawns a reconciler sub-agent on merge conflicts. Resolves issue-tracker tickets (Linear, Jira, GitHub Issues, Notion) referenced in the prompt via MCP and prepends their scope to Phase 1 input. Hands off to qa-orchestrator after code-touching work.",
+      "version": "1.0.0"
+    },
+    {
       "name": "ts-linter",
       "source": "./.claude-plugin/plugins/ts-linter",
       "description": "Set up and enforce a strict, production-grade ESLint configuration for TypeScript projects, then systematically fix all linting issues.",
