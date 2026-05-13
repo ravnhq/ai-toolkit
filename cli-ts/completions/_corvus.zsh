@@ -43,12 +43,12 @@ _corvus() {
                     _arguments \
                         '--global[Install as global defaults]' \
                         '-g[Install as global defaults]' \
-                        '--claude[Target Claude Code (.claude/rules)]' \
-                        '--cursor[Target Cursor (.cursor/rules)]' \
+                        '--claude[Target Claude Code Agent Skills (.claude/skills)]' \
+                        '--cursor[Target Cursor Agent Skills (.cursor/skills)]' \
                         '--opencode[Target OpenCode (.opencode/rules)]' \
                         '--codex[Target Codex (.codex/rules)]' \
-                        '--global-claude[Install to ~/.claude/rules]' \
-                        '--global-cursor[Install to ~/.cursor/rules]' \
+                        '--global-claude[Install to ~/.claude/skills]' \
+                        '--global-cursor[Install to ~/.cursor/skills]' \
                         '--global-opencode[Install to ~/.config/opencode/rules]' \
                         '--global-codex[Install to ~/.codex/rules]' \
                         '--recipe[Install a predefined recipe]:recipe:_corvus_recipes' \

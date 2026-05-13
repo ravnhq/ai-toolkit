@@ -152,11 +152,11 @@ export async function pickInstallTarget(): Promise<{ target: InstallTarget; cust
     message: "Where should skills be installed?",
     choices: [
       {
-        name: ".claude/rules  (Claude Code — this project)",
+        name: ".claude/skills  (Claude Code Agent Skills — this project)",
         value: "project-claude",
       },
       {
-        name: ".cursor/rules  (Cursor — this project)",
+        name: ".cursor/skills  (Cursor Agent Skills — this project)",
         value: "project-cursor",
       },
       {
@@ -168,11 +168,11 @@ export async function pickInstallTarget(): Promise<{ target: InstallTarget; cust
         value: "project-codex",
       },
       {
-        name: "~/.claude/rules  (Claude Code — global)",
+        name: "~/.claude/skills  (Claude Code Agent Skills — global)",
         value: "global-claude",
       },
       {
-        name: "~/.cursor/rules  (Cursor — global)",
+        name: "~/.cursor/skills  (Cursor Agent Skills — global)",
         value: "global-cursor",
       },
       {

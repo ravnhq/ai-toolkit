@@ -18,7 +18,7 @@ class MarkdownLintTest < Minitest::Test
     assert_includes targets, "README.md"
     assert_includes targets, "CHANGELOG.md"
     assert_includes targets, "skills/assistant/promptify/SKILL.md"
-    assert_includes targets, "skills/design/design-frontend/rules/layout-use-spacing-scale.md"
+    assert_includes targets, "skills/frontend/design-frontend/rules/layout-use-spacing-scale.md"
     assert_includes targets, "skills/assistant/agent-skill-creator/references/workflows.md"
   end
 end

@@ -427,7 +427,7 @@
         "configuration"
       ],
       "status": "ready",
-      "version": 4
+      "version": 5
     },
     {
       "name": "type-system-audit",

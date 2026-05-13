@@ -55,7 +55,14 @@ function removeGlobal(name: string): void {
   success(`Removed ${skillName(name)} from global skills.`);
 }
 
-const KNOWN_PROJECT_DIRS = [".claude/rules", ".cursor/rules", ".opencode/rules", ".codex/rules"];
+const KNOWN_PROJECT_DIRS = [
+  ".claude/skills",
+  ".claude/rules",
+  ".cursor/skills",
+  ".cursor/rules",
+  ".opencode/rules",
+  ".codex/rules",
+];
 
 function removeProject(name: string): void {
   const currentList = getProjectSkills();

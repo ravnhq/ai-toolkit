@@ -3,33 +3,33 @@ import { homedir } from "node:os";
 import { resolveTargetDir, isGlobalTarget, targetLabel } from "../src/commands/install.js";
 
 describe("resolveTargetDir", () => {
-  it("project-claude ends with .claude/rules", () => {
-    expect(resolveTargetDir("project-claude")).toMatch(/\.claude\/rules$/);
+  it("project-claude ends with .claude/skills", () => {
+    expect(resolveTargetDir("project-claude")).toMatch(/[\\/]\.claude[\\/]skills$/);
   });
 
-  it("project-cursor ends with .cursor/rules", () => {
-    expect(resolveTargetDir("project-cursor")).toMatch(/\.cursor\/rules$/);
+  it("project-cursor ends with .cursor/skills", () => {
+    expect(resolveTargetDir("project-cursor")).toMatch(/[\\/]\.cursor[\\/]skills$/);
   });
 
   it("project-codex ends with .codex/rules", () => {
-    expect(resolveTargetDir("project-codex")).toMatch(/\.codex\/rules$/);
+    expect(resolveTargetDir("project-codex")).toMatch(/[\\/]\.codex[\\/]rules$/);
   });
 
-  it("global-claude starts with homedir and ends with .claude/rules", () => {
+  it("global-claude starts with homedir and ends with .claude/skills", () => {
     const dir = resolveTargetDir("global-claude");
-    expect(dir).toMatch(/\.claude\/rules$/);
+    expect(dir).toMatch(/[\\/]\.claude[\\/]skills$/);
     expect(dir.startsWith(homedir())).toBe(true);
   });
 
-  it("global-cursor starts with homedir and ends with .cursor/rules", () => {
+  it("global-cursor starts with homedir and ends with .cursor/skills", () => {
     const dir = resolveTargetDir("global-cursor");
-    expect(dir).toMatch(/\.cursor\/rules$/);
+    expect(dir).toMatch(/[\\/]\.cursor[\\/]skills$/);
     expect(dir.startsWith(homedir())).toBe(true);
   });
 
   it("global-codex returns ~/.codex/rules", () => {
     const dir = resolveTargetDir("global-codex");
-    expect(dir).toMatch(/\.codex\/rules$/);
+    expect(dir).toMatch(/[\\/]\.codex[\\/]rules$/);
     expect(dir.startsWith(homedir())).toBe(true);
   });
 
@@ -61,24 +61,24 @@ describe("isGlobalTarget", () => {
 });
 
 describe("targetLabel", () => {
-  it("project-claude → .claude/rules", () => {
-    expect(targetLabel("project-claude")).toBe(".claude/rules");
+  it("project-claude → .claude/skills", () => {
+    expect(targetLabel("project-claude")).toBe(".claude/skills");
   });
 
-  it("project-cursor → .cursor/rules", () => {
-    expect(targetLabel("project-cursor")).toBe(".cursor/rules");
+  it("project-cursor → .cursor/skills", () => {
+    expect(targetLabel("project-cursor")).toBe(".cursor/skills");
   });
 
   it("project-codex → .codex/rules", () => {
     expect(targetLabel("project-codex")).toBe(".codex/rules");
   });
 
-  it("global-claude → ~/.claude/rules", () => {
-    expect(targetLabel("global-claude")).toBe("~/.claude/rules");
+  it("global-claude → ~/.claude/skills", () => {
+    expect(targetLabel("global-claude")).toBe("~/.claude/skills");
   });
 
-  it("global-cursor → ~/.cursor/rules", () => {
-    expect(targetLabel("global-cursor")).toBe("~/.cursor/rules");
+  it("global-cursor → ~/.cursor/skills", () => {
+    expect(targetLabel("global-cursor")).toBe("~/.cursor/skills");
   });
 
   it("global-codex → ~/.codex/rules", () => {
