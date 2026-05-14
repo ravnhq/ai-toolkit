@@ -1,6 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { homedir } from "node:os";
-import { resolveTargetDir, isGlobalTarget, targetLabel } from "../src/commands/install.js";
+import { join } from "node:path";
+import {
+  resolveTargetDir,
+  isGlobalTarget,
+  targetLabel,
+  globalSkillInstallParents,
+} from "../src/commands/install.js";
 
 describe("resolveTargetDir", () => {
   it("project-claude ends with .claude/skills", () => {
@@ -35,6 +41,20 @@ describe("resolveTargetDir", () => {
 
   it("custom returns the provided path", () => {
     expect(resolveTargetDir("custom", "/my/path")).toBe("/my/path");
+  });
+});
+
+describe("globalSkillInstallParents", () => {
+  it("covers each global target dir plus legacy Claude and Cursor rules", () => {
+    const home = homedir();
+    const parents = globalSkillInstallParents();
+    expect(parents).toContain(resolveTargetDir("global-claude"));
+    expect(parents).toContain(resolveTargetDir("global-cursor"));
+    expect(parents).toContain(resolveTargetDir("global-opencode"));
+    expect(parents).toContain(resolveTargetDir("global-codex"));
+    expect(parents).toContain(join(home, ".claude", "rules"));
+    expect(parents).toContain(join(home, ".cursor", "rules"));
+    expect(parents.length).toBe(6);
   });
 });
 

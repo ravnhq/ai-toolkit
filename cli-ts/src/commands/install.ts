@@ -50,6 +50,19 @@ export function resolveTargetDir(target: InstallTarget, customPath?: string): st
   }
 }
 
+/** Parent dirs where global `corvus install` may leave a `<skill>/` folder (current + legacy). */
+export function globalSkillInstallParents(): string[] {
+  const home = homedir();
+  return [
+    resolveTargetDir("global-claude"),
+    join(home, ".claude", "rules"),
+    resolveTargetDir("global-cursor"),
+    join(home, ".cursor", "rules"),
+    resolveTargetDir("global-opencode"),
+    resolveTargetDir("global-codex"),
+  ];
+}
+
 export function isGlobalTarget(target: InstallTarget): boolean {
   return target === "global-claude" || target === "global-cursor" || target === "global-opencode" || target === "global-codex";
 }

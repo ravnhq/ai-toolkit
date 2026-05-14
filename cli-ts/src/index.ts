@@ -2,7 +2,7 @@
 
 import { Command } from "commander";
 import { CORVUS_VERSION } from "./core/paths.js";
-import { ensureConfigDir } from "./core/config.js";
+import { ensureConfigDir, migrateLegacyProjectInstallDirIfNeeded } from "./core/config.js";
 import { autoUpdateCheck, bootstrapRegistry } from "./core/updater.js";
 import { showBanner, showLogo } from "./tui/display.js";
 import { cmdInstall } from "./commands/install.js";
@@ -38,6 +38,7 @@ if (process.argv.includes("--logo")) {
 if (process.argv.length <= 2) {
   ensureConfigDir();
   bootstrapRegistry();
+  migrateLegacyProjectInstallDirIfNeeded();
   await autoUpdateCheck();
   Math.random() < 0.5 ? cmdShowerThought() : cmdPhrase();
   try {
@@ -62,6 +63,7 @@ program
   .hook("preAction", () => {
     ensureConfigDir();
     bootstrapRegistry();
+    migrateLegacyProjectInstallDirIfNeeded();
   });
 
 program

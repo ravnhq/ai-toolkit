@@ -9,6 +9,7 @@ import {
   projectConfigSet,
   skillListRemove,
 } from "../core/config.js";
+import { globalSkillInstallParents } from "./install.js";
 import { die, skillName, success, warn } from "../utils/logger.js";
 
 export function cmdRemove(args: string[]): void {
@@ -48,6 +49,13 @@ function removeGlobal(name: string): void {
   if (!currentList.split(",").some((e) => e.startsWith(`${name}:`))) {
     warn(`${skillName(name)} is not in global skills.`);
     return;
+  }
+
+  for (const parent of globalSkillInstallParents()) {
+    const skillDir = join(parent, name);
+    if (existsSync(skillDir)) {
+      rmSync(skillDir, { recursive: true, force: true });
+    }
   }
 
   const newList = skillListRemove(currentList, name);
