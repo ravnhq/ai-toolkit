@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-05-25
+
+- Fix skill installation paths (#34).
 ## 2026-04-29
 
 - Restored design-variations version and trim word count.
