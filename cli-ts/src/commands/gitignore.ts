@@ -15,7 +15,7 @@ export function cmdGitignore(): void {
   const projectRoot = findProjectRoot();
   const gitignorePath = join(projectRoot, ".gitignore");
 
-  const installDir = projectConfigGet("install_dir", ".claude/rules");
+  const installDir = projectConfigGet("install_dir", ".claude/skills");
   const skillEntries = parseSkillList(getProjectSkills())
     .map((entry) => entry.split(":")[0])
     .map((name) => `${installDir}/${name}/`);

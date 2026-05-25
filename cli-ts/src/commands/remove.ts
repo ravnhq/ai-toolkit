@@ -9,6 +9,7 @@ import {
   projectConfigSet,
   skillListRemove,
 } from "../core/config.js";
+import { globalSkillInstallParents } from "./install.js";
 import { die, skillName, success, warn } from "../utils/logger.js";
 
 export function cmdRemove(args: string[]): void {
@@ -50,12 +51,26 @@ function removeGlobal(name: string): void {
     return;
   }
 
+  for (const parent of globalSkillInstallParents()) {
+    const skillDir = join(parent, name);
+    if (existsSync(skillDir)) {
+      rmSync(skillDir, { recursive: true, force: true });
+    }
+  }
+
   const newList = skillListRemove(currentList, name);
   globalConfigSet("global_skills", newList);
   success(`Removed ${skillName(name)} from global skills.`);
 }
 
-const KNOWN_PROJECT_DIRS = [".claude/rules", ".cursor/rules", ".opencode/rules", ".codex/rules"];
+const KNOWN_PROJECT_DIRS = [
+  ".claude/skills",
+  ".claude/rules",
+  ".cursor/skills",
+  ".cursor/rules",
+  ".opencode/rules",
+  ".codex/rules",
+];
 
 function removeProject(name: string): void {
   const currentList = getProjectSkills();

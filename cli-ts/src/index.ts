@@ -2,7 +2,7 @@
 
 import { Command } from "commander";
 import { CORVUS_VERSION } from "./core/paths.js";
-import { ensureConfigDir } from "./core/config.js";
+import { ensureConfigDir, migrateLegacyProjectInstallDirIfNeeded } from "./core/config.js";
 import { autoUpdateCheck, bootstrapRegistry } from "./core/updater.js";
 import { showBanner, showLogo } from "./tui/display.js";
 import { cmdInstall } from "./commands/install.js";
@@ -38,6 +38,7 @@ if (process.argv.includes("--logo")) {
 if (process.argv.length <= 2) {
   ensureConfigDir();
   bootstrapRegistry();
+  migrateLegacyProjectInstallDirIfNeeded();
   await autoUpdateCheck();
   Math.random() < 0.5 ? cmdShowerThought() : cmdPhrase();
   try {
@@ -62,18 +63,19 @@ program
   .hook("preAction", () => {
     ensureConfigDir();
     bootstrapRegistry();
+    migrateLegacyProjectInstallDirIfNeeded();
   });
 
 program
   .command("install [skills...]")
   .description("Install skills to a target location")
   .option("-g, --global", "Install to global (Claude Code by default)")
-  .option("--claude", "Target Claude Code (.claude/rules)")
-  .option("--cursor", "Target Cursor (.cursor/rules)")
+  .option("--claude", "Target Claude Code Agent Skills (.claude/skills)")
+  .option("--cursor", "Target Cursor Agent Skills (.cursor/skills)")
   .option("--opencode", "Target OpenCode (.opencode/rules)")
   .option("--codex", "Target Codex (.codex/rules)")
-  .option("--global-claude", "Install to ~/.claude/rules")
-  .option("--global-cursor", "Install to ~/.cursor/rules")
+  .option("--global-claude", "Install to ~/.claude/skills")
+  .option("--global-cursor", "Install to ~/.cursor/skills")
   .option("--global-opencode", "Install to ~/.config/opencode/rules")
   .option("--global-codex", "Install to ~/.codex/rules")
   .option("-r, --recipe <name>", "Install a predefined stack recipe")

@@ -30,17 +30,17 @@ export function resolveTargetDir(target: InstallTarget, customPath?: string): st
   const home = homedir();
   switch (target) {
     case "project-claude":
-      return join(findProjectRoot(), ".claude", "rules");
+      return join(findProjectRoot(), ".claude", "skills");
     case "project-cursor":
-      return join(findProjectRoot(), ".cursor", "rules");
+      return join(findProjectRoot(), ".cursor", "skills");
     case "project-opencode":
       return join(findProjectRoot(), ".opencode", "rules");
     case "project-codex":
       return join(findProjectRoot(), ".codex", "rules");
     case "global-claude":
-      return join(home, ".claude", "rules");
+      return join(home, ".claude", "skills");
     case "global-cursor":
-      return join(home, ".cursor", "rules");
+      return join(home, ".cursor", "skills");
     case "global-opencode":
       return join(home, ".config", "opencode", "rules");
     case "global-codex":
@@ -50,6 +50,19 @@ export function resolveTargetDir(target: InstallTarget, customPath?: string): st
   }
 }
 
+/** Parent dirs where global `corvus install` may leave a `<skill>/` folder (current + legacy). */
+export function globalSkillInstallParents(): string[] {
+  const home = homedir();
+  return [
+    resolveTargetDir("global-claude"),
+    join(home, ".claude", "rules"),
+    resolveTargetDir("global-cursor"),
+    join(home, ".cursor", "rules"),
+    resolveTargetDir("global-opencode"),
+    resolveTargetDir("global-codex"),
+  ];
+}
+
 export function isGlobalTarget(target: InstallTarget): boolean {
   return target === "global-claude" || target === "global-cursor" || target === "global-opencode" || target === "global-codex";
 }
@@ -57,17 +70,17 @@ export function isGlobalTarget(target: InstallTarget): boolean {
 export function targetLabel(target: InstallTarget, customPath?: string): string {
   switch (target) {
     case "project-claude":
-      return ".claude/rules";
+      return ".claude/skills";
     case "project-cursor":
-      return ".cursor/rules";
+      return ".cursor/skills";
     case "project-opencode":
       return ".opencode/rules";
     case "project-codex":
       return ".codex/rules";
     case "global-claude":
-      return "~/.claude/rules";
+      return "~/.claude/skills";
     case "global-cursor":
-      return "~/.cursor/rules";
+      return "~/.cursor/skills";
     case "global-opencode":
       return "~/.config/opencode/rules";
     case "global-codex":
@@ -250,11 +263,12 @@ function installToTarget(skills: string[], target: InstallTarget, customPath?: s
   } else {
     projectConfigSet("skills", currentList);
     const dirMap: Record<string, string> = {
-      "project-cursor": ".cursor/rules",
+      "project-claude": ".claude/skills",
+      "project-cursor": ".cursor/skills",
       "project-opencode": ".opencode/rules",
       "project-codex": ".codex/rules",
     };
-    projectConfigSet("install_dir", dirMap[target] ?? ".claude/rules");
+    projectConfigSet("install_dir", dirMap[target] ?? ".claude/skills");
     console.log();
     success("Skills installed! corvus is ready to help.");
   }

@@ -19,7 +19,7 @@ metadata:
   - installation
   - configuration
   status: ready
-  version: 4
+  version: 5
 ---
 
 # AI Skills Manager (corvus)
@@ -78,15 +78,17 @@ corvus
 corvus install <skill-name> [<skill-name> ...]
 ```
 
-**Target flags** — install to a specific tool's rules directory:
+**Target flags** — install Agent Skills under each product’s `skills/` directory (Claude Code, Cursor), or under `rules/` where that product only supports rules (OpenCode, Codex):
 
 | Flag | Target |
 |------|--------|
-| `--claude` | `.claude/rules` (project) |
-| `--cursor` | `.cursor/rules` (project) |
+| `--claude` | `.claude/skills` (project — Claude Code Agent Skills) |
+| `--cursor` | `.cursor/skills` (project — Cursor Agent Skills) |
+| `--opencode` | `.opencode/rules` (project) |
 | `--codex` | `.codex/rules` (project) |
-| `--global-claude` | `~/.claude/rules` (global) |
-| `--global-cursor` | `~/.cursor/rules` (global) |
+| `--global-claude` | `~/.claude/skills` (global) |
+| `--global-cursor` | `~/.cursor/skills` (global) |
+| `--global-opencode` | `~/.config/opencode/rules` (global) |
 | `--global-codex` | `~/.codex/rules` (global) |
 
 ```bash
@@ -173,7 +175,7 @@ Follow the printed instructions to add completions to your shell config. For fis
 
 | Key | Description |
 |-----|-------------|
-| `install_dir` | Where skills are copied (e.g., `.cursor/rules`) |
+| `install_dir` | Where skills are copied (e.g., `.claude/skills`, `.cursor/skills`) |
 | `skills` | Comma-separated list of installed skills with versions |
 
 ## Skill Scoping

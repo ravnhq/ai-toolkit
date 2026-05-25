@@ -1,10 +1,20 @@
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  renameSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, join } from "node:path";
 import {
   CORVUS_DIR,
   CORVUS_CONFIG,
   CORVUSRC,
 } from "./paths.js";
+import { warn } from "../utils/logger.js";
 
 // ─── INI-style config ────────────────────────────────────────────────────────
 
@@ -84,6 +94,135 @@ export function projectConfigGet(key: string, defaultValue = ""): string {
 export function projectConfigSet(key: string, value: string): void {
   const root = findProjectRoot();
   configSet(join(root, CORVUSRC), key, value);
+}
+
+/** Legacy Claude/Cursor dirs before Agent Skills under `.claude/skills` / `.cursor/skills`. */
+const LEGACY_TO_CANONICAL_INSTALL_DIR: Readonly<Record<string, string>> = {
+  ".claude/rules": ".claude/skills",
+  ".cursor/rules": ".cursor/skills",
+};
+
+/**
+ * Normalize a stored `install_dir` for comparison against known legacy layouts.
+ */
+export function normalizeProjectInstallDirValue(value: string): string {
+  let resolved = value.trim().replace(/\\/g, "/");
+  if (resolved.startsWith("./")) {
+    resolved = resolved.slice(2);
+  }
+  while (resolved.length > 1 && resolved.endsWith("/")) {
+    resolved = resolved.slice(0, -1);
+  }
+  return resolved;
+}
+
+function joinProjectRelativeDir(projectRoot: string, relativePosix: string): string {
+  const segments = relativePosix.split("/").filter(Boolean);
+  return segments.length === 0 ? projectRoot : join(projectRoot, ...segments);
+}
+
+/**
+ * Move or merge `fromAbs` into `toAbs` (both skill install roots or nested trees).
+ * When both exist as directories, children are merged; matching file paths are left in place and warned.
+ */
+function moveInstallTreeMerge(fromAbs: string, toAbs: string): void {
+  if (!existsSync(fromAbs)) {
+    return;
+  }
+  if (!existsSync(toAbs)) {
+    mkdirSync(dirname(toAbs), { recursive: true });
+    renameSync(fromAbs, toAbs);
+    return;
+  }
+  const fromStat = statSync(fromAbs);
+  const toStat = statSync(toAbs);
+  if (!fromStat.isDirectory() || !toStat.isDirectory()) {
+    warn(
+      `Cannot migrate install tree: expected directories at\n  ${fromAbs}\n  ${toAbs}`,
+    );
+    return;
+  }
+  for (const ent of readdirSync(fromAbs, { withFileTypes: true })) {
+    const sourcePath = join(fromAbs, ent.name);
+    const destPath = join(toAbs, ent.name);
+    if (!existsSync(destPath)) {
+      renameSync(sourcePath, destPath);
+      continue;
+    }
+    if (ent.isDirectory() && statSync(destPath).isDirectory()) {
+      moveInstallTreeMerge(sourcePath, destPath);
+      continue;
+    }
+    warn(
+      `Skipping migrate (path exists in both trees): ${ent.name}`,
+    );
+  }
+}
+
+function pruneEmptyDirectories(rootDir: string): void {
+  if (!existsSync(rootDir) || !statSync(rootDir).isDirectory()) {
+    return;
+  }
+  for (const ent of readdirSync(rootDir, { withFileTypes: true })) {
+    if (ent.isDirectory()) {
+      pruneEmptyDirectories(join(rootDir, ent.name));
+    }
+  }
+  if (readdirSync(rootDir).length === 0) {
+    rmSync(rootDir, { recursive: true });
+  }
+}
+
+function relocateLegacySkillInstallTree(
+  projectRoot: string,
+  legacyRelative: string,
+  canonicalRelative: string,
+): void {
+  const fromAbs = joinProjectRelativeDir(projectRoot, legacyRelative);
+  const toAbs = joinProjectRelativeDir(projectRoot, canonicalRelative);
+  if (!existsSync(fromAbs)) {
+    return;
+  }
+  mkdirSync(dirname(toAbs), { recursive: true });
+  moveInstallTreeMerge(fromAbs, toAbs);
+  if (existsSync(fromAbs)) {
+    pruneEmptyDirectories(fromAbs);
+  }
+  if (existsSync(fromAbs)) {
+    const remaining = readdirSync(fromAbs);
+    if (remaining.length > 0) {
+      warn(
+        `Some paths under ${legacyRelative} could not be moved to ${canonicalRelative} (${remaining.length} top-level item(s) left). Resolve conflicts manually.`,
+      );
+    }
+  }
+}
+
+/**
+ * Rewrite `install_dir` in `.corvusrc` when it matches a documented legacy layout
+ * (skills previously installed under `.claude/rules` / `.cursor/rules`).
+ * On-disk skill trees are renamed or merged into `.claude/skills` or `.cursor/skills` first.
+ */
+export function migrateLegacyProjectInstallDirIfNeeded(options?: {
+  readonly projectRoot?: string;
+}): boolean {
+  const root = options?.projectRoot ?? findProjectRoot();
+  const rcPath = join(root, CORVUSRC);
+  if (!existsSync(rcPath)) {
+    return false;
+  }
+  const rawInstallDir = configGet(rcPath, "install_dir", "");
+  if (!rawInstallDir) {
+    return false;
+  }
+  const key = normalizeProjectInstallDirValue(rawInstallDir);
+  const canonical = LEGACY_TO_CANONICAL_INSTALL_DIR[key];
+  if (!canonical || canonical === key) {
+    return false;
+  }
+  relocateLegacySkillInstallTree(root, key, canonical);
+  configSet(rcPath, "install_dir", canonical);
+  return true;
 }
 
 // ─── Skill list helpers ──────────────────────────────────────────────────────

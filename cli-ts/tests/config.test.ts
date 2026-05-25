@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { mkdtempSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { mkdtempSync, writeFileSync, mkdirSync, existsSync, readFileSync } from "node:fs";
+import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import {
   configGet,
@@ -9,7 +9,10 @@ import {
   skillListUpsert,
   skillListRemove,
   skillVersionFromList,
+  normalizeProjectInstallDirValue,
+  migrateLegacyProjectInstallDirIfNeeded,
 } from "../src/core/config.js";
+import { CORVUSRC } from "../src/core/paths.js";
 
 function tmpFile(): string {
   const dir = mkdtempSync(join(tmpdir(), "corvus-test-"));
@@ -116,5 +119,83 @@ describe("skillVersionFromList", () => {
 
   it("returns null when skill not in list", () => {
     expect(skillVersionFromList("lang-typescript:3", "tech-react")).toBeNull();
+  });
+});
+
+describe("normalizeProjectInstallDirValue", () => {
+  it("trims, strips trailing slashes, strips ./ and normalizes backslashes", () => {
+    expect(normalizeProjectInstallDirValue(`  ./.claude/rules/  `)).toBe(".claude/rules");
+    expect(normalizeProjectInstallDirValue(`.\\.cursor\\rules`)).toBe(".cursor/rules");
+  });
+});
+
+describe("migrateLegacyProjectInstallDirIfNeeded", () => {
+  it("moves on-disk skills from .claude/rules to .claude/skills", () => {
+    const projectRoot = mkdtempSync(join(tmpdir(), "corvus-install-migrate-fs-"));
+    const legacyFile = join(projectRoot, ".claude", "rules", "demo-skill", "SKILL.md");
+    mkdirSync(dirname(legacyFile), { recursive: true });
+    writeFileSync(legacyFile, "# skill\n");
+    const rc = join(projectRoot, CORVUSRC);
+    writeFileSync(rc, "install_dir=.claude/rules\nskills=demo-skill:1\n");
+    expect(migrateLegacyProjectInstallDirIfNeeded({ projectRoot })).toBe(true);
+    const moved = join(projectRoot, ".claude", "skills", "demo-skill", "SKILL.md");
+    expect(existsSync(moved)).toBe(true);
+    expect(readFileSync(moved, "utf-8")).toContain("# skill");
+    expect(existsSync(join(projectRoot, ".claude", "rules"))).toBe(false);
+    expect(configGet(rc, "install_dir", "")).toBe(".claude/skills");
+  });
+
+  it("merges legacy .claude/rules entries into an existing .claude/skills tree", () => {
+    const projectRoot = mkdtempSync(join(tmpdir(), "corvus-install-migrate-merge-"));
+    const onlyLegacy = join(projectRoot, ".claude", "rules", "skill-a", "a.txt");
+    mkdirSync(dirname(onlyLegacy), { recursive: true });
+    writeFileSync(onlyLegacy, "a");
+    const onlyCanon = join(projectRoot, ".claude", "skills", "skill-b", "b.txt");
+    mkdirSync(dirname(onlyCanon), { recursive: true });
+    writeFileSync(onlyCanon, "b");
+    const rc = join(projectRoot, CORVUSRC);
+    writeFileSync(rc, "install_dir=.claude/rules\nskills=skill-a:1,skill-b:1\n");
+    expect(migrateLegacyProjectInstallDirIfNeeded({ projectRoot })).toBe(true);
+    expect(existsSync(join(projectRoot, ".claude", "skills", "skill-a", "a.txt"))).toBe(true);
+    expect(existsSync(join(projectRoot, ".claude", "skills", "skill-b", "b.txt"))).toBe(true);
+    expect(existsSync(join(projectRoot, ".claude", "rules"))).toBe(false);
+    expect(configGet(rc, "install_dir", "")).toBe(".claude/skills");
+  });
+
+  it("rewrites legacy .claude/rules to .claude/skills in .corvusrc", () => {
+    const projectRoot = mkdtempSync(join(tmpdir(), "corvus-install-migrate-"));
+    const rc = join(projectRoot, CORVUSRC);
+    writeFileSync(rc, "install_dir=.claude/rules\nskills=foo:1\n");
+    expect(migrateLegacyProjectInstallDirIfNeeded({ projectRoot })).toBe(true);
+    expect(configGet(rc, "install_dir", "")).toBe(".claude/skills");
+  });
+
+  it("rewrites legacy .cursor/rules to .cursor/skills", () => {
+    const projectRoot = mkdtempSync(join(tmpdir(), "corvus-install-migrate-"));
+    const rc = join(projectRoot, CORVUSRC);
+    writeFileSync(rc, "install_dir=.cursor/rules\nskills=foo:1\n");
+    expect(migrateLegacyProjectInstallDirIfNeeded({ projectRoot })).toBe(true);
+    expect(configGet(rc, "install_dir", "")).toBe(".cursor/skills");
+  });
+
+  it("does not change unrelated install_dir values", () => {
+    const projectRoot = mkdtempSync(join(tmpdir(), "corvus-install-migrate-"));
+    const rc = join(projectRoot, CORVUSRC);
+    writeFileSync(rc, "install_dir=.opencode/rules\nskills=foo:1\n");
+    expect(migrateLegacyProjectInstallDirIfNeeded({ projectRoot })).toBe(false);
+    expect(configGet(rc, "install_dir", "")).toBe(".opencode/rules");
+  });
+
+  it("returns false when .corvusrc is missing", () => {
+    const projectRoot = mkdtempSync(join(tmpdir(), "corvus-install-migrate-"));
+    expect(migrateLegacyProjectInstallDirIfNeeded({ projectRoot })).toBe(false);
+  });
+
+  it("does not rewrite again once install_dir is already canonical", () => {
+    const projectRoot = mkdtempSync(join(tmpdir(), "corvus-install-migrate-"));
+    const rc = join(projectRoot, CORVUSRC);
+    writeFileSync(rc, "install_dir=.claude/skills\nskills=foo:1\n");
+    expect(migrateLegacyProjectInstallDirIfNeeded({ projectRoot })).toBe(false);
+    expect(configGet(rc, "install_dir", "")).toBe(".claude/skills");
   });
 });
