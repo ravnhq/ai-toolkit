@@ -86,8 +86,8 @@ resolve_base() {
   done
 
   local main_ok=0 master_ok=0
-  ensure_local_ref main && main_ok=1 || true
-  ensure_local_ref master && master_ok=1 || true
+  if ensure_local_ref main; then main_ok=1; fi
+  if ensure_local_ref master; then master_ok=1; fi
 
   if [[ "$main_ok" -eq 1 && "$master_ok" -eq 0 ]]; then
     echo main; return 0
