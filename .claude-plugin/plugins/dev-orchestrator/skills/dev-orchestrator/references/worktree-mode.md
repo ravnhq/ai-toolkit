@@ -45,8 +45,8 @@ Lifecycle:
 
 - Created at start of Phase 3 by `setup-integration-branch.sh` as a floating ref pointing at the resolved protected base tip (no checkout — the primary worktree keeps the user's original HEAD).
 - Each per-task worktree branches off the integration branch tip at the moment its wave dispatches.
-- After each per-task agent returns, the task's worktree merges back into the integration branch via `merge-worktree.sh --no-push` (the integration branch is **never** pushed to origin during Phase 3 — that happens once in Phase 4.5).
-- Phase 4.5 validates the integration branch, then `agent-pr-creator` pushes it and opens the PR.
+- After each per-task agent returns, the task's worktree merges back into the integration branch via `merge-worktree.sh --no-push` (the integration branch is **never** pushed to origin during Phase 3 — that happens once in Phase 4.5). The merge runs inside a **dedicated integration worktree** that `merge-worktree.sh` provisions on first use — the user's primary worktree and HEAD are never touched. The script emits `INTEGRATION_WORKTREE=<path>` on stdout; capture it (it is stable across the run) and reuse it as the validate/push target in Phase 4.5.
+- Phase 4.5 validates the integration branch **in the integration worktree** (`$INTEGRATION_WORKTREE`), then `agent-pr-creator` pushes it and opens the PR.
 - On clean PR handoff, the integration branch survives on the remote (until the PR merges and the platform's branch-delete-on-merge policy runs). Locally, the orchestrator leaves the branch ref in place so the user can pull more commits onto it if needed.
 
 ## Worktree options captured in Phase 1
@@ -226,25 +226,27 @@ This phase reads the worktree-options record from Phase 1 to decide which steps 
 
 ### Step 1: Validate the integration branch
 
-When `--no-validate` is **not** in the captured options, run validation against the integration branch's worktree. The integration branch is checked out in the primary worktree by the last per-task merge in Phase 3, so the primary worktree is the right target:
+When `--no-validate` is **not** in the captured options, run validation against the integration branch's worktree. `merge-worktree.sh` checked the integration branch out in a **dedicated integration worktree** (not the primary worktree) and emitted its path as `INTEGRATION_WORKTREE=<path>` — validate against that captured path:
 
 ```bash
-bash skills/assistant/dev-orchestrator/scripts/validate-worktree.sh "<primary worktree path>"
+bash skills/assistant/dev-orchestrator/scripts/validate-worktree.sh "$INTEGRATION_WORKTREE"
 ```
+
+If no merges ran (e.g. a single-task run where the merge was skipped), fall back to provisioning the integration worktree with `git worktree add "<repo>-integration-<base-leaf>" "$INTEGRATION_BRANCH"` and validate there.
 
 The script auto-detects per-ecosystem checks (JS/TS lint + typecheck + tests; Python `ruff` + `mypy` + `pytest`; Ruby `rubocop` + `rspec`). Absent checks count as PASS. On any failure: surface the failing command and the tail of its output, rewrite the integration footer to `preserved on failure`, emit the resume command (see Phase 4 retry menu), and skip steps 2–3.
 
 ### Step 2: Push the integration branch
 
 ```bash
-git -C "<primary worktree path>" push -u origin "<INTEGRATION_BRANCH>"
+git -C "$INTEGRATION_WORKTREE" push -u origin "<INTEGRATION_BRANCH>"
 ```
 
-This is the first (and only) time the integration branch reaches the remote during the orchestrator's lifetime. On push failure, rewrite the footer to `validated, awaiting PR` and surface the failure verbatim — see "Integration-branch PR handoff failed" in SKILL.md troubleshooting.
+Push by integration-worktree path (the integration branch is checked out there, not in the primary worktree). This is the first (and only) time the integration branch reaches the remote during the orchestrator's lifetime. On push failure, rewrite the footer to `validated, awaiting PR` and surface the failure verbatim — see "Integration-branch PR handoff failed" in SKILL.md troubleshooting.
 
 ### Step 3: Dispatch agent-pr-creator as an isolated agent
 
-Dispatch **one isolated agent** carrying the `agent-pr-creator` skill, awaited synchronously (only one agent in this wave). Follow the four-part contract in [`dispatch-contract.md`](dispatch-contract.md): the agent runs in its own session at the primary worktree's path with the PR-creation tool scope from the cheatsheet (`Bash` for `git` + `gh`, `Read`, MCP issue-tracker tools when ticket linking is needed — explicitly **no** `Edit` / `Write` / `StrReplace`, so it cannot modify the integration branch). Use this prompt:
+Dispatch **one isolated agent** carrying the `agent-pr-creator` skill, awaited synchronously (only one agent in this wave). Follow the four-part contract in [`dispatch-contract.md`](dispatch-contract.md): the agent runs in its own session at `$INTEGRATION_WORKTREE` (where the integration branch is checked out — **not** the primary worktree) with the PR-creation tool scope from the cheatsheet (`Bash` for `git` + `gh`, `Read`, MCP issue-tracker tools when ticket linking is needed — explicitly **no** `Edit` / `Write` / `StrReplace`, so it cannot modify the integration branch). Use this prompt:
 
 > Use the `agent-pr-creator` skill to open a pull request.
 >
@@ -294,7 +296,7 @@ Phase 4 consolidates with the integration footer at `pending PR`, two worktrees 
 
 Phase 4.5:
 
-1. `validate-worktree.sh` runs against the primary worktree (now on the integration branch) — passes.
+1. `validate-worktree.sh` runs against `$INTEGRATION_WORKTREE` (the dedicated integration worktree where the merges landed; the primary worktree keeps the user's original HEAD) — passes.
 2. `git push -u origin <INTEGRATION_BRANCH>` succeeds.
 3. `agent-pr-creator` dispatched as an isolated agent (scoped to `Bash` + `Read` + MCP, no edit tools), opens PR #842 from `<INTEGRATION_BRANCH>` → `develop`. Footer rewritten to `PR opened`.
 

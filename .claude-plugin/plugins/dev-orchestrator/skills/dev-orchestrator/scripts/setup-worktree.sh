@@ -119,18 +119,27 @@ slugify() {
 
 BASE_BRANCH="$(resolve_base)" || exit $?
 
-git -C "$REPO_ROOT" fetch origin --quiet 2>/dev/null || true
+# Entropy suffix: date alone has 1s resolution, so a parallel wave dispatching
+# setup-worktree.sh back-to-back can collide on identical names. PID + RANDOM
+# disambiguate same-second, same-slug invocations.
+UNIQ="$(date +%s)-$$-${RANDOM}"
 
 if [[ -z "$BRANCH" ]]; then
   SLUG="$(slugify "$TASK")"
   [[ -z "$SLUG" ]] && SLUG="task"
-  BRANCH="agent/${SLUG}-$(date +%s)"
+  BRANCH="agent/${SLUG}-${UNIQ}"
 fi
 
 BRANCH_LEAF="${BRANCH##*/}"
 REPO_NAME="$(basename "$REPO_ROOT")"
 REPO_PARENT="$(dirname "$REPO_ROOT")"
 WT_PATH="${REPO_PARENT}/${REPO_NAME}-${BRANCH_LEAF}"
+
+# When the caller passed an explicit --branch, the path is derived purely from
+# its leaf and could still collide with a concurrent run; add entropy if so.
+if [[ -e "$WT_PATH" ]]; then
+  WT_PATH="${WT_PATH}-${UNIQ}"
+fi
 
 if [[ -e "$WT_PATH" ]]; then
   echo "path already exists: $WT_PATH" >&2
@@ -142,7 +151,7 @@ if ! git -C "$REPO_ROOT" worktree add "$WT_PATH" -b "$BRANCH" "$BASE_BRANCH" >/d
   exit 5
 fi
 
-for f in .env .env.local .env.development .env.production .env.test .envrc .tool-versions .nvmrc; do
+for f in .env .envrc .tool-versions .nvmrc; do
   if [[ -f "$REPO_ROOT/$f" ]]; then
     cp "$REPO_ROOT/$f" "$WT_PATH/$f"
   fi

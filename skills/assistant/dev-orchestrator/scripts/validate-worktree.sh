@@ -19,6 +19,12 @@ if [[ $# -lt 1 ]]; then
 fi
 
 WT_PATH="$1"
+
+if [[ ! -d "$WT_PATH" ]]; then
+  echo "worktree path does not exist: $WT_PATH" >&2
+  exit 1
+fi
+
 cd "$WT_PATH"
 
 run_check() {
@@ -54,10 +60,13 @@ if [[ -f package.json ]]; then
     run_check "tsc --noEmit" npx --no-install tsc --noEmit || exit 2
   fi
   if has_npm_script test; then
+    # CI=true forces watch-mode runners (vitest, jest, react-scripts, CRA) into
+    # a single non-interactive run; without it `npm test` can block forever and
+    # hang the whole orchestration. jest also gets explicit flags.
     if grep -q '"jest"' package.json 2>/dev/null; then
-      run_check "npm test" npm test --silent -- --watch=false --passWithNoTests || exit 2
+      CI=true run_check "npm test" npm test --silent -- --watch=false --passWithNoTests || exit 2
     else
-      run_check "npm test" npm test --silent || exit 2
+      CI=true run_check "npm test" npm test --silent || exit 2
     fi
   fi
 fi

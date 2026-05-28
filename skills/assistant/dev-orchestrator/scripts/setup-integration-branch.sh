@@ -169,14 +169,7 @@ BASE_BRANCH="$(resolve_base)" || exit $?
 git -C "$REPO_ROOT" fetch origin --quiet 2>/dev/null || true
 
 if git -C "$REPO_ROOT" rev-parse --verify "origin/$BASE_BRANCH" >/dev/null 2>&1; then
-  if git -C "$REPO_ROOT" rev-parse --abbrev-ref --symbolic-full-name "@{upstream}" >/dev/null 2>&1; then
-    current_branch="$(git -C "$REPO_ROOT" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")"
-    if [[ "$current_branch" == "$BASE_BRANCH" ]]; then
-      git -C "$REPO_ROOT" pull --ff-only origin "$BASE_BRANCH" >/dev/null 2>&1 || true
-    else
-      git -C "$REPO_ROOT" fetch origin "$BASE_BRANCH:$BASE_BRANCH" --quiet >/dev/null 2>&1 || true
-    fi
-  fi
+  git -C "$REPO_ROOT" fetch origin "$BASE_BRANCH:$BASE_BRANCH" --quiet 2>/dev/null || true
   BASE_TIP="origin/$BASE_BRANCH"
 else
   BASE_TIP="$BASE_BRANCH"

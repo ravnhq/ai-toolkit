@@ -6,7 +6,9 @@ allowed-tools:
 - Task
 - Bash
 - Glob
+- Grep
 - Read
+effort: high
 metadata:
   category: assistant
   tags:
@@ -29,16 +31,16 @@ metadata:
     - I need A, B and C
     - in parallel
     - "/orchestrate"
-    - "/orchestrate --worktree refactor the auth module end-to-end"
-    - "/orchestrate ABC-42"
-    - "/orchestrate --ticket ABC-42 --worktree"
+    - run tasks in parallel
     - generate the test cases and create the PR
     - spin up a worktree and open the PR
-    - implement ABC-42 in a worktree
+    - implement ticket in a worktree
+    - orchestrate tasks
     negative:
-    - single-task requests
-    - questions
-    - information requests
+    - what does this do
+    - explain this
+    - just create the PR
+    - only one task
 ---
 
 # Dev Orchestrator
@@ -190,29 +192,7 @@ After Phase 2 confirmation on the final plan, dispatch one **isolated agent per 
 
 **Test-plan obligation (code-touching tasks only):**
 
-Every dispatch prompt for a **code-touching** task (see the Phase 5 classification table) must include this contract clause **verbatim** in the prompt body, alongside the primary task instructions:
-
-```text
-After completing your primary task, append or update `.qa/test-plan.md`
-with the surface area you changed, so qa-orchestrator can pick the right
-QA agents in its Phase 2 selector:
-  - If you added or modified a UI flow, add it under `## UI Flows` with
-    the entry point URL/route, steps, and expected outcome.
-  - If you added or modified an API endpoint, add it under
-    `## API Endpoints` with method, path, auth requirements, and
-    request/response shape.
-  - If `.qa/test-plan.md` does not yet exist, scaffold it from
-    `skills/qa/qa-orchestrator/references/test-plan.md` first, then
-    add your section.
-  - Do not delete or rewrite entries that belong to unchanged surface
-    area — only add or update what your change touched.
-  - If `.qa/test-plan.md` is being modified by another process, retry
-    the update after a brief delay (a few seconds) rather than overwriting.
-This update is required, not optional. The dev-orchestrator will hand
-off to qa-orchestrator immediately after, and the test plan is the
-input that decides which QA agents (qa-happy-path, qa-chaos-monkey,
-custom personalities) actually run.
-```
+Every dispatch prompt for a **code-touching** task (see the Phase 5 classification table) must include the contract clause from [`references/test-plan-obligation.md`](references/test-plan-obligation.md) **verbatim** in the prompt body, alongside the primary task instructions. Read that file at dispatch time to get the exact clause text — do not paraphrase it.
 
 Doc-only tasks (`test-case-gen`, `test-plan-gen`, `bug-report-gen`, `locators-scanner`) are exempt — they do not change runtime behavior, so there is no surface area to register.
 
