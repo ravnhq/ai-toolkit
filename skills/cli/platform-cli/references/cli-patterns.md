@@ -1183,7 +1183,7 @@ curl -L https://example.com/mycli -o /usr/local/bin/mycli
 
 **Correct (uninstall instructions right after install):**
 
-```markdown
+````markdown
 # Installation
 
 ## Homebrew
@@ -1233,7 +1233,7 @@ find ~ -name "*mycli*" 2>/dev/null
 
 # Usage
 ...
-```
+````
 
 **Why it matters:** Users evaluate tools by how easy they are to remove. Hidden or missing uninstall instructions create friction and reduce trust. Placing uninstall steps near install steps makes them discoverable when users need them most.
 

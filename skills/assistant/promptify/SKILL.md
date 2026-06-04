@@ -12,6 +12,7 @@ allowed-tools:
 - Grep
 - Glob
 - Agent
+- AskUserQuestion
 metadata:
   category: assistant
   tags:
@@ -21,7 +22,7 @@ metadata:
   - specification
   - rewriting
   status: ready
-  version: 8
+  version: 9
   triggers:
     positive:
     - 'Promptify this: audit all skills against our findings doc.'
@@ -48,6 +49,8 @@ Rewrite the user's request as a clear, specific, and complete prompt that guides
 
 ## Workflow
 
+> **User-input rule:** Any time this skill needs a decision, preference, or clarification from the user, it MUST use the `AskUserQuestion` tool with structured options — never free-text prose questions. This applies to the clarifying-questions path in step 2 and the delivery choice in step 7.
+
 ### 1. Analyze
 
 Read the user's request carefully. Identify:
@@ -63,7 +66,7 @@ Based on the analysis, choose how to proceed:
 
 - **Request is clear and complete** — produce direct rewritten prompt
 - **1-2 minor gaps** — fill with marked `[Assumption: X]` placeholders and proceed
-- **Major gaps** (audience, scope, tech stack unknown) — ask clarifying questions before rewriting
+- **Major gaps** (audience, scope, tech stack unknown) — ask clarifying questions via the `AskUserQuestion` tool (structured options, not prose) before rewriting
 - **Multiple distinct objectives** — split into separate prompts
 
 ### 3. Structure
@@ -109,7 +112,7 @@ Present the final prompt to the user as a markdown block, clearly labeled. Do no
 
 ### 7. Deliver
 
-After presenting the prompt, offer the user two options:
+After presenting the prompt, use the `AskUserQuestion` tool (not a prose list) to ask the user how to proceed, offering these options:
 
 1. **Execute now** — Treat the generated prompt as your new instruction and proceed based on the current conversation context. Use your normal judgement to decide the best next action — plan complex tasks, implement simple ones directly, or ask clarifying questions if needed.
 2. **Save to file** — Write the prompt to a markdown file in the current working directory (e.g. `promptify-<timestamp>.md` where `<timestamp>` is epoch seconds). Let the user know the file path.
