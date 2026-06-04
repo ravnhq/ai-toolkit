@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-06-04
+
+- Require AskUserQuestion in promptify; fix cli-patterns nested fence (#39).
 ## 2026-05-25
 
 - Fix skill installation paths (#34).
