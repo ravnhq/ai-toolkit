@@ -17,6 +17,11 @@ on:
       - "README.md"
       - "marketplace.json"
 
+# Cancel superseded runs on the same PR branch; let main runs finish.
+concurrency:
+  group: skills-quality-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   audit:
     runs-on: ubuntu-latest

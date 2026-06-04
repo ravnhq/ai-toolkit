@@ -5,10 +5,19 @@ on:
     branches: ["main"]
     paths:
       - "cli-ts/**"
+      - "scripts/sign-macos.sh"
+      - ".github/workflows/cli-build.yml"
   workflow_dispatch:
 
 permissions:
   contents: write
+
+# Serialize builds so overlapping main pushes don't race the cli-latest
+# tag force-push and release create/delete. Don't cancel an in-flight
+# release mid-publish.
+concurrency:
+  group: cli-build
+  cancel-in-progress: false
 
 jobs:
   build-linux:
