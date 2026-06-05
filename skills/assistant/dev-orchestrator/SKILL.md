@@ -1,7 +1,18 @@
 ---
 name: dev-orchestrator
-description: |-
-  Detect bundled dev work — multiple implementation tasks in one prompt — and dispatch each as an isolated agent (own session, own cwd, scoped tools, awaited), classifying dependencies so independent tasks fan out in parallel and dependent ones run in order. Use when a prompt bundles two or more dev tasks like "generate test cases and create the PR", "bug report and test plan", "do X and Y in parallel", or explicit /orchestrate. Opt into worktree mode via "--worktree" (or "in a worktree", "isolated branch", "auto-merge to main") to provision an integration branch off the protected base (develop/dev preferred; else newer main/master tip), spawn one worktree per task off that branch (parallel for independent, waves for soft-sequenced, merged-into-one for hard-chained), and hand off to agent-pr-creator for the protected-base PR. Resolves issue-tracker tickets (Linear, Jira, GitHub Issues, Notion) via MCP and uses the ticket id as the integration branch name. Skip for single-task asks, questions, or info requests.
+description: Detect bundled dev work — multiple implementation tasks in one prompt
+  — and dispatch each as an isolated agent (own session, own cwd, scoped tools, awaited),
+  classifying dependencies so independent tasks fan out in parallel and dependent
+  ones run in order. Use when a prompt bundles two or more dev tasks like "generate
+  test cases and create the PR", "bug report and test plan", "do X and Y in parallel",
+  or explicit /orchestrate. Opt into worktree mode via "--worktree" (or "in a worktree",
+  "isolated branch", "auto-merge to main") to provision an integration branch off
+  the protected base (develop/dev preferred; else newer main/master tip), spawn one
+  worktree per task off that branch (parallel for independent, waves for soft-sequenced,
+  merged-into-one for hard-chained), and hand off to agent-pr-creator for the protected-base
+  PR. Resolves issue-tracker tickets (Linear, Jira, GitHub Issues, Notion) via MCP
+  and uses the ticket id as the integration branch name. Skip for single-task asks,
+  questions, or info requests.
 allowed-tools:
 - Task
 - Bash
@@ -24,7 +35,7 @@ metadata:
   - ticket
   - linear
   status: draft
-  version: 4
+  version: 5
   triggers:
     positive:
     - do X and Y

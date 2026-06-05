@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-06-05
+
+- Added dev-orchestrator skill for parallel task management. (#31)
 ## 2026-06-04
 
 - Require AskUserQuestion in promptify; fix cli-patterns nested fence (#39).
